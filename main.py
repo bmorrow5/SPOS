@@ -4,4 +4,9 @@ import matplotlib.pyplot as plt
 
 
 class Main:
-    return
+    def run_main(self):
+        print("Hello World")
+
+if __name__ == "__main__":
+    main = Main()
+    main.run_main()
