@@ -1,7 +1,9 @@
-
+from player import Player
 class Seller(Player):
-    def __init__(self, email, phone, address):
-        self.email = email
+    def __init__(self, name, email, negotiation_power, company, phone, address):
+        super().__init__(name, email)
+        self.negotiation_power = negotiation_power
+        self.company = company
         self.phone = phone
         self.address = address
         self.product = None
