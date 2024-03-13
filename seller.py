@@ -1,6 +1,6 @@
 
 class Seller(Player):
-    def __init__(self, name, email, phone, address):
+    def __init__(self, email, phone, address):
         self.email = email
         self.phone = phone
         self.address = address
