@@ -2,25 +2,33 @@
 CREATE SCHEMA IF NOT EXISTS spos
     AUTHORIZATION postgres;
 
--- Players
-CREATE TABLE Sellers (
+-- Players and game
+CREATE TABLE IF NOT EXISTS spos.sellers (
     seller_id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL UNIQUE
 );
-
-CREATE TABLE BuyerAgents (
+CREATE TABLE IF NOT EXISTS spos.buyer_agents (
     buyer_agent_id SERIAL PRIMARY KEY,
     employee_id INT NOT NULL,
     email VARCHAR(255) NOT NULL,
     password VARCHAR(255) NOT NULL
 );
-
-
+CREATE TABLE IF NOT EXISTS spos.negotiation_games (
+    game_id SERIAL PRIMARY KEY,
+    buyer_agent_id INT NOT NULL,
+    seller_id INT NOT NULL,
+    initial_price DECIMAL NOT NULL,
+    counter_price DECIMAL,
+    final_price DECIMAL,
+    status VARCHAR(50), -- e.g., 'in_progress', 'completed'
+    FOREIGN KEY (buyer_agent_id) REFERENCES BuyerAgents(buyer_agent_id),
+    FOREIGN KEY (seller_id) REFERENCES Sellers(seller_id)
+);
 
 
 -- Email storage
-CREATE TABLE EmailLogs (
+CREATE TABLE IF NOT EXISTS EmailLogs (
     email_log_id SERIAL PRIMARY KEY,
     sender_email VARCHAR(255) NOT NULL,
     receiver_email VARCHAR(255) NOT NULL,
@@ -28,12 +36,12 @@ CREATE TABLE EmailLogs (
     body TEXT NOT NULL,
     timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     email_type VARCHAR(50) NOT NULL
-    -- email_type can be 'request_quote', 'counter_offer', etc.
 );
 
 
+
 -- Network Data
-CREATE TABLE BayesianNetworkData (
+CREATE TABLE IF NOT EXISTS BayesianNetworkData (
     data_id SERIAL PRIMARY KEY,
     type VARCHAR(255) NOT NULL, -- 'buyer' or 'supplier'
     node_name VARCHAR(255) NOT NULL,
