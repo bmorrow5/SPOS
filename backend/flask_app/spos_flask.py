@@ -1,13 +1,30 @@
 from flask import Flask, request, jsonify
+from flask_mail import Mail
 from bs4 import BeautifulSoup
 import pandas as pd
 import psycopg2
 import requests
 import json
 import time
-import psycopg2
 
 app = Flask(__name__)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 # Define an empty DataFrame
 df = pd.DataFrame(columns=['topic', 'title', 'content', 'num_links'])
