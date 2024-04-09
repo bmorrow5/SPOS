@@ -1,19 +1,8 @@
 from player import Player
+
 class Seller(Player):
-    def __init__(self, name, email, negotiation_power, company, phone, address):
-        super().__init__(name, email)
-        self.negotiation_power = negotiation_power
-        self.company = company
-        self.phone = phone
-        self.address = address
-        self.product = None
-        self.product_price = None
-
-    def set_product(self, product):
-        self.product = product
-
-    def set_product_price(self, product_price):
-        self.product_price = product_price
-    
+    def __init__(self, name, email, negotiation_power, product):
+        super().__init__(name, email, negotiation_power)
+        self.product = product    
     def __str__(self):
         return f"{self.name} ({self.email})"

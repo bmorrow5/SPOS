@@ -1,7 +1,7 @@
 from player import Player
 class Buyer(Player):
-    def __init__(self, name, email, id, password):
-        super().__init__(name, email)
+    def __init__(self, name, email, negotiation_power, id, password):
+        super().__init__(name, email, negotiation_power)
         self.id = id
         self.password = password
 

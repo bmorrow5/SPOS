@@ -1,5 +1,4 @@
 
-
 class NegotiationSpace:
     
     def __init__(self, name, value, min, max):
