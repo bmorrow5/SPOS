@@ -1,5 +1,4 @@
 from flask import Flask, request, jsonify
-from flask_mail import Mail
 from bs4 import BeautifulSoup
 import pandas as pd
 import psycopg2
@@ -11,18 +10,9 @@ app = Flask(__name__)
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
+"""
+Ignore the below this is old code I am modifying, and using as a template
+"""
 
 
 

@@ -12,7 +12,7 @@ class EmailService:
         self.smtp_port = 587  
         self.imap_server = "imap.gmail.com" 
 
-    def send_counteroffer(self, from_email: str, to_email: list, counter_offer_price: float, subject: str, message: str) -> str:
+    def send_counteroffer(self, from_email: str, to_emails: list, counter_offer_price: float, subject: str, message: str) -> str:
         """Emails a supplier a counteroffer with the price found by the bayesian game theory model
 
         Args:
@@ -30,23 +30,23 @@ class EmailService:
             if subject is None:
                 subject = "Counter Offer"
             if message is None:
-
+                message = "Please see our attached counteroffer" 
             for email in to_emails:
-            # Setup the email
-            msg = MIMEMultipart()
-            msg['From'] = from_email
-            msg['To'] = to_email
-            msg['Subject'] = subject
-            msg.attach(MIMEText(message, 'plain'))
+                # Setup the email
+                msg = MIMEMultipart()
+                msg['From'] = from_email
+                msg['To'] = to_email
+                msg['Subject'] = subject
+                msg.attach(MIMEText(message, 'plain'))
 
-            # Connect to the server and send the email
-            server = smtplib.SMTP(self.smtp_server, self.smtp_port)
-            server.starttls()
-            server.login(self.email, self.password)
-            text = msg.as_string()
-            server.sendmail(from_email, to_email, text)
-            server.quit()
-            print("Email sent successfully!")
+                # Connect to the server and send the email
+                server = smtplib.SMTP(self.smtp_server, self.smtp_port)
+                server.starttls()
+                server.login(self.email, self.password)
+                text = msg.as_string()
+                server.sendmail(from_email, to_emails, text)
+                server.quit()
+                print("Email sent successfully!")
         except Exception as e:
             print(f"Failed to send email: {e}")
 
