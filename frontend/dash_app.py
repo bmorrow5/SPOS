@@ -10,6 +10,7 @@ def get_seller_negotiation_power():
     else:
         return []
 
+# Will edit once game logic
 app.layout = html.Div([
     html.H1("Negotiation Power"),
     dcc.Dropdown(

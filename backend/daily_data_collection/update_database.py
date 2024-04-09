@@ -1,21 +1,17 @@
 import os
 import psycopg2
 
-""" This code will insert the updated data into the database.
-"""
-
 
 def import_csv_to_postgres():
+    """Copies data from CSV files to our database
+    """
     dbname = 'postgres'
     user = 'jhu'
     password = 'jhu123'  
     host = 'localhost'
 
     files_and_tables = {
-        '~/EN.685.648.81.FA23-main/airflow_scripts/economic_indicators.csv': 'covid.economic_indicators',
-        '~/EN.685.648.81.FA23-main/airflow_scripts/emissions_data.csv': 'covid.emissions_data',
-        '~/EN.685.648.81.FA23-main/airflow_scripts/COVID-19_Case_Surveillance_Public_clean.csv': 'covid.covid_data',
-        '~/EN.685.648.81.FA23-main/airflow_scripts/spy_data.csv': 'covid.stock_data'
+        # '~//airflow_scripts/spos_data.csv': 'spos.data',
     }
 
     # Connect to the database

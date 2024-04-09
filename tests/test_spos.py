@@ -5,8 +5,9 @@ class TestSpos(unittest.TestCase):
 
     def setUp(self):
         """Set up test fixtures, if any."""
-        self.email = Email("user@example.com", "password123")
-
+        # self.email = Email("user@example.com", "password123")
+        pass
+    
     def test_request_bids(self):
         """Test the request_bids method."""
         # Since request_bids is not implemented, this is a placeholder

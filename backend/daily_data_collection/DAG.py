@@ -20,11 +20,11 @@ default_args = {
 with DAG('process_student_data', default_args=default_args, schedule_interval='@daily') as dag:
 
 
-	start_flask_api_task = PythonOperator(
-    		task_id="start_flask_api",
-    		python_callable=start_flask_api,
-    		dag=dag
-		)
+	# start_flask_api_task = PythonOperator(
+    # 		task_id="start_flask_api",
+    # 		python_callable=start_flask_api,
+    # 		dag=dag
+	# 	)
 	end_dag_task = DummyOperator(
 		task_id = "end_dag",
 		dag=dag
