@@ -9,4 +9,4 @@ class Product():
         self.date_needed = date_needed
         
     def __str__(self) -> str:
-        print(f"Name:{self.name}, QTY: {self.quantity}, Current Price: {self.current_price}, Max Price: {self.max_price}, Date Needed: {self.date_needed}")
+        return f"Name: {self.name}, QTY: {self.quantity}, Current Price: {self.current_price}, Max Price: {self.max_price}, Date Needed: {self.date_needed}"

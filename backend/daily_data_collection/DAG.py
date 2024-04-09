@@ -19,42 +19,17 @@ default_args = {
 # Define the DAG
 with DAG('process_student_data', default_args=default_args, schedule_interval='@daily') as dag:
 
-	load_epa_task = BashOperator(
-			task_id="load_epa",
-			bash_command="python ~/EN.685.648.81.FA23-main/airflow_scripts/load_epa.py",
-			dag=dag
-		)
-	load_cdc_task = BashOperator(
-			task_id="load_cdc",
-			bash_command="python ~/EN.685.648.81.FA23-main/airflow_scripts/load_cdc.py",
-			dag=dag
-		)
-	load_stock_task = BashOperator(
-			task_id="load_stock",
-			bash_command="python ~/EN.685.648.81.FA23-main/airflow_scripts/load_stock.py",
-			dag=dag
-		)
-	load_economic_task = BashOperator(
-			task_id="load_economic",
-			bash_command="python ~/EN.685.648.81.FA23-main/airflow_scripts/load_economic.py",
-			dag=dag
-		)
-	update_database_task = BashOperator(
-			task_id="update_database",
-			bash_command="python ~/EN.685.648.81.FA23-main/airflow_scripts/update_database.py",
-			dag=dag,
-		)
+
 	start_flask_api_task = PythonOperator(
     		task_id="start_flask_api",
     		python_callable=start_flask_api,
     		dag=dag
 		)
-	generate_report_task = BashOperator(
-		task_id = "generate_report",
-		bash_command = "python ~/EN.685.648.81.FA23-main/api/report.py",
+	end_dag_task = DummyOperator(
+		task_id = "end_dag",
 		dag=dag
 	)
 
-	# Execute loading tasks simultaneously
-	[load_epa_task, load_cdc_task, load_stock_task, load_economic_task] >> update_database_task  >> start_flask_api_task >> generate_report_task
+	# Load data daily
+	start_flask_api_task >> end_dag_task
 	

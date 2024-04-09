@@ -1,5 +1,5 @@
 
-class Player:
+class Player():
     
     def __init__(self, name, email, negotiation_power):
         self.name = name
