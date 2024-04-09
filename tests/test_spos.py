@@ -1,4 +1,7 @@
-class TestEmail(unittest.TestCase):
+
+
+
+class TestSpos(unittest.TestCase):
 
     def setUp(self):
         """Set up test fixtures, if any."""
@@ -13,3 +16,7 @@ class TestEmail(unittest.TestCase):
         """Test the read_email method."""
         # This is a placeholder assuming read_email returns None for now
         self.assertIsNone(self.email.read_email())
+
+
+if __name__ == "__main__":
+    pass
