@@ -55,7 +55,7 @@ class EmailService:
             # Connect to IMAP server
             mail = imaplib.IMAP4_SSL(self.imap_server)
             mail.login(self.email, self.password)
-            mail.select('inbox')  # Connect to inbox.
+            mail.select('inbox')  # Connect to inbox
 
             # Search for all emails
             status, messages = mail.search(None, 'ALL')

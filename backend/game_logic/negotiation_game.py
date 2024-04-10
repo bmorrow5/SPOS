@@ -22,9 +22,6 @@ class NegotiationGame():
         self.cLh = cLh
         self.cLl = cLl
 
-    def get_payoff_matrix():
-        pass
-
     """ See SPOS Mathematics for an explanation of the below mathematics
     """
     def delta(self, q):
@@ -82,4 +79,9 @@ class NegotiationGame():
     def get_counter_offer_price(self):
         """ Returns the counteroffer price after simulating negotiations and determining a strategy
         """
+        # Get strategy from simulation
+
+        # Get Utility
+
+        # Calculate Counter Offer Price
         pass
