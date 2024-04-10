@@ -11,7 +11,7 @@ app = Flask(__name__)
 
 
 """
-Ignore the below this is old code I am modifying, and using as a template
+Ignore the below this is old code I am modifying from an old project I did, and am using this as a template
 """
 
 

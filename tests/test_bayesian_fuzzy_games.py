@@ -2,10 +2,8 @@ import unittest
 
 
 class BayesianFuzzyGamesTest(unittest.TestCase):
-
-    def test_calculate_negotiation_power(self):
-        pass
-    
-
-    def test_determine_counteroffer_price():
+    """ This class will test our bayesian fuzzy games model, and will provide a check on if our bayesian fuzzy game is working
+    As of the draft this is what I am currently working on. 
+    """
+    def test_negotiation_game(self):
         pass

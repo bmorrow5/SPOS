@@ -4,7 +4,7 @@ import json
 class DataAccess:
     """ Controls all data access and adheres to CRUD: Create, Read, Update, Delete
     """
-    def add_data(self, table):
+    def update_database(self, table):
         
         # Connect to Database
         conn = psycopg2.connect(
