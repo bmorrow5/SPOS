@@ -4,7 +4,9 @@ This system utilizes an application of game theory called Bayesian Fuzzy Games t
 
 ## How to Run
 Pending (build in progress)
+1. Start the database docker container
 
+docker run --name some-postgres -p 5432:5432 -e POSTGRES_PASSWORD=mysecretpassword -d postgres
 
 ##  Game Logic 
 Contains the bayesian fuzzy game logic, and contains the following classes:
