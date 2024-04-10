@@ -6,7 +6,7 @@ class NegotiationGame():
     """
 
 
-    def __init__(self, buyer, seller, alpha, beta, sHh, sHl, sHl, sLh, sLl, cHl, chL, cLh, cLl):
+    def __init__(self, buyer, seller, alpha, beta, sHh, sHl, sLh, sLl, cHl, chL, cLh, cLl):
         self.buyer = buyer
         self.seller = seller
         self.alpha = alpha # Bayesian Network seller external factors
