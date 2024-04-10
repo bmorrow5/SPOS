@@ -1,9 +1,10 @@
 
 class Product():
 
-    def __init__(self, name, quantity, current_price, date_needed):
+    def __init__(self, name, quantity, initial_price, current_price, date_needed):
         self.name = name
         self.quantity = quantity
+        self.initial_price = initial_price
         self.current_price = current_price
         self.date_needed = date_needed
         
