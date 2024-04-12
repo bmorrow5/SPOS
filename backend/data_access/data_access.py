@@ -1,8 +1,9 @@
 import psycopg2
 import json
+import hashlib
 
 class DataAccess:
-    """Controls all backend data access and adheres to RUD: Read, Update, Delete."""
+    """Controls all backend data access and adheres to CRUD: Create, Read, Update, Delete."""
     
     def __init__(self):
         self.connection_params = {
@@ -116,75 +117,134 @@ class DataAccess:
         return json.dumps(data, default=str)
 
 
+    def add_seller(self, seller_name, seller_email):
+        """ Adds a seller to the database
+        """
+        try:
+            with psycopg2.connect(**self.connection_params) as conn:
+                with conn.cursor() as cur:
+                    query = "INSERT INTO spos.sellers (name, email) VALUES (%s, %s);"  # Parameterized %s prevents SQL injection
+                    cur.execute(query, (seller_name, seller_email))
+                    rows = cur.fetchall()
+
+                    # Check if any rows were returned
+                    if not rows:
+                        return json.dumps({'message': 'No data found for this '})
+                        
+        except Exception as e:
+            return json.dumps({'message': 'Error connecting to the database', 'error': str(e)})
+        
+        data = {'message': 'Data added successfully', 'data': dict}
+        return json.dumps(data, default=str)
+
+
+    def delete_seller(self, seller_name, seller_email):
+        try:
+            with psycopg2.connect(**self.connection_params) as conn:
+                with conn.cursor() as cur:
+                    query = "DELETE spos.sellers WHERE name = %s AND email = %s"  # Parameterized %s prevents SQL injection
+                    cur.execute(query, (seller_name, seller_email))
+                    rows = cur.fetchall()
+
+                    # Check if any rows were returned
+                    if not rows:
+                        return json.dumps({'message': 'No data found for this '})
+                        
+        except Exception as e:
+            return json.dumps({'message': 'Error connecting to the database', 'error': str(e)})
+        
+        data = {'message': 'Data removed successfully', 'data': dict}
+        return json.dumps(data, default=str)
+
+
+
+    def add_employee(self, employee_name, employee_id, employee_email, password):
+        """ Adds a seller to the database
+        """
+        # Encrypt the password
+        password = encrypt_password(password)
+        try:
+            with psycopg2.connect(**self.connection_params) as conn:
+                with conn.cursor() as cur:
+                    query = "INSERT INTO spos.buyer_agents (name, employee_id, email, password) VALUES (%s, %s, %s, %s);"  # Parameterized %s prevents SQL injection
+                    cur.execute(query, (employee_name, employee_id, employee_email, password))
+                    rows = cur.fetchall()
+
+                    # Check if any rows were returned
+                    if not rows:
+                        return json.dumps({'message': 'No data found for this '})
+                        
+        except Exception as e:
+            return json.dumps({'message': 'Error connecting to the database', 'error': str(e)})
+        
+        data = {'message': 'Data added successfully', 'data': dict}
+        return json.dumps(data, default=str)
+
+
+
+    def delete_employee(self, employee_name, employee_id, employee_email, password):
+        """Takes employee information and removes them from the database
+        Args:
+            employee_name
+            employee_id
+            employee_email
+            password
+
+        Returns:
+            json: confirms completion
+        """
+        try:
+            with psycopg2.connect(**self.connection_params) as conn:
+                with conn.cursor() as cur:
+                    query = "DELETE spos.buyer_agents WHERE name = %s AND employee_id = %s AND email = %s AND password = %s"  # Parameterized %s prevents SQL injection
+                    cur.execute(query, (employee_name, employee_id, employee_email, password))
+                    rows = cur.fetchall()
+
+                    # Check if any rows were returned
+                    if not rows:
+                        return json.dumps({'message': 'No data found for this '})
+        except Exception as e:
+            return json.dumps({'message': 'Error connecting to the database', 'error': str(e)})
+        
+        data = {'message': 'Data deleted successfully', 'data': dict}
+        return json.dumps(data, default=str)
 
 
 
 
+def encrypt_password(self, password):
+    # Convert the password to a byte string
+    byte_card = str(password).encode()    
+    # Create a SHA-256 object
+    sha = hashlib.sha256()
+    sha.update(byte_card)
+    return sha.hexdigest()
+
+
+def check_password(self, provided_password, stored_hash):
+    # Hash the provided password using the same method
+    byte_card = str(provided_password).encode()    
+    # Create a SHA-256 object
+    sha = hashlib.sha256()
+    sha.update(byte_card)
+    check = sha.hexdigest()
+    # Compare the newly hashed password with the stored hash
+    return check == stored_hash
 
 
 
 
-
-
-    # def read(self, table, column_id):
-    #     """Reads data from the specified table"""
-    #     if table not in ["email_logs", "sellers", "buyer_agents", "products", "games"]:
-    #         return json.dumps({'message': 'Invalid table name'})
-
-    #     try:
-    #         with psycopg2.connect(**self.connection_params) as conn:
-    #             with conn.cursor() as cur:
-    #                 query = f"SELECT * FROM {table} WHERE id = %s"
-    #                 cur.execute(query, (column_id,))
-    #                 rows = cur.fetchall()
-    #     except Exception as e:
-    #         return json.dumps({'message': 'Error connecting to the database', 'error': str(e)})
-
-    #     return json.dumps({'message': 'Data retrieved successfully', 'data': rows}, default=str)
-
-    # def update(self, table, id_column, update_values):
-    #     """Updates a record in the specified table"""
-    #     if table not in ["email_logs", "sellers", "buyer_agents", "products", "games"]:
-    #         return json.dumps({'message': 'Invalid table name'})
-
-    #     try:
-    #         with psycopg2.connect(**self.connection_params) as conn:
-    #             with conn.cursor() as cur:
-    #                 # Example update query:
-    #                 columns = ', '.join([f"{k} = %s" for k in update_values.keys()])
-    #                 values = list(update_values.values()) + [id_column]
-    #                 query = f"UPDATE {table} SET {columns} WHERE id = %s"
-    #                 cur.execute(query, values)
-    #                 conn.commit()
-    #     except Exception as e:
-    #         return json.dumps({'message': 'Error updating data', 'error': str(e)})
-
-    #     return json.dumps({'message': 'Data updated successfully'})
-
-    # def delete(self, table, id_column):
-    #     """Deletes a record from the specified table"""
-    #     if table not in ["email_logs", "sellers", "buyer_agents", "products", "games"]:
-    #         return json.dumps({'message': 'Invalid table name'})
-
-    #     try:
-    #         with psycopg2.connect(**self.connection_params) as conn:
-    #             with conn.cursor() as cur:
-    #                 query = f"DELETE FROM {table} WHERE id = %s"
-    #                 cur.execute(query, (id_column,))
-    #                 conn.commit()
-    #     except Exception as e:
-    #         return json.dumps({'message': 'Error deleting data', 'error': str(e)})
-
-    #     return json.dumps({'message': 'Data deleted successfully'})
 
 if __name__ == "__main__":
 
-    # Testing
     da = DataAccess()
+    
+    # Test get_bayesian_game
     # game_data = da.get_bayesian_game(game_id=1)
     # game_data = json.loads(game_data)
     # print(game_data['data'])
 
+    # Test update_bayesian_game
     data = da.update_bayesian_game(game_id=1, buyer_reservation_price= 10)
     update_data = json.loads(data)
     print(update_data)
