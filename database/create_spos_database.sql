@@ -60,15 +60,15 @@ CREATE TABLE IF NOT EXISTS spos.games {
 
 -- Insert test data into email_logs
 INSERT INTO spos.email_logs (sender_email, receiver_email, subject, body, email_type)
-VALUES ('spos@gmail.com', 'brandonmorrow09@gmail.com', 'Test Email Subject', 'This is a test email body.');
+VALUES ('spos6045@gmail.com', 'brandonmorrow09@gmail.com', 'Test Email Subject', 'This is a test email body.');
 
 -- Insert test data into sellers
 INSERT INTO spos.sellers (name, email)
-VALUES ('Seller One', 'seller1@company.com');
+VALUES ('Seller One', 'brandonmorrow09@gmail.com');
 
 -- Insert test data into buyer_agents
 INSERT INTO spos.buyer_agents (employee_id, email, password)
-VALUES (101001, 'buyer1@company.com', 'encrypted_password_here');
+VALUES (101001, 'spos6045@gmail.com', 'encrypted_password_here');
 
 -- Insert test data into products
 INSERT INTO spos.products (buyer_agent_id, seller_id, quantity, max_price, date_needed_by)
