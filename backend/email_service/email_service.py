@@ -35,7 +35,7 @@ class EmailService:
                 # Setup the email
                 msg = MIMEMultipart()
                 msg['From'] = from_email
-                msg['To'] = to_email
+                msg['To'] = email
                 msg['Subject'] = subject
                 msg.attach(MIMEText(message, 'plain'))
 
@@ -50,7 +50,7 @@ class EmailService:
         except Exception as e:
             print(f"Failed to send email: {e}")
 
-    def read_email(self):
+    def check_email_for_offers(self):
         try:
             # Connect to IMAP server
             mail = imaplib.IMAP4_SSL(self.imap_server)
