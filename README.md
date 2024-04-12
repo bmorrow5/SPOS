@@ -4,19 +4,18 @@ This system utilizes an application of game theory called Bayesian Fuzzy Games t
 
 ## How to Run
 Pending (build in progress)
-There will be two docker containers. One for the database, and one for the API. The frontend is seperated as well. To run:
+There will be two docker containers. One for the database, and one for the API. The frontend is seperated as well. To run on docker enter the command line and enter:
 
-1. Start the database docker container
+### How to setup the database
+1. docker run --name spos_postgres -p 5432:5432 -e POSTGRES_PASSWORD=spos123 -d postgres
+2. docker exec -it spos_postgres bash
+3. su - postgres
+4. psql
+5. CREATE DATABASE default_company;
+6. \c default_company
+7. Run rest of SQL
 
-docker run --name spos_postgres -p 5432:5432 -e POSTGRES_PASSWORD=spos123 -d postgres
-
-
-#### To log into the container
-1. docker exec -it spos_postgres bash
-2. su - postgres
-3. psql
-
-### To get pgAdmin 4 to run
+### To get pgAdmin4 to run
 1. docker run -p 5050:80 -e "PGADMIN_DEFAULT_EMAIL=brandonmorrow09@gmail.com" -e "PGADMIN_DEFAULT_PASSWORD=admin" -d dpage/pgadmin4
 2. Connect the containers with:
 3. name: spos_postgres
