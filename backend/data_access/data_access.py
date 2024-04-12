@@ -1,123 +1,116 @@
 import psycopg2
 import json
 
-class DataAccess():
-    """ Controls all backend data access and adheres to RUD: Read, Update, Delete
-    """
+class DataAccess:
+    """Controls all backend data access and adheres to RUD: Read, Update, Delete."""
+    
     def __init__(self):
-        self.connection.params = {
+        self.connection_params = {
             "host": "localhost",
             "port": 5432,
             "database": "default_company",
             "user": "postgres",
             "password": "spos123"
         }
-        self.valid_tables = ["email_logs", "sellers", "buyer_agents", "products", "games"]  # Whitelist of tables
 
-
-    def read(self, table, column_id) -> json:
-        """Connects and reads data from the database
+    def get_bayesian_game(self, game_id):
+        """Returns the last offer price and the game information.
         """
-        # Connect to database
         try:
-            conn = psycopg2.connect(self.connection_params)
-        except:
-            print(f"I am unable to connect to the database")
-    
-        cur = conn.cursor()
-        
-        # Insert Data
-        # Use parameterized queries to prevent SQL injection https://www.psycopg.org/docs/usage.html#passing-parameters-to-sql-queries
-        query = "SELECT * FROM spos.buyer_agents"
-        data = ('*',)
-        cur.execute(query)
-        rows = cur.fetchall()
+            with psycopg2.connect(**self.connection_params) as conn:
+                with conn.cursor() as cur:
+                    query = "SELECT * FROM spos.games WHERE game_id = %s"  # Parameterized %s prevents SQL injection
+                    cur.execute(query, (game_id,))
+                    rows = cur.fetchall()
 
-        # Commit the changes
-        conn.commit()
-        cur.close()
-        conn.close()
-    
-        # Return a success message
-        response = {
-            'message': 'Data added successfully',
-            'data': rows
-        }
-        return json.dumps(response, default=str)
+                    # Check if any rows were returned
+                    if not rows:
+                        return json.dumps({'message': 'No data found for this game ID'})
+                        
+                    # Unpack values
+                    (game_id, seller_id, buyer_agent_id, product_id, buyer_power, seller_power, buyer_reservation_price, seller_reservation_price, current_strategy) = rows[0]
+        except Exception as e:
+            return json.dumps({'message': 'Error connecting to the database', 'error': str(e)})
 
+        # Label values
+        dict = {'game_id': game_id,
+                'seller_id': seller_id,
+                'buyer_agent_id': buyer_agent_id,
+                'product_id': product_id,
+                'buyer_power': buyer_power,
+                'seller_power': seller_power,
+                'buyer_reservation_price': buyer_reservation_price,
+                'seller_reservation_price': seller_reservation_price,
+                'current_strategy': current_strategy,
+                }
+        data = {'message': 'Data retrieved successfully', 'data': dict}
 
-
-
-    def update(self, record_to_update, id_column) -> json:
-
-        # Connect to database
-        try:
-            conn = psycopg2.connect(self.connection_params)
-        except:
-            print(f"I am unable to connect to the database")
-    
-        cur = conn.cursor()
-        ## NOTE: Use bound variables, never string formatting to prevent SQL Injection
-
-        query = "INSERT INTO spos (topic, title, content, num_links) VALUES (%s, %s, %s, %s)"
-
-        # Insert Data
-        for record in record_to_update:
-            cur.execute(query, record)
-        rows = cur.fetchall()
+        return json.dumps(data, default=str)
 
 
-        # Commit the changes
-        conn.commit()
-        cur.close()
-        conn.close()
-    
-        # Return a success message
-        response = {
-            'message': 'Data added successfully',
-            'data': rows
-        }
-        return json.dumps(response, default=str)
-    
-
-    def delete(self, table) -> json:
-        
-        # Connect to Database
-        conn = psycopg2.connect(
-        host="localhost",
-        port=5432,
-        database="jhu",
-        user="postgres",
-        password="jhu123")
-    
-        cur = conn.cursor()
-
-        # Insert Data
-        ## NOTE: Use bound variables, never string formatting to prevent SQL Injection
-        query = "INSERT INTO spos (topic, title, content, num_links) VALUES (%s, %s, %s, %s)"
-        cur.execute(query)
-        rows = cur.fetchall()
 
 
-        # Commit the changes
-        conn.commit()
-        cur.close()
-        conn.close()
-    
-        # Return a success message
-        response = {
-            'message': 'Data added successfully',
-            'data': rows
-        }
-        return json.dumps(response, default=str)
-    
 
 
-if __name__ == "main":
-    json = DataAccess.read()
 
-    data = json['data']
-    print(json)
-    print("test")
-    print(data)
 
+
+
+    # def read(self, table, column_id):
+    #     """Reads data from the specified table"""
+    #     if table not in ["email_logs", "sellers", "buyer_agents", "products", "games"]:
+    #         return json.dumps({'message': 'Invalid table name'})
+
+    #     try:
+    #         with psycopg2.connect(**self.connection_params) as conn:
+    #             with conn.cursor() as cur:
+    #                 query = f"SELECT * FROM {table} WHERE id = %s"
+    #                 cur.execute(query, (column_id,))
+    #                 rows = cur.fetchall()
+    #     except Exception as e:
+    #         return json.dumps({'message': 'Error connecting to the database', 'error': str(e)})
+
+    #     return json.dumps({'message': 'Data retrieved successfully', 'data': rows}, default=str)
+
+    # def update(self, table, id_column, update_values):
+    #     """Updates a record in the specified table"""
+    #     if table not in ["email_logs", "sellers", "buyer_agents", "products", "games"]:
+    #         return json.dumps({'message': 'Invalid table name'})
+
+    #     try:
+    #         with psycopg2.connect(**self.connection_params) as conn:
+    #             with conn.cursor() as cur:
+    #                 # Example update query:
+    #                 columns = ', '.join([f"{k} = %s" for k in update_values.keys()])
+    #                 values = list(update_values.values()) + [id_column]
+    #                 query = f"UPDATE {table} SET {columns} WHERE id = %s"
+    #                 cur.execute(query, values)
+    #                 conn.commit()
+    #     except Exception as e:
+    #         return json.dumps({'message': 'Error updating data', 'error': str(e)})
+
+    #     return json.dumps({'message': 'Data updated successfully'})
+
+    # def delete(self, table, id_column):
+    #     """Deletes a record from the specified table"""
+    #     if table not in ["email_logs", "sellers", "buyer_agents", "products", "games"]:
+    #         return json.dumps({'message': 'Invalid table name'})
+
+    #     try:
+    #         with psycopg2.connect(**self.connection_params) as conn:
+    #             with conn.cursor() as cur:
+    #                 query = f"DELETE FROM {table} WHERE id = %s"
+    #                 cur.execute(query, (id_column,))
+    #                 conn.commit()
+    #     except Exception as e:
+    #         return json.dumps({'message': 'Error deleting data', 'error': str(e)})
+
+    #     return json.dumps({'message': 'Data deleted successfully'})
+
+if __name__ == "__main__":
+
+    # Testing
+    da = DataAccess()
+    game_data = da.get_bayesian_game(game_id=1)
+    game_data = json.loads(game_data)
+    print(game_data['data'])

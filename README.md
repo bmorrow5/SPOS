@@ -43,7 +43,8 @@ Collects data every day, and updates values in the database.
 Allows access to the database, and is how the game logic and flask app can access data from the database. 
 
 ##  Email Service
-Contains bayesian fuzzy games and business logic. 
+Controls the sending and receiving of emails. Would be switched with an email service in productions, but for now uses python and a gmail account.
+https://stackoverflow.com/questions/10147455/how-to-send-an-email-with-gmail-as-provider-using-python
 
 ## Flask App 
 Handles API endpoints. 
