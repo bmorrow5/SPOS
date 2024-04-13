@@ -117,6 +117,29 @@ class DataAccess:
         return json.dumps(data, default=str)
 
 
+    def get_seller(self, seller_name, seller_email):
+        """ Returns a seller from the database
+        """
+        try:
+            with psycopg2.connect(**self.connection_params) as conn:
+                with conn.cursor() as cur:
+                    query = "SELECT * FROM spos.sellers WHERE (name, email) VALUES (%s, %s);"  # Parameterized %s prevents SQL injection
+                    cur.execute(query, (seller_name, seller_email))
+                    rows = cur.fetchall()
+
+                    # Check if any rows were returned
+                    if not rows:
+                        return json.dumps({'message': 'No data found for this '})
+                        
+        except Exception as e:
+            return json.dumps({'message': 'Error connecting to the database', 'error': str(e)})
+        
+        data = {'message': 'Data added successfully', 'data': dict}
+        return json.dumps(data, default=str)
+    
+
+
+
     def add_seller(self, seller_name, seller_email):
         """ Adds a seller to the database
         """
@@ -138,11 +161,12 @@ class DataAccess:
         return json.dumps(data, default=str)
 
 
+
     def delete_seller(self, seller_name, seller_email):
         try:
             with psycopg2.connect(**self.connection_params) as conn:
                 with conn.cursor() as cur:
-                    query = "DELETE spos.sellers WHERE name = %s AND email = %s"  # Parameterized %s prevents SQL injection
+                    query = "DELETE FROM spos.sellers WHERE name = %s AND email = %s"  # Parameterized %s prevents SQL injection
                     cur.execute(query, (seller_name, seller_email))
                     rows = cur.fetchall()
 
@@ -157,9 +181,33 @@ class DataAccess:
         return json.dumps(data, default=str)
 
 
+    def get_employee(self, employee_name, employee_id, employee_email, password):
+        """ Returns an employee from the database
+        """
+        # Encrypt the password
+        password = encrypt_password(password)
+        try:
+            with psycopg2.connect(**self.connection_params) as conn:
+                with conn.cursor() as cur:
+                    query = "SELECT * FROM spos.buyer_agents WHERE (name, employee_id, email, password) VALUES (%s, %s, %s, %s);"  # Parameterized %s prevents SQL injection
+                    cur.execute(query, (employee_name, employee_id, employee_email, password))
+                    rows = cur.fetchall()
+
+                    # Check if any rows were returned
+                    if not rows:
+                        return json.dumps({'message': 'No data found for this '})
+                        
+        except Exception as e:
+            return json.dumps({'message': 'Error connecting to the database', 'error': str(e)})
+        
+        data = {'message': 'Data added successfully', 'data': dict}
+        return json.dumps(data, default=str)
+
+
+
 
     def add_employee(self, employee_name, employee_id, employee_email, password):
-        """ Adds a seller to the database
+        """ Adds an employee to the database
         """
         # Encrypt the password
         password = encrypt_password(password)
@@ -196,7 +244,7 @@ class DataAccess:
         try:
             with psycopg2.connect(**self.connection_params) as conn:
                 with conn.cursor() as cur:
-                    query = "DELETE spos.buyer_agents WHERE name = %s AND employee_id = %s AND email = %s AND password = %s"  # Parameterized %s prevents SQL injection
+                    query = "DELETE FROM spos.buyer_agents WHERE name = %s AND employee_id = %s AND email = %s AND password = %s"  # Parameterized %s prevents SQL injection
                     cur.execute(query, (employee_name, employee_id, employee_email, password))
                     rows = cur.fetchall()
 
