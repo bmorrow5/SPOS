@@ -3,7 +3,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, sessionmaker
 from datetime import datetime
 
-"""This turns our database tables into objects using SQLAlchemy ORM
+"""This turns our database schema and tables into objects using SQLAlchemy ORM
 """
 
 Base = declarative_base()
@@ -66,10 +66,10 @@ class EmailLogDatabase(Base):
     buyer_agent = relationship("BuyerAgent")
     seller = relationship("Seller")
 
-# Database setup
-engine = create_engine('postgresql://postgres:spos123@localhost:5432/default_company')
-Base.metadata.create_all(engine)
+    # Database setup
+    engine = create_engine('postgresql://postgres:spos123@localhost:5432/default_company')
+    Base.metadata.create_all(engine)
 
-# Session creation
-Session = sessionmaker(bind=engine)
-session = Session()
+    # Session creation
+    Session = sessionmaker(bind=engine)
+    session = Session()
