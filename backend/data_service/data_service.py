@@ -8,14 +8,14 @@ from datetime import datetime
 
 Base = declarative_base()
 
-class Seller(Base):
+class SellerDatabase(Base):
     __tablename__ = 'sellers'
     __table_args__ = {'schema': 'spos'}
     seller_id = Column(Integer, primary_key=True)
     name = Column(String(255), nullable=False)
     email = Column(String(255), nullable=False, unique=True)
 
-class BuyerAgent(Base):
+class BuyerAgentDatabase(Base):
     __tablename__ = 'buyer_agents'
     __table_args__ = {'schema': 'spos'}
     buyer_agent_id = Column(Integer, primary_key=True)
@@ -24,7 +24,7 @@ class BuyerAgent(Base):
     email = Column(String(255), nullable=False, unique=True)
     password = Column(String(255), nullable=False)
 
-class Product(Base):
+class ProductDatabase(Base):
     __tablename__ = 'products'
     __table_args__ = {'schema': 'spos'}
     product_id = Column(Integer, primary_key=True)
@@ -36,7 +36,7 @@ class Product(Base):
     buyer = relationship("BuyerAgent")
     seller = relationship("Seller")
 
-class Game(Base):
+class GameDatabase(Base):
     __tablename__ = 'games'
     __table_args__ = {'schema': 'spos'}
     game_id = Column(Integer, primary_key=True)
@@ -52,7 +52,7 @@ class Game(Base):
     seller = relationship("Seller")
     product = relationship("Product")
 
-class EmailLog(Base):
+class EmailLogDatabase(Base):
     __tablename__ = 'email_logs'
     __table_args__ = {'schema': 'spos'}
     email_log_id = Column(Integer, primary_key=True)

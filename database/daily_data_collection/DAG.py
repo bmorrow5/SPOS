@@ -7,6 +7,8 @@ from datetime import datetime, timedelta
 from airflow.utils.trigger_rule import TriggerRule
 import subprocess
 
+""" Collects data daily. Build in progress
+"""
 
 # Define the default arguments
 default_args = {
