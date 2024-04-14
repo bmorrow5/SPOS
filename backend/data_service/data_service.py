@@ -3,6 +3,7 @@ from sqlalchemy.orm import sessionmaker
 from models import Base
 from models import SellerDatabase, BuyerAgentDatabase, ProductDatabase, GameDatabase, EmailLogDatabase
 from sqlalchemy.exc import SQLAlchemyError
+import hashlib
 import logging
 
 
@@ -14,6 +15,27 @@ class DataService():
         self.engine = create_engine('postgresql://postgres:spos123@localhost:5432/default_company')
         Base.metadata.create_all(self.engine)
         self.Session = sessionmaker(bind=self.engine)
+
+
+    ############## Password Handling ##############
+    def encrypt_password(self, password):
+        # Convert the password to a byte string
+        byte_card = str(password).encode()    
+        # Create a SHA-256 object
+        sha = hashlib.sha256()
+        sha.update(byte_card)
+        return sha.hexdigest()
+
+
+    def check_password(self, provided_password, stored_hash):
+        # Hash the provided password using the same method
+        byte_card = str(provided_password).encode()    
+        # Create a SHA-256 object
+        sha = hashlib.sha256()
+        sha.update(byte_card)
+        check = sha.hexdigest()
+        # Compare the newly hashed password with the stored hash
+        return check == stored_hash
 
 
     ############## Seller CRUD ##############
@@ -78,6 +100,7 @@ class DataService():
     ############## Buyer CRUD ##############
     def create_buyer(self, first_name, last_name, employee_id, email, password):
         try:
+            password = self.encrypt_password(password) # Encrypt the password before storage
             with self.Session() as session:
                 new_buyer = BuyerAgentDatabase(first_name=first_name, last_name=last_name, employee_id = employee_id, email=email, password=password)
                 session.add(new_buyer)

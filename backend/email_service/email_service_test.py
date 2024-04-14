@@ -15,45 +15,69 @@ class EmailService():
         self.imap_server = "imap.gmail.com" 
 
 
-def request_quote(self):
-    pass
-
-
-def request_initial_quotes(self, Product):
-    """Requests initial quotes from sellers for a specified product
-    """
-    sellers = DataService.read_all_sellers()
-
-    for seller in sellers:
-        
-
-
-
-
-    def send_counteroffer(self, from_email: str, to_emails: list, counter_offer_price: float, subject: str, message: str) -> str:
-        """Emails a supplier a counteroffer with the price found by the bayesian game theory model
+    def send_counteroffer(self, from_email: str, to_email: list, counter_offer_price: float, message: str, original_message_id: str) -> str:
+        """This will reply with a counteroffer to the supplier with the price found by the bayesian game theory model
 
         Args:
-            from_email (str): Employee sending the email
-            to_email (list): Supplier receiving updated price
+            from_email (str): _description_
+            to_emails (list): _description_
+            counter_offer_price (float): _description_
+            subject (str): _description_
+            message (str): _description_
+
+        Returns:
+            str: Success or failure message
+        """
+
+        try:
+            if message is None:
+                message = f"Please see our counteroffer of {counter_offer_price}" 
+            for email in to_email:
+                # Setup the email
+                msg = MIMEMultipart()
+                msg['From'] = from_email
+                msg['To'] = email
+                msg['In-Reply-To'] = original_message_id
+                msg['References'] = original_message_id
+                msg['Subject'] = "Counter Offer"
+                msg.attach(MIMEText(message, 'plain'))
+
+                # Connect to the server and send the email
+                server = smtplib.SMTP(self.smtp_server, self.smtp_port)
+                server.starttls()
+                server.login(self.email, self.password)
+                text = msg.as_string()
+                server.sendmail(self.email, email, text)
+                server.quit()
+                print("Email sent successfully!")
+        except Exception as e:
+            print(f"Failed to send email: {e}")
+
+    def request_quotes(self, subject: str, message: str, Product: object) -> str:
+        """Emails to request initial quotes
+       Args:
+            email_list (list): Suppliers to send email to
             counter_offer_price (float): Bayesian Games counter_offer_price
             subject (str): Email subject
             message (str): Email contents
+            Product (Product): Product to request quotes for
 
         Returns:
             str: confirmation email was sent
         """
         
         try:
+            sellers = DataService.read_all_sellers()
             if subject is None:
-                subject = "Counter Offer"
+                subject = "Request for Quote"
             if message is None:
-                message = "Please see our attached counteroffer" 
-            for email in to_emails:
+                message = f"We are requesting a quote for the following product: {Product.name} in the quanity of {Product.quantity}"
+
+            for seller in sellers:
                 # Setup the email
                 msg = MIMEMultipart()
-                msg['From'] = from_email
-                msg['To'] = email
+                msg['From'] = self.email
+                msg['To'] = seller.email
                 msg['Subject'] = subject
                 msg.attach(MIMEText(message, 'plain'))
 
@@ -62,11 +86,13 @@ def request_initial_quotes(self, Product):
                 server.starttls()
                 server.login(self.email, self.password)
                 text = msg.as_string()
-                server.sendmail(from_email, to_emails, text)
+                server.sendmail(self.email, seller.email, text)
                 server.quit()
                 print("Email sent successfully!")
         except Exception as e:
             print(f"Failed to send email: {e}")
+
+
 
     def check_email_for_offers(self):
         try:
@@ -98,6 +124,3 @@ def request_initial_quotes(self, Product):
             mail.logout()
         except Exception as e:
             print(f"Failed to read emails: {e}")
-
-    def request_bids(self):
-        pass

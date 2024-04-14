@@ -72,7 +72,7 @@ VALUES ('Brandon', 'Morrow', 'brandonmorrow09@gmail.com');
 
 -- Insert test data into buyer_agents
 INSERT INTO spos.buyer_agents (first_name, last_name, employee_id, email, password)
-VALUES ('John', 'Doe', 1011001, 'spos6045@gmail.com', 'encrypted_password');
+VALUES ('John', 'Doe', 1011001, 'spos6045@gmail.com', '8c9f5c8b19cad748b5c39b060eaecdda493752598f52ba32a80255350a008dea');
 
 -- Insert test data into products
 INSERT INTO spos.products (buyer_agent_id, seller_id, quantity, max_price, date_needed_by)
