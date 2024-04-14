@@ -71,11 +71,11 @@ VALUES ('spos6045@gmail.com', 'brandonmorrow09@gmail.com', 1, 1, 'Test Email Sub
 
 -- Insert test data into sellers
 INSERT INTO spos.sellers (name, email)
-VALUES ('Seller One', 'brandonmorrow09@gmail.com');
+VALUES ('Brandon', 'Morrow', 'brandonmorrow09@gmail.com');
 
 -- Insert test data into buyer_agents
 INSERT INTO spos.buyer_agents (name, employee_id, email, password)
-VALUES ('Brandon', 1011001, 'spos6045@gmail.com', 'encrypted_password_here');
+VALUES ('John', 'Doe', 1011001, 'spos6045@gmail.com', 'encrypted_password');
 
 -- Insert test data into products
 INSERT INTO spos.products (buyer_agent_id, seller_id, quantity, max_price, date_needed_by)
