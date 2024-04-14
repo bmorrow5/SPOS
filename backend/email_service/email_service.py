@@ -4,13 +4,14 @@ import email
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
-class EmailService:
+class EmailService():
     def __init__(self, email, password):
         self.email = email
         self.password = password
         self.smtp_server = "smtp.gmail.com"  
         self.smtp_port = 587  
         self.imap_server = "imap.gmail.com" 
+
 
     def send_counteroffer(self, from_email: str, to_emails: list, counter_offer_price: float, subject: str, message: str) -> str:
         """Emails a supplier a counteroffer with the price found by the bayesian game theory model

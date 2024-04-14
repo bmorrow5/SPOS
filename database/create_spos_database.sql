@@ -40,6 +40,9 @@ CREATE TABLE IF NOT EXISTS spos.games (
     product_id INT NOT NULL,
     buyer_power INT, -- Buyer negotiation power
     seller_power INT, -- Seller negotiation power
+    current_price FLOAT, -- This is the last price in the negotiation
+    last_seller_price FLOAT, -- Last price from seller
+    last_buyer_price FLOAT, -- Last price from buyer
     buyer_reservation_price FLOAT,
     seller_reservation_price FLOAT,
     current_strategy VARCHAR(255),
@@ -63,8 +66,6 @@ CREATE TABLE IF NOT EXISTS spos.email_logs (
 
 -- Insert test data
 
-
-
 -- Insert test data into sellers
 INSERT INTO spos.sellers (first_name, last_name, email)
 VALUES ('Brandon', 'Morrow', 'brandonmorrow09@gmail.com');
@@ -78,8 +79,8 @@ INSERT INTO spos.products (buyer_agent_id, seller_id, quantity, max_price, date_
 VALUES (1, 1, 100, 50.0, '2023-12-31');
 
 -- Insert test data into games
-INSERT INTO spos.games (seller_id, buyer_agent_id, product_id, buyer_power, seller_power, buyer_reservation_price, seller_reservation_price, current_strategy)
-VALUES (1, 1, 1, 50, 50, 45.0, 55.0, 'conciliatory'); 
+INSERT INTO spos.games (seller_id, buyer_agent_id, product_id, buyer_power, seller_power, current_price, last_seller_price, last_buyer_price, buyer_reservation_price, seller_reservation_price, current_strategy)
+VALUES (1, 1, 1, 10, 10, 50.0, 50.0, 45.0, 50.0, 55.0, 'conciliatory'); 
 
 -- Insert test data into email_logs
 INSERT INTO spos.email_logs (sender_email, receiver_email, buyer_agent_id, seller_id, subject, body)
