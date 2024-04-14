@@ -163,12 +163,11 @@ class DataService():
 
         
     ############## Product CRUD ##############
-    def create_product(self, buyer_agent_id, seller_id, quantity, max_price, date_needed_by):
+    def create_product(self, product_name, quantity, max_price, date_needed_by):
         try:
             with self.Session() as session:
                 new_product = ProductDatabase(
-                    buyer_agent_id=buyer_agent_id,
-                    seller_id=seller_id,
+                    product_name=product_name,
                     quantity=quantity,
                     max_price=max_price,
                     date_needed_by=date_needed_by
@@ -179,23 +178,23 @@ class DataService():
             logging.error(f"Error storing product: {e}")
 
 
-    def read_product(self, buyer_agent_id=None, seller_id=None):
-        try:
-            with self.Session() as session:
-                if buyer_agent_id and seller_id:
-                    return session.query(ProductDatabase).filter_by(buyer_agent_id=buyer_agent_id, seller_id=seller_id).all()
-                elif buyer_agent_id:
-                    return session.query(ProductDatabase).filter_by(buyer_agent_id=buyer_agent_id).all()
-                elif seller_id:
-                    return session.query(ProductDatabase).filter_by(seller_id=seller_id).all()
-        except SQLAlchemyError as e:
-            logging.error(f"Error reading product: {e}")
+    # def read_product(self, product_id):
+    #     try:
+    #         with self.Session() as session:
+    #             if buyer_agent_id and seller_id:
+    #                 return session.query(ProductDatabase).filter_by(buyer_agent_id=buyer_agent_id, seller_id=seller_id).all()
+    #             elif buyer_agent_id:
+    #                 return session.query(ProductDatabase).filter_by(buyer_agent_id=buyer_agent_id).all()
+    #             elif seller_id:
+    #                 return session.query(ProductDatabase).filter_by(seller_id=seller_id).all()
+    #     except SQLAlchemyError as e:
+    #         logging.error(f"Error reading product: {e}")
 
 
-    def update_product(self, buyer_agent_id, seller_id, new_quantity=None, new_max_price=None, new_date_needed_by=None):
+    def update_product(self, product_id, new_quantity=None, new_max_price=None, new_date_needed_by=None):
         try:
             with self.Session() as session:
-                products = session.query(ProductDatabase).filter_by(buyer_agent_id=buyer_agent_id, seller_id=seller_id).all()
+                products = session.query(ProductDatabase).filter_by(product_id).all()
                 for product in products:
                     if new_quantity:
                         product.quantity = new_quantity
@@ -209,10 +208,10 @@ class DataService():
             logging.error(f"Error updating product: {e}")
 
 
-    def delete_product(self, buyer_agent_id, seller_id):
+    def delete_product(self, product_id):
         try:
             with self.Session() as session:
-                products = session.query(ProductDatabase).filter_by(buyer_agent_id=buyer_agent_id, seller_id=seller_id).all()
+                products = session.query(ProductDatabase).filter_by(product_id).all()
                 for product in products:
                     session.delete(product)
                 session.commit()

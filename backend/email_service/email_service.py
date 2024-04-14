@@ -38,14 +38,17 @@ class EmailService():
                 msg['From'] = from_email
                 msg['To'] = email
                 msg['In-Reply-To'] = original_message_id
-                msg['References'] = original_message_id
+                # msg['References'] = original_message_id
                 msg['Subject'] = "Counter Offer"
                 msg.attach(MIMEText(message, 'plain'))
 
                 # Connect to the server and send the email
                 server = smtplib.SMTP(self.smtp_server, self.smtp_port)
                 server.starttls()
-                server.login(self.email, self.password)
+                try:
+                    server.login(self.email, self.password)
+                except Exception as e:
+                    print(f"Failed to login: {e}")
                 text = msg.as_string()
                 server.sendmail(self.email, email, text)
                 server.quit()

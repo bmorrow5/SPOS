@@ -30,13 +30,9 @@ class ProductDatabase(Base):
     __tablename__ = 'products'
     __table_args__ = {'schema': 'spos'}
     product_id = Column(Integer, primary_key=True)
-    buyer_agent_id = Column(Integer, ForeignKey('spos.buyer_agents.buyer_agent_id'))
-    seller_id = Column(Integer, ForeignKey('spos.sellers.seller_id'))
     quantity = Column(Integer, nullable=False)
     max_price = Column(Float, nullable=False)
     date_needed_by = Column(TIMESTAMP, nullable=False)
-    buyer = relationship("BuyerAgentDatabase")
-    seller = relationship("SellerDatabase")
 
 class GameDatabase(Base):
     __tablename__ = 'games'

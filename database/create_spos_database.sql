@@ -23,14 +23,11 @@ CREATE TABLE IF NOT EXISTS spos.buyer_agents (
 );
 CREATE TABLE IF NOT EXISTS spos.products (
     product_id SERIAL PRIMARY KEY,
-    buyer_agent_id INT NOT NULL,
-    seller_id INT NOT NULL,
+    product_name VARCHAR(255),
     quantity INT NOT NULL,
     max_price FLOAT NOT NULL,
-    date_needed_by DATE NOT NULL,
-    FOREIGN KEY (buyer_agent_id) REFERENCES spos.buyer_agents(buyer_agent_id),
-    FOREIGN KEY (seller_id) REFERENCES spos.sellers(seller_id)
-);
+    date_needed_by DATE NOT NULL
+    );
 
 -- Store games
 CREATE TABLE IF NOT EXISTS spos.games (
@@ -75,8 +72,8 @@ INSERT INTO spos.buyer_agents (first_name, last_name, employee_id, email, passwo
 VALUES ('John', 'Doe', 1011001, 'spos6045@gmail.com', '8c9f5c8b19cad748b5c39b060eaecdda493752598f52ba32a80255350a008dea');
 
 -- Insert test data into products
-INSERT INTO spos.products (buyer_agent_id, seller_id, quantity, max_price, date_needed_by)
-VALUES (1, 1, 100, 50.0, '2023-12-31');
+INSERT INTO spos.products (buyer_agent_id, seller_id, product_name, quantity, max_price, date_needed_by)
+VALUES (1, 1, 'office_chair', 100, 50.0, '2023-12-31');
 
 -- Insert test data into games
 INSERT INTO spos.games (seller_id, buyer_agent_id, product_id, buyer_power, seller_power, current_price, last_seller_price, last_buyer_price, buyer_reservation_price, seller_reservation_price, current_strategy)
