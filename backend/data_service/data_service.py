@@ -17,20 +17,20 @@ class DataService():
 
 
     ############## Seller CRUD ##############
-    def create_seller(self, name, email):
+    def create_seller(self, first_name, last_name, email):
         try: 
             with self.Session() as session:
-                new_seller = SellerDatabase(name=name, email=email)
+                new_seller = SellerDatabase(first_name=first_name, last_name=last_name, email=email)
                 session.add(new_seller)
                 session.commit()
         except SQLAlchemyError as e:
             logging.error(f"Error storing seller: {e}")
 
-    def read_seller(self, name=None, email=None):
+    def read_seller(self, first_name=None, last_name=None, email=None):
         try:
             with self.Session() as session:
-                if name:
-                    return session.query(SellerDatabase).filter_by(name=name).one_or_none()
+                if first_name and last_name:
+                    return session.query(SellerDatabase).filter_by(first_name=first_name, last_name=last_name).one_or_none()
                 elif email:
                     return session.query(SellerDatabase).filter_by(email=email).one_or_none()
                 else:
@@ -38,30 +38,34 @@ class DataService():
         except SQLAlchemyError as e:
             logging.error(f"Error Reading seller: {e}")
 
-    def read_all_sellers():
-        pass
-
-        
-    def update_seller_email(self, name=None, email=None):
+    def read_all_sellers(self):
         try:
             with self.Session() as session:
-                seller =  session.query(SellerDatabase).filter_by(name=name).one_or_none()
+                sellers = session.query(SellerDatabase).all()
+                return sellers        
+        except SQLAlchemyError as e:
+            logging.error(f"Error Reading seller: {e}")
+
+        
+    def update_seller_email(self, first_name=None, last_name=None, email=None):
+        try:
+            with self.Session() as session:
+                seller =  session.query(SellerDatabase).filter_by(first_name=first_name, last_name=last_name).one_or_none()
                 if email:
                     seller.email = email
                 session.commit()
                 return seller
         except SQLAlchemyError as e:
-            logging.error(f"Error updating seller: {e}")
+            logging.error(f"Error updating seller email: {e}")
 
 
-    def delete_seller(self, name=None, email=None):
+    def delete_seller(self, first_name=None, last_name=None, email=None):
         try:
             with self.Session() as session:
-                if name:
-                    seller = session.query(SellerDatabase).filter_by(name=name).one_or_none()
+                if first_name and last_name:
+                    seller = session.query(SellerDatabase).filter_by(first_name=first_name, last_name=last_name).one_or_none()
                 elif email:
                     seller = session.query(SellerDatabase).filter_by(email=email).one_or_none()
-                
                 if seller:
                     session.delete(seller)
                     session.commit()
@@ -72,23 +76,23 @@ class DataService():
     
     
     ############## Buyer CRUD ##############
-    def create_buyer(self, name, employee_id, email, password):
+    def create_buyer(self, first_name, last_name, employee_id, email, password):
         try:
             with self.Session() as session:
-                new_buyer = BuyerAgentDatabase(name=name, employee_id = employee_id, email=email, password=password)
+                new_buyer = BuyerAgentDatabase(first_name=first_name, last_name=last_name, employee_id = employee_id, email=email, password=password)
                 session.add(new_buyer)
                 session.commit()
         except SQLAlchemyError as e:
             logging.error(f"Error storing buying: {e}")
 
 
-    def read_buyer(self, name=None, employee_id=None, email=None, password=None):
+    def read_buyer(self, first_name=None, last_name=None, employee_id=None, email=None, password=None):
         """Can take any buyer identifier and will pull their information
         """
         try:
             with self.Session() as session:
-                if name:
-                    return session.query(BuyerAgentDatabase).filter_by(name=name).one_or_none()
+                if first_name and last_name:
+                    return session.query(BuyerAgentDatabase).filter_by(first_name=first_name, last_name=last_name).one_or_none()
                 elif employee_id:
                     return session.query(BuyerAgentDatabase).filter_by(employee_id=employee_id).one_or_none()
                 elif email:
@@ -101,13 +105,15 @@ class DataService():
             logging.error(f"Error reading buyer: {e}")
 
 
-    def update_buyer(self, name=None, employee_id=None, email=None, password=None):
+    def update_buyer(self, first_name=None, last_name=None, employee_id=None, email=None, password=None):
         try:
             with self.Session() as session:
                 buyer = session.query(BuyerAgentDatabase).filter_by(name=name).one_or_none()
                 if buyer:
-                    if name:
-                        buyer.name = name
+                    if first_name:
+                        buyer.first_name = first_name
+                    if last_name:
+                        buyer.last_name = last_name
                     if email:
                         buyer.email = email
                     if employee_id:
@@ -305,7 +311,7 @@ class DataService():
             logging.error(f"Error deleting email: {e}")
 
         
-# if __name__== "__main__":
+if __name__== "__main__":
     # Test
-    # ds = DataService()
-    # print(ds.read_buyer(name="Brandon Morrow").email)
+    ds = DataService()
+    print(ds.read_buyer(name="Brandon Morrow"))

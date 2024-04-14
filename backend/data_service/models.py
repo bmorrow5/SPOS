@@ -12,14 +12,16 @@ class SellerDatabase(Base):
     __tablename__ = 'sellers'
     __table_args__ = {'schema': 'spos'}
     seller_id = Column(Integer, primary_key=True)
-    name = Column(String(255), nullable=False)
+    first_name = Column(String(255), nullable=False)
+    last_name = Column(String(255))
     email = Column(String(255), nullable=False, unique=True)
 
 class BuyerAgentDatabase(Base):
     __tablename__ = 'buyer_agents'
     __table_args__ = {'schema': 'spos'}
     buyer_agent_id = Column(Integer, primary_key=True)
-    name = Column(String(255), nullable=False)
+    first_name = Column(String(255), nullable=False)
+    last_name = Column(String(255), nullable=False)
     employee_id = Column(Integer, nullable=False)
     email = Column(String(255), nullable=False, unique=True)
     password = Column(String(255), nullable=False)
