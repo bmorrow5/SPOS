@@ -65,11 +65,3 @@ class EmailLogDatabase(Base):
     timestamp = Column(TIMESTAMP, default=datetime.utcnow)
     buyer_agent = relationship("BuyerAgent")
     seller = relationship("Seller")
-
-    # Database setup
-    engine = create_engine('postgresql://postgres:spos123@localhost:5432/default_company')
-    Base.metadata.create_all(engine)
-
-    # Session creation
-    Session = sessionmaker(bind=engine)
-    session = Session()
