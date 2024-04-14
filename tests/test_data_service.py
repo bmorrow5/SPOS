@@ -1,15 +1,16 @@
 import unittest
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from backend.data_service.models import Base, SellerDatabase, BuyerAgentDatabase
-from backend.data_service.data_service import DataService 
+from models import Base, SellerDatabase, BuyerAgentDatabase
+from data_service import DataService 
 
 class TestDataService(unittest.TestCase):
-
+    """This needs updated
+    """
     @classmethod
     def setUpClass(cls):
-        # Connect to an in-memory SQLite database for testing
-        cls.engine = create_engine('sqlite:///:memory:')
+        # We would normally not test on the production database, but this is an initial build
+        cls.engine = create_engine('postgresql://postgres:spos123@localhost:5432/default_company')
         Base.metadata.create_all(cls.engine)
         cls.Session = sessionmaker(bind=cls.engine)
         cls.data_service = DataService()
@@ -50,7 +51,7 @@ class TestDataService(unittest.TestCase):
         seller = self.data_service.read_seller(name="Bob Doe")
         self.assertIsNone(seller)
 
-    # You can add similar tests for buyers, products, games, and email logs
+    
 
 if __name__ == '__main__':
     unittest.main()

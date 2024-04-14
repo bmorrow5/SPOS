@@ -33,8 +33,8 @@ class ProductDatabase(Base):
     quantity = Column(Integer, nullable=False)
     max_price = Column(Float, nullable=False)
     date_needed_by = Column(TIMESTAMP, nullable=False)
-    buyer = relationship("BuyerAgent")
-    seller = relationship("Seller")
+    buyer = relationship("BuyerAgentDatabase")
+    seller = relationship("SellerDatabase")
 
 class GameDatabase(Base):
     __tablename__ = 'games'
@@ -48,9 +48,9 @@ class GameDatabase(Base):
     buyer_reservation_price = Column(Float)
     seller_reservation_price = Column(Float)
     current_strategy = Column(String(255))
-    buyer_agent = relationship("BuyerAgent")
-    seller = relationship("Seller")
-    product = relationship("Product")
+    buyer_agent = relationship("BuyerAgentDatabase")
+    seller = relationship("SellerDatabase")
+    product = relationship("ProductDatabase")
 
 class EmailLogDatabase(Base):
     __tablename__ = 'email_logs'
@@ -63,5 +63,5 @@ class EmailLogDatabase(Base):
     subject = Column(String, nullable=False)
     body = Column(String, nullable=False)
     timestamp = Column(TIMESTAMP, default=datetime.utcnow)
-    buyer_agent = relationship("BuyerAgent")
-    seller = relationship("Seller")
+    buyer_agent = relationship("BuyerAgentDatabase")
+    seller = relationship("SellerDatabase")

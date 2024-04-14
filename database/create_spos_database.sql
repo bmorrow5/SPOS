@@ -23,12 +23,14 @@ CREATE TABLE IF NOT EXISTS spos.email_logs (
 -- Players and products
 CREATE TABLE IF NOT EXISTS spos.sellers (
     seller_id SERIAL PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
+    first_name VARCHAR(255) NOT NULL,
+    last_name VARCHAR(255),
     email VARCHAR(255) NOT NULL UNIQUE
 );
 CREATE TABLE IF NOT EXISTS spos.buyer_agents (
     buyer_agent_id SERIAL PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
+    first_name VARCHAR(255) NOT NULL,
+    last_name VARCHAR(255),
     employee_id INT NOT NULL,
     email VARCHAR(255) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL --Needs to be encrypted before storage

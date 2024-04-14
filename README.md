@@ -39,8 +39,8 @@ Source: See [2] Below
 ## Daily Data Collection
 Collects data every day, and updates values in the database. 
 
-## Data Access
-Allows access to the database, and is how the game logic and flask app can access data from the database. 
+## Data Service
+Controls access to the database and uses SQLAlchemy ORM to interact with the database. Has all functions for creating, reading, updating, or deleting (CRUD) in the data_service.py file. The models.py contains the object relational mapping from the database to pythong objects. 
 
 ##  Email Service
 Controls the sending and receiving of emails. Would be switched with an email service in productions, but for now uses python and a gmail account.
