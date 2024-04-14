@@ -1,8 +1,13 @@
+import sys
+import os
+current_dir = os.path.dirname(os.path.abspath(__file__))
+parent_dir = os.path.dirname(current_dir)
+sys.path.insert(1, parent_dir)
 import unittest
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from models import Base, SellerDatabase, BuyerAgentDatabase
-from data_service import DataService 
+from backend.data_service.models import Base, SellerDatabase, BuyerAgentDatabase
+from backend.data_service import DataService 
 
 class TestDataService(unittest.TestCase):
     """This needs updated

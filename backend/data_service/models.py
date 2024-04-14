@@ -30,6 +30,7 @@ class ProductDatabase(Base):
     __tablename__ = 'products'
     __table_args__ = {'schema': 'spos'}
     product_id = Column(Integer, primary_key=True)
+    name = Column(String(255), nullable=False)
     quantity = Column(Integer, nullable=False)
     max_price = Column(Float, nullable=False)
     date_needed_by = Column(TIMESTAMP, nullable=False)

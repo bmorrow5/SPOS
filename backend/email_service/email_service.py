@@ -70,7 +70,8 @@ class EmailService():
         """
         
         try:
-            sellers = DataService.read_all_sellers()
+            ds = DataService()
+            sellers = ds.read_all_sellers()
             if subject is None:
                 subject = "Request for Quote"
             if message is None:
@@ -91,9 +92,10 @@ class EmailService():
                 text = msg.as_string()
                 server.sendmail(self.email, seller.email, text)
                 server.quit()
-                print("Email sent successfully!")
+                return True
         except Exception as e:
             print(f"Failed to send email: {e}")
+            return False
 
 
 
