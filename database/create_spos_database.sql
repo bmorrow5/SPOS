@@ -26,7 +26,8 @@ CREATE TABLE IF NOT EXISTS spos.products (
     name VARCHAR(255),
     quantity INT NOT NULL,
     max_price FLOAT NOT NULL,
-    date_needed_by DATE NOT NULL
+    date_needed_by DATE NOT NULL,
+    UNIQUE(name, quantity, max_price, date_needed_by) -- This will prevent duplicate rows
     );
 
 -- Store games
@@ -73,7 +74,7 @@ VALUES ('John', 'Doe', 1011001, 'spos6045@gmail.com', '8c9f5c8b19cad748b5c39b060
 
 -- Insert test data into products
 INSERT INTO spos.products (name, quantity, max_price, date_needed_by)
-VALUES ('office_chair', 100, 50.0, '2023-12-31');
+VALUES ('Office Chair', 100, 50.0, '2023-12-31');
 
 -- Insert test data into games
 INSERT INTO spos.games (seller_id, buyer_agent_id, product_id, buyer_power, seller_power, current_price, last_seller_price, last_buyer_price, buyer_reservation_price, seller_reservation_price, current_strategy)

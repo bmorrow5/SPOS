@@ -163,32 +163,28 @@ class DataService():
 
         
     ############## Product CRUD ##############
-    def create_product(self, product_name, quantity, max_price, date_needed_by):
+    def create_product(self, name, quantity, max_price, date_needed_by):
         try:
             with self.Session() as session:
                 new_product = ProductDatabase(
-                    product_name=product_name,
+                    name=name,
                     quantity=quantity,
                     max_price=max_price,
                     date_needed_by=date_needed_by
                 )
                 session.add(new_product)
                 session.commit()
+                return new_product
         except SQLAlchemyError as e:
             logging.error(f"Error storing product: {e}")
 
 
-    # def read_product(self, product_id):
-    #     try:
-    #         with self.Session() as session:
-    #             if buyer_agent_id and seller_id:
-    #                 return session.query(ProductDatabase).filter_by(buyer_agent_id=buyer_agent_id, seller_id=seller_id).all()
-    #             elif buyer_agent_id:
-    #                 return session.query(ProductDatabase).filter_by(buyer_agent_id=buyer_agent_id).all()
-    #             elif seller_id:
-    #                 return session.query(ProductDatabase).filter_by(seller_id=seller_id).all()
-    #     except SQLAlchemyError as e:
-    #         logging.error(f"Error reading product: {e}")
+    def read_product(self, product_id):
+        try:
+            with self.Session() as session:
+                return session.query(ProductDatabase).filter_by(product_id=product_id).one()
+        except SQLAlchemyError as e:
+            logging.error(f"Error reading product: {e}")
 
 
     def update_product(self, product_id, new_quantity=None, new_max_price=None, new_date_needed_by=None):
@@ -220,7 +216,7 @@ class DataService():
             logging.error(f"Error deleting product: {e}")
 
     ############## Game CRUD ##############
-    def create_game(self, seller_id, buyer_agent_id, product_id, buyer_power, seller_power, buyer_reservation_price, seller_reservation_price, current_strategy):
+    def create_game(self, seller_id, buyer_agent_id, product_id, buyer_power=None, seller_power=None, buyer_reservation_price=None, seller_reservation_price=None, current_strategy=None):
         try:
             with self.Session() as session:
                 new_game = GameDatabase(
@@ -235,6 +231,8 @@ class DataService():
                 )
                 session.add(new_game)
                 session.commit()
+                game_id = new_game.game_id
+                return game_id
         except SQLAlchemyError as e:
             logging.error(f"Error storing game: {e}")
 

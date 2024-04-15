@@ -9,13 +9,20 @@ from backend.data_service.data_service import DataService
 from backend.data_service.models import ProductDatabase
 
 class TestEmailService(unittest.TestCase):
+    """Tests the functionality of the email service
+    """
+
     def setUp(self):
         self.email_service = EmailService(first_name= "John", last_name="Doe", email='spos6045@gmail.com', password='cjoisegsetxkqdxb')
 
     def test_request_quotes(self):        
-        # New product
-        product = ProductDatabase(name="Office Chairs", quantity= 100.0, max_price= 100.0, date_needed_by= "2021-12-12")
+        
+        ds = DataService()
 
+
+        # Get the product
+        product = ds.read_product(product_id=1)
+        
         # Call the method
         result = self.email_service.request_quotes(product=product)
 
