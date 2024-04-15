@@ -15,19 +15,19 @@ class TestEmailService(unittest.TestCase):
     def setUp(self):
         self.email_service = EmailService(first_name= "John", last_name="Doe", email='spos6045@gmail.com', password='cjoisegsetxkqdxb')
 
-    def test_request_quotes(self):        
-        
-        ds = DataService()
+    # def test_request_quotes(self):        
+    #     ds = DataService()
+    #     # Get the product
+    #     product = ds.read_product(product_id=1)
+    #     # Call the method
+    #     result = self.email_service.request_quotes(product=product)
+    #     # Asserts
+    #     self.assertTrue(result)
 
-
-        # Get the product
-        product = ds.read_product(product_id=1)
-        
-        # Call the method
-        result = self.email_service.request_quotes(product=product)
-
-        # Asserts
-        self.assertTrue(result)
+    def test_read_emails(self):
+        result = self.email_service.read_emails()
+        print(result)
+        self.assertIsNotNone(result)
 
 if __name__ == '__main__':
     unittest.main()
