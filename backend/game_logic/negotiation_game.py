@@ -84,4 +84,4 @@ class NegotiationGame():
         # Get Utility
 
         # Calculate Counter Offer Price
-        pass
+        return 1

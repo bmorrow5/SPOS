@@ -76,6 +76,7 @@ class EmailService():
             if message is None:
                 message = f"To Whom It May Concern,\n\nWe are requesting a quote for {product.quantity} {product.name}s.\n\nPlease reply to this email with your best price, and in the body of the email not on an attachment. \n\nThank you,\n\n{self.first_name} {self.last_name}\nYour Company Intl."
             
+            # Iterate through all sellers in the database
             for seller in sellers:
 
                 # Declare a new game
@@ -123,6 +124,4 @@ class EmailService():
             mail.logout()
         except Exception as e:
             print(f"Failed to read emails: {e}")
-
-
 
