@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, Column, Integer, String, Float, ForeignKey, TIMESTAMP
+from sqlalchemy import create_engine, Column, Date, Integer, String, Float, ForeignKey, Text, TIMESTAMP
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, sessionmaker
 from datetime import datetime
@@ -33,17 +33,21 @@ class ProductDatabase(Base):
     name = Column(String(255), nullable=False)
     quantity = Column(Integer, nullable=False)
     max_price = Column(Float, nullable=False)
-    date_needed_by = Column(TIMESTAMP, nullable=False)
+    date_needed_by = Column(Date, nullable=False)
 
 class GameDatabase(Base):
     __tablename__ = 'games'
     __table_args__ = {'schema': 'spos'}
-    game_id = Column(Integer, primary_key=True)
+    game_id = Column(Integer, primary_key=True, autoincrement=True)
     seller_id = Column(Integer, ForeignKey('spos.sellers.seller_id'))
     buyer_agent_id = Column(Integer, ForeignKey('spos.buyer_agents.buyer_agent_id'))
     product_id = Column(Integer, ForeignKey('spos.products.product_id'))
     buyer_power = Column(Integer)
     seller_power = Column(Integer)
+    initial_price = Column(Float)
+    current_price = Column(Float)
+    last_seller_price = Column(Float)
+    last_buyer_price = Column(Float)
     buyer_reservation_price = Column(Float)
     seller_reservation_price = Column(Float)
     current_strategy = Column(String(255))
@@ -59,8 +63,8 @@ class EmailLogDatabase(Base):
     receiver_email = Column(String(255), nullable=False)
     buyer_agent_id = Column(Integer, ForeignKey('spos.buyer_agents.buyer_agent_id'))
     seller_id = Column(Integer, ForeignKey('spos.sellers.seller_id'))
-    subject = Column(String, nullable=False)
-    body = Column(String, nullable=False)
+    subject = Column(Text, nullable=False)
+    body = Column(Text, nullable=False)
     timestamp = Column(TIMESTAMP, default=datetime.utcnow)
     buyer_agent = relationship("BuyerAgentDatabase")
     seller = relationship("SellerDatabase")

@@ -6,6 +6,7 @@ sys.path.insert(1, parent_dir)
 import smtplib
 import imaplib
 import email
+import re
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from data_service.data_service import DataService
@@ -25,7 +26,7 @@ class EmailService():
         self.imap_server = "imap.gmail.com" 
 
 
-    def send_emails(self, to_email: list, subject: str, message: str) -> str:
+    def send_emails(self, to_emails: list, subject: str, message: str) -> str:
         """ This will send an email from a gmail account to a list of emails
         """
         try:
@@ -34,7 +35,7 @@ class EmailService():
             if message is None:
                 message = "No Message"
 
-            for email in to_email:
+            for email in to_emails:
                 # Setup the email
                 msg = MIMEMultipart()
                 msg['From'] = self.email
@@ -97,8 +98,6 @@ class EmailService():
 
 
 
-
-
     def request_quotes(self, product, message=None) -> bool:
         """Emails to request initial quotes. The subject line will have the product name and game_id, and the 
             message will be a generic message if none is provided.
@@ -142,7 +141,7 @@ class EmailService():
 
 
 
-    def send_counteroffer(self, to_emails: list, counter_offer_price: float, message: str, original_message_id: str) -> str:
+    def reply_with_counteroffer(self, to_emails: list, counter_offer_price: float, message: str, original_message_id: str) -> str:
         """This will reply with a counteroffer to the supplier with the price found by the bayesian game theory model
 
         Args:
@@ -182,4 +181,69 @@ class EmailService():
                 print("Email sent successfully!")
         except Exception as e:
             print(f"Failed to send email: {e}")
+
+
+    def send_acceptance(self, to_email: str, message: str) -> str:
+        """This will send an email accepting the offer
+
+        Args:
+            to_email (str): Email to send to
+            message (str): Message to send
+            original_message_id (str): Original message id
+
+        Returns:
+            str: Success or failure message
+        """
+        message = f"To Whom It May Concern,\n\nThank you for your offer we accept.\n\nThank you,\n\n{self.first_name} {self.last_name}\nYour Company Intl."
+        
+        self.send_emails(to_emails=[to_email], subject="Acceptance", message=message)
+
+
+
+    def extract_game_id_and_price(self, subject, content):
+        """This will extract the game_id and offer price from the email subject and content
+
+        Args:
+            subject (string): Email subject
+            content (string): Content of the email
+
+        Returns:
+            dict: game_id and offer_price
+        """
+        # Regex to extract game_id from the subject
+        game_id_pattern = r"Request ID: \((\d+)\)"
+        # Regex to extract offer_price, $123.45 or 123.45$
+        price_pattern = r"\$?(\d+\.\d{2})\$?"
+
+        game_id_match = re.search(game_id_pattern, subject)
+        price_match = re.search(price_pattern, content)
+
+        if game_id_match is not None:
+            game_id = game_id_match.group(1)
+        else:
+            game_id = None
+
+        if price_match is not None:
+            offer_price = price_match.group(1)
+        else:
+            offer_price = None
+
+        return {game_id, offer_price}
+
+
+    def update_games(self, game_id, offer_price):
+        """This will update the game with the offer price
+
+        Args:
+            game_id (int): Game id
+            offer_price (float): Offer price
+        """
+        ds = DataService()
+        messages = self.read_emails()
+
+        for message in messages:
+            game_id, offer_price = self.extract_game_id_and_price(message['subject'], message.get_payload(decode=True))
+            ds.update_game(game_id, offer_price)
+        
+        ds.update_game(game_id=game_id, offer_price)
 

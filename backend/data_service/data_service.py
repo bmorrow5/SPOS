@@ -245,14 +245,16 @@ class DataService():
             logging.error(f"Error reading game: {e}")
 
 
-    def update_game_strategy(self, product_id, new_strategy):
+    def update_game(self, game_id, **kwargs):
         try:
-            with self.Session() as session:
-                game = session.query(GameDatabase).filter_by(product_id=product_id).one_or_none()
-                if game:
-                    game.current_strategy = new_strategy
-                    session.commit()
-                    return game
+            if game_id:
+                with self.Session() as session:
+                    game = session.query(GameDatabase).filter_by(game_id=game_id).one_or_none()
+                    if game:
+                        for key, value in kwargs.items():
+                            setattr(game, key, value)
+                        session.commit()
+                        return game
         except SQLAlchemyError as e:
             logging.error(f"Error updating game: {e}")
 
