@@ -142,7 +142,7 @@ class EmailService():
 
 
 
-    def send_counteroffer(self, to_email: list, counter_offer_price: float, message: str, original_message_id: str) -> str:
+    def send_counteroffer(self, to_emails: list, counter_offer_price: float, message: str, original_message_id: str) -> str:
         """This will reply with a counteroffer to the supplier with the price found by the bayesian game theory model
 
         Args:
@@ -159,7 +159,7 @@ class EmailService():
         try:
             if message is None:
                 message = f"Please see our counteroffer of {counter_offer_price}" 
-            for email in to_email:
+            for email in to_emails:
                 # Setup the email
                 msg = MIMEMultipart()
                 msg['From'] = self.email

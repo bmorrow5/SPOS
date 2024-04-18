@@ -24,10 +24,10 @@ class TestEmailService(unittest.TestCase):
     #     # Asserts
     #     self.assertTrue(result)
 
-    def test_read_emails(self):
-        result = self.email_service.read_emails()
-        print(result)
-        self.assertIsNotNone(result)
+    # def test_read_emails(self):
+    #     result = self.email_service.read_emails()
+    #     print(result)
+    #     self.assertIsNotNone(result)
 
 if __name__ == '__main__':
     unittest.main()

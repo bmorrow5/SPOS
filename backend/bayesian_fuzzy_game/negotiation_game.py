@@ -5,8 +5,7 @@ class NegotiationGame():
     """ Performs the negotiation game theory, calculates utility, and returns the counteroffer price.
     """
 
-
-    def __init__(self, buyer, seller, alpha, beta, sHh, sHl, sLh, sLl, cHl, chL, cLh, cLl):
+    def __init__(self, buyer, seller, alpha, beta, sHh, sHl, sLh, sLl, cHh, cHl, chL, cLh, cLl):
         self.buyer = buyer
         self.seller = seller
         self.alpha = alpha # Bayesian Network seller external factors
@@ -17,6 +16,7 @@ class NegotiationGame():
         self.sHl = sHl
         self.sLh = sLh
         self.sLl = sLl
+        self.cHh = cHh
         self.cHl = cHl
         self.chL = chL
         self.cLh = cLh
@@ -37,6 +37,19 @@ class NegotiationGame():
     def calculate_buyer_utility(self, p, q):
         """Calcultes the utility of the buyer """
         return self.gamma(p) * self.alpha * q + (self.cHl - self.cLl) * p + self.cLl
+
+
+    def get_strategy(self):
+        pass
+
+    def estimate_opponent_payoff(self):
+        pass
+
+    def estimate_opponent_reservation_price(self):
+        pass
+
+
+
 
 
     # This needs to be updated
@@ -69,11 +82,12 @@ class NegotiationGame():
             if buyer_OP >= seller_OP:  # Agreement condition
                 print(f"Agreement reached at round {round_t} with offer {seller_OP}")
                 break
-
             round_t += 1
 
         if round_t > tau_x:
             print("Negotiation failed to reach an agreement in time.")
+
+
 
 
     def get_counter_offer_price(self):
