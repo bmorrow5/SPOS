@@ -1,9 +1,9 @@
 import unittest
 from parameterized import parameterized
-from backend.game_logic.product import Product
-from backend.game_logic.buyer import Buyer
-from backend.game_logic.seller import Seller
-from backend.game_logic.negotiation_game import NegotiationGame
+from backend.bayesian_fuzzy_game.product import Product
+from backend.bayesian_fuzzy_game.buyer import Buyer
+from backend.bayesian_fuzzy_game.seller import Seller
+from backend.bayesian_fuzzy_game.negotiation_game import NegotiationGame
 
 class BayesianFuzzyGamesTest(unittest.TestCase):
     """ This class will test our bayesian fuzzy games model, and will provide a check on if our bayesian fuzzy game is working
@@ -13,6 +13,11 @@ class BayesianFuzzyGamesTest(unittest.TestCase):
     # Product(self, name, quantity, initial_price, current_price, date_needed)
     # Buyer(self, name, email, negotiation_power, reservation_price, id, password)
     # Seller(self, name, email, negotiation_power, reservation_price, product)
+
+
+
+    def setUp(self):
+        pass
     
     # This is reservation_price, Product(name, quantity, initial_price, current_price, date_needed), expected_counter_offer_price
     @parameterized.expand([
@@ -28,6 +33,19 @@ class BayesianFuzzyGamesTest(unittest.TestCase):
         game = NegotiationGame(buyer, seller)
         counter_offer_price = game.get_counteroffer_price()
         self.assertEqual(counter_offer_price, expected_counter_offer_price)
+
+
+    def test_estimate_opponent_payoff(self):
+        pass
+
+    def test_estimate_opponent_reservation_price(self):
+        pass
+
+    def test_get_strategy(self):
+        pass
+
+    def test_simulate_negotiation(self):
+        pass
 
 
 if __name__ == '__main__':

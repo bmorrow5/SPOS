@@ -1,7 +1,7 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from .models import Base
-from .models import SellerDatabase, BuyerAgentDatabase, ProductDatabase, GameDatabase, EmailLogDatabase
+from models import Base
+from models import SellerDatabase, BuyerAgentDatabase, ProductDatabase, GameDatabase, EmailLogDatabase
 from sqlalchemy.exc import SQLAlchemyError
 import hashlib
 import logging
@@ -128,25 +128,28 @@ class DataService():
             logging.error(f"Error reading buyer: {e}")
 
 
-    def update_buyer(self, first_name=None, last_name=None, employee_id=None, email=None, password=None):
+    def update_buyer(self, buyer_id, **kwargs):
+        """Note: Requires the buyer_id to be passed in as a keyword argument"""
         try:
             with self.Session() as session:
-                buyer = session.query(BuyerAgentDatabase).filter_by(name=name).one_or_none()
+                # Retrieve the buyer by ID
+                buyer = session.query(BuyerAgentDatabase).filter_by(buyer_agent_id=buyer_id).one_or_none()
                 if buyer:
-                    if first_name:
-                        buyer.first_name = first_name
-                    if last_name:
-                        buyer.last_name = last_name
-                    if email:
-                        buyer.email = email
-                    if employee_id:
-                        buyer.employee_id = employee_id
-                    if password:
-                        buyer.password = password
+                    # Update attributes that are provided in kwargs and exist in the BuyerAgentDatabase model.
+                    valid_keys = {column.name for column in BuyerAgentDatabase.__table__.columns}
+                    for key, value in kwargs.items():
+                        if key in valid_keys:
+                            setattr(buyer, key, value)
+                        else:
+                            logging.warning(f"Attempted to update non-existent attribute '{key}'")
                     session.commit()
                     return buyer
+                else:
+                    logging.error(f"No buyer found with ID: {buyer_id}")
+                    return None
         except SQLAlchemyError as e:
             logging.error(f"Error updating buyer: {e}")
+            return None
 
 
     def delete_buyer(self, buyer_id):
@@ -251,10 +254,17 @@ class DataService():
                 with self.Session() as session:
                     game = session.query(GameDatabase).filter_by(game_id=game_id).one_or_none()
                     if game:
+                        valid_keys = {c.name for c in GameDatabase.__table__.columns}
                         for key, value in kwargs.items():
-                            setattr(game, key, value)
+                            if key in valid_keys:
+                                setattr(game, key, value)
+                            else:
+                                logging.warning(f"Tried to update invalid attribute '{key}'")
                         session.commit()
                         return game
+                    else:
+                        logging.info(f"No game found with ID {game_id}")
+                        return None
         except SQLAlchemyError as e:
             logging.error(f"Error updating game: {e}")
 
@@ -334,6 +344,4 @@ class DataService():
 
         
 if __name__== "__main__":
-    # Test
-    ds = DataService()
-    print(ds.read_buyer(name="Brandon Morrow"))
+    print("Data Service Running...")
