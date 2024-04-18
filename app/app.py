@@ -1,6 +1,6 @@
-from backend.bayesian_fuzzy_game.negotiation_game import BayesianFuzzyGame
-from backend.email_service.email_service import EmailService
-from backend.data_service.data_service import DataService
+from ..backend.bayesian_fuzzy_game.negotiation_game import BayesianFuzzyGame
+from ..backend.email_service.email_service import EmailService
+from ..backend.data_service.data_service import DataService
 from flask import Flask, request, jsonify
 from dash.dependencies import Input, Output, State
 from dash import Dash, dcc, html
