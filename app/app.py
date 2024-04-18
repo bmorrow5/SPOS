@@ -1,3 +1,6 @@
+from backend.bayesian_fuzzy_game.negotiation_game import BayesianFuzzyGame
+from backend.email_service.email_service import EmailService
+from backend.data_service.data_service import DataService
 from flask import Flask, request, jsonify
 from dash.dependencies import Input, Output, State
 from dash import Dash, dcc, html
@@ -12,49 +15,41 @@ import time
 server = Flask(__name__)
 app = Dash(__name__, server=server, external_stylesheets=[dbc.themes.BOOTSTRAP])
 
-app.layout = dbc.Container([
-    dbc.Button("Open Popup", id="open-popup", className="mb-3", n_clicks=0),
-    dbc.Modal(
-        [
-            dbc.ModalHeader(dbc.ModalTitle("Popup Title")),
-            dbc.ModalBody("This is the content of the popup..."),
-            dbc.ModalFooter(
-                dbc.Button("Close", id="close-popup", className="ms-auto", n_clicks=0)
-            )
-        ],
-        id="modal-popup",
-        is_open=False  # Set to False to keep it closed on page load
-    )
+app.layout = html.Div([
+    dcc.Input(id='product_id', type='text', placeholder='Product ID'),
+    dcc.Input(id='buyer_id', type='text', placeholder='Buyer ID'),
+    html.Button('Run Game', id='submit-btn', n_clicks=0),
+    html.Div(id='output-container')
 ])
 
-
-
-# def generate_table(dataframe, max_rows=10):
-#     return html.Table([
-#         html.Thead(
-#             html.Tr([html.Th(col) for col in dataframe.columns])
-#         ),
-#         html.Tbody([
-#             html.Tr([
-#                 html.Td(dataframe.iloc[i][col]) for col in dataframe.columns
-#             ]) for i in range(min(len(dataframe), max_rows))
-#         ])
-#     ])
-
-
 @app.callback(
-    Output("modal-popup", "is_open"),
-    [Input("open-popup", "n_clicks"), Input("close-popup", "n_clicks")],
-    [State("modal-popup", "is_open")]
+    Output('output-container', 'children'),
+    [Input('submit-btn', 'n_clicks')],
+    [State('product_id', 'value'),
+     State('buyer_id', 'value')]
 )
-def toggle_modal(open_n, close_n, is_open):
-    if open_n or close_n:
-        return not is_open
-    return is_open
+def update_games(n_clicks, product_id, buyer_id):
+    """This function will run the game when the button is clicked based on new emails
+    """
+    if n_clicks > 0:
+        # data_service = DataService()
+        # email_service = EmailService()
 
-@server.route('/')
-def hello():
-    return 'Hello, this is the Flask part!'
+        # product = data_service.get_product_details(product_id)
+        # buyer = data_service.get_buyer_details(buyer_id)
+        # sellers = data_service.get_sellers(product_id)
+
+        # game = BayesianFuzzyGame(product, buyer, sellers)
+        # results = game.run_game()
+
+        # for result in results:
+        #     seller_email = data_service.get_seller_email(result['seller_id'])
+        #     email_service.send_offer(seller_email, result)
+
+        return f"Game run successfully for Product ID: {product_id}"
+    return "Press the button to run the game."
+
+
 
 if __name__ == '__main__':
     app.run_server(debug=True, port=8001)
