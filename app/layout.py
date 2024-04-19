@@ -100,7 +100,29 @@ def get_navbar():
 
 
 def get_read_emails_button():
-    """This is the button that triggers the reading of emails
+    """This is the button that triggers the reading of emails.
     """
-    read_emails_button = dbc.Button("Read Emails and Send Counteroffers", color="primary", id='read_emails_btn')
-    return read_emails_button
+
+    button_form = dbc.Form(
+        [
+            dbc.Row(
+                [
+                    dbc.Col(
+                        dbc.Button("Read Emails and Send Counteroffers", color="primary", id='read_emails_btn'),
+                        width={"size": 6, "offset": 1}
+                    ),
+                ],
+                className="mb-3",
+            ),
+            dbc.Row(
+            [
+                dbc.Col(
+                    html.Div(id='email_container'),
+                    width={"size": 6, "offset": 1}
+                ),
+            ],
+            className="mb-3",
+        ),
+        ]
+    )
+    return button_form

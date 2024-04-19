@@ -84,10 +84,10 @@ def request_quotes_button(n_clicks, product_name, product_quantity, product_max_
 
 ############## Read Emails Callback ##############
 @dash_app.callback(
-    Output('email_container', 'children'),
+    Output('email_container', 'children'),  # This will update the children of a Div with the ID 'email_status'
     [Input('read_emails_btn', 'n_clicks')]
 )
-def read_emails_button(n_clicks):
+def read_emails_button_call(n_clicks):
     """Reads emails from the buyer's email account
        Args:
             email_list (list): Suppliers to send email to
@@ -99,8 +99,8 @@ def read_emails_button(n_clicks):
     if n_clicks is None or n_clicks == 0:
         return "Press read emails to read emails"
     if n_clicks > 0:
-        emails = main.email_service.read_emails()
-        return f"Emails read: {emails}"
+        main.read_email_and_send_counteroffers()
+        return f"Emails read: "
     return ""
 
 

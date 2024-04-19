@@ -18,8 +18,9 @@ class EmailService():
         self.imap_server = "imap.gmail.com" 
 
 
-    def send_emails(self, to_emails: list, subject: str, message: str) -> str:
+    def send_emails(self, to_emails: list, subject: str, message: str, in_reply_to=None, refrences=None) -> str:
         """ This will send an email from a gmail account to a list of emails
+        It can also reply to emails
         """
         try:
             if subject is None:
@@ -33,6 +34,12 @@ class EmailService():
                 msg['From'] = self.email
                 msg['To'] = email
                 msg['Subject'] = subject
+
+                if in_reply_to is not None:
+                    msg['In-Reply-To'] = in_reply_to
+                if refrences is not None:
+                    msg['References'] = refrences
+
                 msg.attach(MIMEText(message, 'plain'))
                 with smtplib.SMTP(self.smtp_server, self.smtp_port) as server:
                     server.starttls()
@@ -54,6 +61,7 @@ class EmailService():
         Returns:
             Message: The email messages
         """
+        email_details = []
         try:
             # Connect to IMAP server
             with imaplib.IMAP4_SSL(self.imap_server) as mail:
@@ -63,9 +71,8 @@ class EmailService():
                 # Search for all emails
                 status, messages = mail.search(None, type)
                 if status != 'OK':
-                    print("No emails found!")
+                    print("No emails found")
                     return
-
                 # Process emails
                 for num in messages[0].split():
                     status, data = mail.fetch(num, '(RFC822)')
@@ -75,17 +82,24 @@ class EmailService():
 
                     # Parse email content
                     msg = email.message_from_bytes(data[0][1])
-                    # print('From:', msg['From'])
-                    # print('Subject:', msg['Subject'])
-                    # print("Message:", msg.get_payload(decode=True))
+
+                    email_detail = {
+                        'from': msg['From'],
+                        'subject': msg['Subject'],
+                        'content': msg.get_payload(decode=True),  # 'payload' is the message content
+                        'message_id': msg['Message-ID'],
+                        'references': msg['References'],
+                        'in_reply_to': msg['In-Reply-To']
+                    }
+                    email_details.append(email_detail)
                 mail.close()
                 mail.logout()
+                
             if msg is None:
                 return "No emails found"
             else:
-                return msg
+                return email_details
         except Exception as e:
             print(f"Failed to read emails: {e}")
-
 
 
