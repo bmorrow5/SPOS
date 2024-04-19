@@ -13,6 +13,7 @@ import dash_auth
 import dash_bootstrap_components as dbc
 import plotly.express as px
 import pandas as pd
+import layout
 import requests
 import json
 import time
@@ -31,56 +32,17 @@ server.config.update(SECRET_KEY=os.getenv("SECRET_KEY", "default_secret_key"))
 
 user = "spos6045@gmail.com"
 
-dash_app.layout = html.Div([
-    dcc.Input(id='product_name', type='text', placeholder='Product Name'),
-    dcc.Input(id='product_quantity', type='text', placeholder='Quantity Needed'),
-    dcc.Input(id='product_max_price', type='text', placeholder='Max Price per Unit (USD)'),
-    dcc.Input(id='date_needed_by', type='text', placeholder='Date Needed By (YYYY-MM-DD)'),
-    html.Button('Request Quotes', id='submit-btn', n_clicks=0),
-    html.Button('Read Email and Send Counteroffers', id='submit_btn', n_clicks=0),
-    html.Div(id='input_container')
-])
+
 
 ############## New Product Request Quotes Input ############## 
-form = dbc.Form(
-    dbc.Row(
-        [
-            dbc.Label("Product Name", width="auto"),
-            dbc.Col(
-                dbc.Input(type="text", placeholder="Product Name"),
-                className="me-3",
-                width=3,
-            ),
-            dbc.Label("Quantity Needed", width="auto"),
-            dbc.Col(
-                dbc.Input(type="number", placeholder="Quantity Needed"),
-                className="me-3",
-                width=3,
-            ),
-            dbc.Label("Max Price per Unit (USD)", width="auto"),
-            dbc.Col(
-                dbc.Input(type="number", placeholder="Max Price per Unit (USD)"),
-                className="me-3",
-                width=3,
-            ),
-            dbc.Label("Date Needed By", width="auto"),
-            dbc.Col(
-                dbc.Input(type="text", placeholder="YYYY-MM-DD"),
-                className="me-3",
-                width=3,
-            ),
-            dbc.Col(
-                dbc.Button("Request Quotes", color="primary"),
-                width="auto"
-            ),
-            dbc.Col(
-                dbc.Button("Read Email and Send Counteroffers", color="secondary"),
-                width="auto"
-            ),
-        ],
-        className="g-2 align-items-end",  # Adjust the gap between columns
-    )
+
+new_product_form = layout.get_new_product_form()
+navbar = layout.get_navbar()
+
+dash_app.layout = html.Div(
+    [navbar, new_product_form]
 )
+
 
 @dash_app.callback(
     Output('input_container', 'children'),
@@ -99,6 +61,8 @@ def request_quotes(n_clicks, product_name, product_quantity, product_max_price, 
             message (str): Email contents
             Product (Product): Product to request quotes for
     """
+    if n_clicks is None or n_clicks == 0:
+        return "Enter details and press request quotes to submit"
     if n_clicks > 0:
         # try:
         #     # Create a new product
