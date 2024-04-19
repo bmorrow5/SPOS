@@ -67,6 +67,8 @@ class Main():
                 # print(subject, content)
                 # Extract game_id and offer price from the email
                 # game_id, offer_price = self.extract_game_id_and_price(subject=subject, content=content)
+                game_id = 1
+                offer_price = 60
 
                 print(game_id, offer_price)
                 # Get the game from the database
@@ -74,6 +76,9 @@ class Main():
 
                 # Get the product from the database
                 product = self.data_service.read_product(product_id=game['product_id'])
+
+                
+
 
                 # Create a new BayesianFuzzyGame
                 # bayesian_game = BayesianFuzzyGame(game=game, product=product)

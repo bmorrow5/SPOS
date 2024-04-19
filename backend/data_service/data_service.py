@@ -212,7 +212,14 @@ class DataService():
     def read_product(self, product_id):
         try:
             with self.Session() as session:
-                return session.query(ProductDatabase).filter_by(product_id=product_id).one()
+                product_obj = session.query(ProductDatabase).filter_by(product_id=product_id).one()
+
+                product_dict = {"product_id": product_obj.product_id,
+                                "name": product_obj.name,
+                                "quantity": product_obj.quantity,
+                                "max_price": product_obj.max_price,
+                                "date_needed_by": product_obj.date_needed_by}
+                return product_dict
         except SQLAlchemyError as e:
             logging.error(f"Error reading product: {e}")
 
@@ -267,10 +274,25 @@ class DataService():
             logging.error(f"Error storing game: {e}")
 
 
-    def read_game(self, product_id):
+    def read_game(self, game_id):
         try:
             with self.Session() as session:
-                return session.query(GameDatabase).filter_by(product_id=product_id).one_or_none()
+                game = session.query(GameDatabase).filter_by(game__id=game_id).one_or_none()
+                game_dict = {"game_id": game.game_id,
+                                "seller_id": game.seller_id,
+                                "buyer_agent_id": game.buyer_agent_id,
+                                "product_id": game.product_id,
+                                "buyer_power": game.buyer_power,
+                                "seller_power": game.seller_power,
+                                "current_strategy": game.current_strategy,
+                                "initial_price": game.initial_price,
+                                "current_price": game.current_price,
+                                "last_seller_price": game.last_seller_price,
+                                "last_buyer_price": game.last_buyer_price,                                
+                                "buyer_reservation_price": game.buyer_reservation_price,
+                                "seller_reservation_price": game.seller_reservation_price
+                                }
+                return game_dict
         except SQLAlchemyError as e:
             logging.error(f"Error reading game: {e}")
 

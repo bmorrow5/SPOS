@@ -5,7 +5,7 @@ from dash import Dash, dcc, html
 
 
 def get_new_product_form():
-    """This is the form for requesting quotes for a new product
+    """This is the horozontal input form for requesting quotes for a new product
     """
     new_product_form = dbc.Form(
     [
@@ -100,7 +100,7 @@ def get_navbar():
 
 
 def get_read_emails_button():
-    """This is the button that triggers the reading of emails.
+    """This is the button that triggers the reading of emails and updating of the game
     """
 
     button_form = dbc.Form(

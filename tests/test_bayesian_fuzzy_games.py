@@ -3,7 +3,7 @@ from parameterized import parameterized
 from backend.bayesian_fuzzy_game.product import Product
 from backend.bayesian_fuzzy_game.buyer import Buyer
 from backend.bayesian_fuzzy_game.seller import Seller
-from backend.bayesian_fuzzy_game.negotiation_game import NegotiationGame
+from backend.bayesian_fuzzy_game.negotiation_game import BayesianFuzzyGame
 
 class BayesianFuzzyGamesTest(unittest.TestCase):
     """ This class will test our bayesian fuzzy games model, and will provide a check on if our bayesian fuzzy game is working
@@ -30,10 +30,14 @@ class BayesianFuzzyGamesTest(unittest.TestCase):
     def test_get_counteroffer_price(self, reservation_price, product, expected_counter_offer_price):
         buyer = Buyer(reservation_price = reservation_price)
         seller = Seller(reservation_price = reservation_price, product = product)
-        game = NegotiationGame(buyer, seller)
+        game = BayesianFuzzyGame(buyer, seller)
         counter_offer_price = game.get_counteroffer_price()
         self.assertEqual(counter_offer_price, expected_counter_offer_price)
 
+
+    def test_update_game(self):
+        pass
+        
 
     def test_estimate_opponent_payoff(self):
         pass
