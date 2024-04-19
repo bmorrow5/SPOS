@@ -1,41 +1,59 @@
+import sys
+import os
+# Add the current directory to the path so that the models can be imported
+current_dir = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(1, current_dir)
+import bcrypt
+import logging
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from models import Base
-from models import SellerDatabase, BuyerAgentDatabase, ProductDatabase, GameDatabase, EmailLogDatabase
+from models import Base, SellerDatabase, BuyerAgentDatabase, ProductDatabase, GameDatabase, EmailLogDatabase
 from sqlalchemy.exc import SQLAlchemyError
-import hashlib
-import logging
+
+# Add the current directory to the path so that the models can be imported
+current_dir = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(1, current_dir)
 
 
 class DataService():
     """This class serves as the data service for the application, and will perform CRUD operations on all database tables
     """
 
-    def __init__(self):
-        self.engine = create_engine('postgresql://postgres:spos123@localhost:5432/default_company')
+    def __init__(self, engine='postgresql://postgres:spos123@localhost:5432/default_company'):
+        self.engine = create_engine(engine)
         Base.metadata.create_all(self.engine)
         self.Session = sessionmaker(bind=self.engine)
 
 
     ############## Password Handling ##############
-    def encrypt_password(self, password):
+    def encrypt_password(password):
         # Convert the password to a byte string
-        byte_card = str(password).encode()    
-        # Create a SHA-256 object
-        sha = hashlib.sha256()
-        sha.update(byte_card)
-        return sha.hexdigest()
+        byte_password = password.encode()
+        # Generate a salt and hash the password
+        hashed = bcrypt.hashpw(byte_password, bcrypt.gensalt())
+        return hashed.decode()  # decode the hash to store in the database as a string
 
+    
+    @staticmethod
+    def verify_user(email, password):
+        """Verifies the user by checking the email and password
+        """
+        session = None
+        try:
+            ds = DataService()
+            session = ds.Session()
+            user = session.query(BuyerAgentDatabase).filter_by(email=email).one_or_none()
+            if user:
+                byte_password = password.encode()
+                if bcrypt.checkpw(byte_password, user.password.encode()):
+                    return True
+            return False
+        except SQLAlchemyError as e:
+            logging.error(f"Error verifying user: {e}")
+            return False
+        finally:
+            session.close()
 
-    def check_password(self, provided_password, stored_hash):
-        # Hash the provided password using the same method
-        byte_card = str(provided_password).encode()    
-        # Create a SHA-256 object
-        sha = hashlib.sha256()
-        sha.update(byte_card)
-        check = sha.hexdigest()
-        # Compare the newly hashed password with the stored hash
-        return check == stored_hash
 
 
     ############## Seller CRUD ##############

@@ -24,7 +24,7 @@ class BuyerAgentDatabase(Base):
     last_name = Column(String(255), nullable=False)
     employee_id = Column(Integer, nullable=False)
     email = Column(String(255), nullable=False, unique=True)
-    password = Column(String(255), nullable=False)
+    password = Column(Text, nullable=False)
 
 class ProductDatabase(Base):
     __tablename__ = 'products'

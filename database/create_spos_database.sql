@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS spos.buyer_agents (
     last_name VARCHAR(255),
     employee_id INT NOT NULL,
     email VARCHAR(255) NOT NULL UNIQUE,
-    password VARCHAR(255) NOT NULL --Needs to be encrypted before storage
+    password TEXT NOT NULL --Needs to be encrypted before storage
 );
 CREATE TABLE IF NOT EXISTS spos.products (
     product_id SERIAL PRIMARY KEY,
@@ -70,7 +70,7 @@ VALUES ('Brandon', 'Morrow', 'brandonmorrow09@gmail.com');
 
 -- Insert test data into buyer_agents
 INSERT INTO spos.buyer_agents (first_name, last_name, employee_id, email, password)
-VALUES ('John', 'Doe', 1011001, 'spos6045@gmail.com', '8c9f5c8b19cad748b5c39b060eaecdda493752598f52ba32a80255350a008dea');
+VALUES ('John', 'Doe', 1011001, 'spos6045@gmail.com', '$2b$12$QjgW/mYz26HV0iANfeWk1e1LSFD1GSQiy2SZHJawCU87kyowKUnpi');
 
 -- Insert test data into products
 INSERT INTO spos.products (name, quantity, max_price, date_needed_by)

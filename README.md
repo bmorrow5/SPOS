@@ -25,8 +25,8 @@ user: postgres
 password: spos123
 
 ### Logging in
-Username: spos6045@gmail.com
-password: 1234abcd!#
+Username: spos6045@gmail.com <br>
+password: 1234abcd!# (cjoisegsetxkqdxb)
 
 
 
