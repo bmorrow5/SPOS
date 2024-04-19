@@ -15,10 +15,32 @@ class BayesianFuzzyGamesTest(unittest.TestCase):
     # Seller(self, name, email, negotiation_power, reservation_price, product)
 
 
-
     def setUp(self):
-        pass
-    
+        # Set up a basic game scenario
+        self.product_info = {
+            'name': 'Laptop',
+            'quantity': 50,
+            'initial_price': 1000,
+            'current_price': 950,
+            }
+        self.buyer_info = {
+            'name': 'John Doe',
+            'email': 'john@example.com',
+            'negotiation_power': 7,
+            'reservation_price': 900,
+            'id': 1,
+            'password': 'secure',
+            'date_product_needed': '2024-05-01'
+        }
+        self.seller_info = {
+            'name': 'Jane Doe',
+            'email': 'jane@example.com',
+            'negotiation_power': 5,
+            'reservation_price': 920,
+            'date_sale_needed': '2024-10-01' # We assume they have no significant pressure to sell
+        }
+        self.game = BayesianFuzzyGame(1, self.product_info, self.buyer_info, self.seller_info, 950)
+
     # This is reservation_price, Product(name, quantity, initial_price, current_price, date_needed), expected_counter_offer_price
     @parameterized.expand([
             (300, Product("product1", 10, 200, 150, "2024-04-30"), 100),  
