@@ -5,6 +5,8 @@ from dash import Dash, dcc, html
 
 
 def get_new_product_form():
+    """This is the form for requesting quotes for a new product
+    """
     new_product_form = dbc.Form(
     [
         dbc.Row(
@@ -53,7 +55,7 @@ def get_new_product_form():
                 # Date Needed By
                 dbc.Label("Date Needed By", html_for="date_needed_by", width=2),
                 dbc.Col(
-                    dbc.Input(type="text", id="date_needed_by", placeholder="YYYY-MM-DD"),
+                    dbc.Input(type="dateString", id="date_needed_by", placeholder="YYYY-MM-DD"),
                     width=2
                 ),
             ],
@@ -75,6 +77,8 @@ def get_new_product_form():
 
 
 def get_navbar():
+    """This is the top of the page navbar
+    """
     dashboard = dbc.Navbar(
         dbc.Container(
         [
@@ -95,4 +99,8 @@ def get_navbar():
     return dashboard
 
 
-def get 
+def get_read_emails_button():
+    """This is the button that triggers the reading of emails
+    """
+    read_emails_button = dbc.Button("Read Emails and Send Counteroffers", color="primary", id='read_emails_btn')
+    return read_emails_button

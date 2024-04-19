@@ -38,6 +38,7 @@ CREATE TABLE IF NOT EXISTS spos.games (
     product_id INT NOT NULL,
     buyer_power INT, -- Buyer negotiation power
     seller_power INT, -- Seller negotiation power
+    initial_price FLOAT, -- This is the initial price in the negotiation
     current_price FLOAT, -- This is the last price in the negotiation
     last_seller_price FLOAT, -- Last price from seller
     last_buyer_price FLOAT, -- Last price from buyer

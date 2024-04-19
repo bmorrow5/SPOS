@@ -10,9 +10,7 @@ class EmailService():
     """This class will handle sending emails to suppliers and reading emails from suppliers
     It is built to work with gmail accounts only, and will be modified later to work with others
     """
-    def __init__(self, first_name, last_name, email, password):
-        self.first_name = first_name
-        self.last_name = last_name
+    def __init__(self, email, password):
         self.email = email
         self.password = password
         self.smtp_server = "smtp.gmail.com"  

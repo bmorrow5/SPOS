@@ -19,8 +19,8 @@ class DataService():
     """This class serves as the data service for the application, and will perform CRUD operations on all database tables
     """
 
-    def __init__(self, engine='postgresql://postgres:spos123@localhost:5432/default_company'):
-        self.engine = create_engine(engine)
+    def __init__(self, engine_url='postgresql://postgres:spos123@localhost:5432/default_company'):
+        self.engine = create_engine(engine_url)
         Base.metadata.create_all(self.engine)
         self.Session = sessionmaker(bind=self.engine)
 
@@ -82,7 +82,10 @@ class DataService():
         try:
             with self.Session() as session:
                 sellers = session.query(SellerDatabase).all()
-                return sellers        
+            sellers_dict = {seller.seller_id: {"first_name": seller.first_name, 
+                                                "last_name": seller.last_name,
+                                                "email": seller.email} for seller in sellers}
+            return sellers_dict
         except SQLAlchemyError as e:
             logging.error(f"Error Reading seller: {e}")
 
@@ -137,7 +140,8 @@ class DataService():
                 elif employee_id:
                     return session.query(BuyerAgentDatabase).filter_by(employee_id=employee_id).one_or_none()
                 elif email:
-                    return session.query(BuyerAgentDatabase).filter_by(email=email).one_or_none()
+                    buyer = session.query(BuyerAgentDatabase).filter_by(email=email).one_or_none()
+                    return {"buyer_agent_id": buyer.buyer_agent_id, "first_name": buyer.first_name, "last_name": buyer.last_name, "email": buyer.email}
                 elif password:
                     return session.query(BuyerAgentDatabase).filter_by(password=password).one_or_none()
                 else:
@@ -195,7 +199,12 @@ class DataService():
                 )
                 session.add(new_product)
                 session.commit()
-                return new_product
+                product_id = new_product.product_id
+            return {"product_id": product_id,
+                    "name": name, 
+                    "quantity": quantity, 
+                    "max_price": max_price, 
+                    "date_needed_by": date_needed_by}
         except SQLAlchemyError as e:
             logging.error(f"Error storing product: {e}")
 
@@ -253,7 +262,7 @@ class DataService():
                 session.add(new_game)
                 session.commit()
                 game_id = new_game.game_id
-                return game_id
+            return game_id
         except SQLAlchemyError as e:
             logging.error(f"Error storing game: {e}")
 
