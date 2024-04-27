@@ -28,34 +28,18 @@ class BayesianFuzzyGamesTest(unittest.TestCase):
             'email': 'john@example.com',
             'negotiation_power': 7,
             'reservation_price': 900,
-            'id': 1,
-            'password': 'secure',
-            'date_product_needed': '2024-05-01'
+            'deadline': '2024-05-01',
+            'last_offer_price': None
         }
         self.seller_info = {
             'name': 'Jane Doe',
             'email': 'jane@example.com',
             'negotiation_power': 5,
             'reservation_price': 920,
-            'date_sale_needed': '2024-10-01' # We assume they have no significant pressure to sell
+            'deadline': '2024-10-01', # We assume they have no significant pressure to sell
+            'last_offer_price': None
         }
-        self.game = BayesianFuzzyGame(1, self.product_info, self.buyer_info, self.seller_info, 950)
-
-    # This is reservation_price, Product(name, quantity, initial_price, current_price, date_needed), expected_counter_offer_price
-    @parameterized.expand([
-            (300, Product("product1", 10, 200, 150, "2024-04-30"), 100),  
-            (200, Product("product2", 10, 100, 100, "2024-05-01"), 80),  
-            (100, Product("product3", 10, 75, 75, "2024-05-01"), 50),  
-            (50, Product("product4", 1, 50, 50, "2024-05-10"), 40),  
-            (10, Product("product5", 1, 10, 10, "2024-05-10"), 8),  
-    ])
-    def test_get_counteroffer_price(self, reservation_price, product, expected_counter_offer_price):
-        buyer = Buyer(reservation_price = reservation_price)
-        seller = Seller(reservation_price = reservation_price, product = product)
-        game = BayesianFuzzyGame(buyer, seller)
-        counter_offer_price = game.get_counteroffer_price()
-        self.assertEqual(counter_offer_price, expected_counter_offer_price)
-
+        self.game = BayesianFuzzyGame(game_id=1, product=self.product_info, buyer=self.buyer_info, seller=self.seller_info)
 
     def test_update_game(self):
         pass

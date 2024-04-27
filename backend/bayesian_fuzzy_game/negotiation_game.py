@@ -2,7 +2,13 @@ from game_classes import Product, Buyer, Seller
 
 class BayesianFuzzyGame():
     """ Performs the negotiation game theory, calculates utility, and returns the counteroffer price.
-        The main function in this class is "update_game" which updates the game and gives counteroffer price
+        The main function in this class is "update_game" which updates the game and gives counteroffer price.
+        The Rubinsteins alternating offers protocol is followed with this method, and we use the Bayesian
+        Fuzzy Game Model that was created by Sou-Sen Leu, Pham Vu Hong Son, and Pham Thi Hong Nhung in the paper
+        Optimize Negotiation Price in Construction Procurement using Bayesian Fuzzy Game Model (2015)
+
+        See the PDF SPOS Mathematics for more information on the model. New negotiations start with
+        p=0.5, q=0.5 for the mixed strategy
     """
 
     def __init__(self, game_id, product, buyer, seller):
@@ -14,32 +20,87 @@ class BayesianFuzzyGame():
                           buyer['email'], 
                           buyer['negotiation_power'], 
                           buyer['reservation_price'], 
-                          buyer['date_product_needed'], 
+                          buyer['deadline'], 
                           buyer['last_offer_price'])
         new_seller = Seller(seller['name'], 
                             seller['email'], 
                             seller['negotiation_power'], 
                             seller['reservation_price'], 
-                            seller['date_sale_needed'], 
+                            seller['deadline'], 
                             seller['last_offer_price'])
         self.game_id = game_id
+        self.product =  new_product
         self.buyer = new_buyer
         self.seller = new_seller
-        self.product =  new_product
-
 
     def update_game(self):
         """Updates the game and gives counteroffer price
         """
-        if self.current_price is None:
-            self.current_price = self.product['initial_price']
-        else:
-            self.current_price = self.product['current_price']
+        game = {}
+        seller_offer_price = self.seller.last_offer_price
 
-        # Get the counteroffer price
-        counter_offer_price = self.get_counteroffer_price()
+        # Check if this is a new game
+        if self.buyer.last_offer_price is None and self.seller.last_offer_price is None:
+            # Set the initial price as the counteroffer price
+            self.product.initial_price = seller_offer_price
+
+        # Set the sellers offer to the products current price
+        self.product.current_price = seller_offer_price
+
+        # We now need to estimate the sellers reservation price and deadline
 
 
 
 
-        pass
+    def delta(q, s_Hh, s_Hl, s_Lh, s_Ll):
+        """Calculates delta, the sign of the coeffient of p for the seller's utility function.
+        """ 
+        return (s_Hh - s_Hl - s_Lh + s_Ll) * q + s_Hl - s_Ll
+
+    def gamma(p, b_Hh, b_Hl, b_Lh, b_Ll):
+        """Calculates gamma, the sign of the coeffient of p for the seller's utility function.
+        """
+        return (b_Hh - b_Hl - b_Lh + b_Ll) * p + b_Lh - b_Ll
+
+    def utility_buyer(p, q, b_Hl, b_Ll, gamma_value):
+        """ Calculate buyer's utility with consideration of external factors
+        """
+        # alpha = BayesianNetwork().get_alpha() # Get external factor influence
+        alpha = 1 
+        return gamma_value * alpha * q + (b_Hl - b_Ll) * p + b_Ll
+
+    def utility_supplier(p, q, s_Lh, s_Ll, delta_value):
+        """ Calculate supplier's utility with consideration of external factors. """
+        # beta = BayesianNetwork().get_beta() # Get external factor influence
+        beta = 1
+        return delta_value * beta * p + (s_Lh - s_Ll) * q + s_Ll
+
+    ## Need to check this
+    def x_payoff(OP, IP, RP, xmin):
+        """ Calculate the utility for the given offer price. """
+        return xmin + (1 - xmin) * abs(RP - OP) / abs(RP - IP)
+    
+    def first_offer_price(IP, RP, t, tau, lambda_ij, alpha):
+        """ Calculate the offer price for a given round. """
+        factor = (-1)**alpha * (t / tau) ** lambda_ij
+        return IP + factor * abs(RP - IP)
+
+    def second_on_offer_price(previous_offer, t, tau, lambda_ij, RP, IP, alpha):
+        """
+        Calculate the next offer price based on the previous offer and negotiation dynamics.
+        """
+        time_factor = (t / (tau - (t - 1)))**lambda_ij
+        price_difference = abs(RP - IP)
+        adjustment = (-1)**alpha * time_factor * price_difference
+        new_offer = previous_offer + adjustment
+        return new_offer
+        
+    def adjust_strategy(history, agent):
+        last_utility = history[agent]["utilities"][-1] if history[agent]["utilities"] else None
+        if last_utility is not None:
+            # Example adjustment: decrease lambda if utility is low to make offers more appealing
+            if last_utility < 0.5:
+                return 0.1  # More conservative
+            else:
+                return 0.9  # More aggressive
+        return 0.5  # Default strategy
