@@ -1,4 +1,5 @@
 from game_classes import Product, Buyer, Seller
+import nashpy as nash
 
 class BayesianFuzzyGame():
     """ Performs the negotiation game theory, calculates utility, and returns the counteroffer price.
@@ -40,16 +41,33 @@ class BayesianFuzzyGame():
         seller_offer_price = self.seller.last_offer_price
 
         # Check if this is a new game
-        if self.buyer.last_offer_price is None and self.seller.last_offer_price is None:
+        if self.buyer.last_offer_price is None:
             # Set the initial price as the counteroffer price
             self.product.initial_price = seller_offer_price
-
+            self.get_counter_offer_price(seller_offer_price, 
+                                 0, 
+                                 self.buyer.deadline, 
+                                 self.buyer.negotiation_power, 
+                                 self.buyer.reservation_price, 
+                                 self.product.initial_price, 
+                                 1, 
+                                 first_offer=True)
         # Set the sellers offer to the products current price
         self.product.current_price = seller_offer_price
 
-        # We now need to estimate the sellers reservation price and deadline
+        # Check if the new offer is acceptable
 
+        # If not acceptable get the counteroffer price
+        counter_offer_price = self.get_counter_offer_price(seller_offer_price, 
+                                 0, 
+                                 self.buyer.deadline, 
+                                 self.buyer.negotiation_power, 
+                                 self.buyer.reservation_price, 
+                                 self.product.current_price, 
+                                 1, 
+                                 first_offer=False)
 
+        return counter_offer_price
 
 
     def delta(q, s_Hh, s_Hl, s_Lh, s_Ll):
@@ -79,22 +97,7 @@ class BayesianFuzzyGame():
     def x_payoff(OP, IP, RP, xmin):
         """ Calculate the utility for the given offer price. """
         return xmin + (1 - xmin) * abs(RP - OP) / abs(RP - IP)
-    
-    def first_offer_price(IP, RP, t, tau, lambda_ij, alpha):
-        """ Calculate the offer price for a given round. """
-        factor = (-1)**alpha * (t / tau) ** lambda_ij
-        return IP + factor * abs(RP - IP)
 
-    def second_on_offer_price(previous_offer, t, tau, lambda_ij, RP, IP, alpha):
-        """
-        Calculate the next offer price based on the previous offer and negotiation dynamics.
-        """
-        time_factor = (t / (tau - (t - 1)))**lambda_ij
-        price_difference = abs(RP - IP)
-        adjustment = (-1)**alpha * time_factor * price_difference
-        new_offer = previous_offer + adjustment
-        return new_offer
-        
     def adjust_strategy(history, agent):
         last_utility = history[agent]["utilities"][-1] if history[agent]["utilities"] else None
         if last_utility is not None:
@@ -103,4 +106,19 @@ class BayesianFuzzyGame():
                 return 0.1  # More conservative
             else:
                 return 0.9  # More aggressive
-        return 0.5  # Default strategy
+        return 0.5  # Default strategy        
+
+    def get_counter_offer_price(previous_offer, t, tau, lambda_ij, RP, IP, alpha, first_offer=False):
+        """
+        Calculate the next offer price based on the previous offer and negotiation dynamics.
+        """
+        if first_offer:
+            factor = (-1)**alpha * (t / tau) ** lambda_ij
+            return IP + factor * abs(RP - IP)
+        else:
+            time_factor = (t / (tau - (t - 1)))**lambda_ij
+            price_difference = abs(RP - IP)
+            adjustment = (-1)**alpha * time_factor * price_difference
+            new_offer = previous_offer + adjustment
+            return new_offer
+        

@@ -31,6 +31,8 @@ server.config.update(SECRET_KEY=os.getenv("SECRET_KEY", "default_secret_key"))
 #     dash_app,
 #     auth_func= DataService.verify_user)
 
+
+
 ## Get username and password from login
 user_email = "spos6045@gmail.com"
 user_password = "cjoisegsetxkqdxb"
@@ -40,8 +42,8 @@ first_name = buyer['first_name']
 last_name = buyer['last_name']
 email_service = EmailService(email= user_email, password=user_password)
 
-main = Main(user_email, user_password, first_name, last_name, data_service, email_service)
 
+main = Main(user_email, user_password, first_name, last_name, data_service, email_service)
 
 
 ## Get layout Items
@@ -108,5 +110,3 @@ def read_emails_button_call(n_clicks):
 
 if __name__ == '__main__':
     dash_app.run_server(debug=True, port=8001)
-
-
