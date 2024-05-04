@@ -1,5 +1,6 @@
 from sqlalchemy import create_engine, Column, Date, Integer, String, Float, ForeignKey, Text, TIMESTAMP
 from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship, sessionmaker
 from datetime import datetime
 
@@ -51,6 +52,10 @@ class GameDatabase(Base):
     buyer_reservation_price = Column(Float)
     seller_reservation_price = Column(Float)
     current_strategy = Column(String(255))
+    negotiation_start_date = Column(Date, default=func.current_date())  
+    buyer_deadline = Column(Date)
+    seller_deadline = Column(Date)
+    negotiation_end_date = Column(Date)
     buyer_agent = relationship("BuyerAgentDatabase")
     seller = relationship("SellerDatabase")
     product = relationship("ProductDatabase")

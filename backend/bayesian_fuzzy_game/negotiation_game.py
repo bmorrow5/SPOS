@@ -1,5 +1,6 @@
+import datetime
 from game_classes import Product, Buyer, Seller
-import nashpy as nash
+from bayesian_network import BayesianNetwork
 
 class BayesianFuzzyGame():
     """ Performs the negotiation game theory, calculates utility, and returns the counteroffer price.
@@ -12,7 +13,7 @@ class BayesianFuzzyGame():
         p=0.5, q=0.5 for the mixed strategy
     """
 
-    def __init__(self, game_id, product, buyer, seller):
+    def __init__(self, game_id, game_time_days, product, buyer, seller):
         new_product = Product(product['name'], 
                               product['quantity'], 
                               product['initial_price'], 
@@ -30,9 +31,11 @@ class BayesianFuzzyGame():
                             seller['deadline'], 
                             seller['last_offer_price'])
         self.game_id = game_id
+        self.game_time = game_time_days
         self.product =  new_product
         self.buyer = new_buyer
         self.seller = new_seller
+        
 
     def update_game(self):
         """Updates the game and gives counteroffer price
@@ -44,6 +47,7 @@ class BayesianFuzzyGame():
         if self.buyer.last_offer_price is None:
             # Set the initial price as the counteroffer price
             self.product.initial_price = seller_offer_price
+
             self.get_counter_offer_price(seller_offer_price, 
                                  0, 
                                  self.buyer.deadline, 
@@ -52,50 +56,77 @@ class BayesianFuzzyGame():
                                  self.product.initial_price, 
                                  1, 
                                  first_offer=True)
+            
         # Set the sellers offer to the products current price
         self.product.current_price = seller_offer_price
 
-        # Check if the new offer is acceptable
+        # Check if offer is acceptable            
 
-        # If not acceptable get the counteroffer price
+        # Check if deadline is hit
+
+        # Update the beliefs (bayesian networks) of buyer and seller
+        # BayesianNetwork().update_beliefs(self.buyer, self.seller)
+        # buyer_external_factors, seller_external_factors = BayesianNetwork().get_external_factors()
+        buyer_external_factors, seller_external_factors = 1, 1
+
+        # Define the payoff matrix
+        b_Hh, b_Hl, b_Lh, b_Ll = 7.5, 0.25, 2.5, 0.75
+        s_Hh, s_Hl, s_Lh, s_Ll = 7.5, 2.5, 0.25, 0.75
+
+        # Calculate the delta and gamma values
+        delta_value = self.delta(b_Hh, b_Hl, b_Lh, b_Ll)
+        
+        gamma_value = self.gamma()
+        
+        # Calculate the utilities for the buyer and seller
+        buyer_utility = self.get_utility_buyer()
+        seller_utility = self.get_utility_seller()
+
+        # Now use this strategy to get counteroffer price
         counter_offer_price = self.get_counter_offer_price(seller_offer_price, 
-                                 0, 
-                                 self.buyer.deadline, 
-                                 self.buyer.negotiation_power, 
-                                 self.buyer.reservation_price, 
-                                 self.product.current_price, 
-                                 1, 
-                                 first_offer=False)
-
+                                                            self.game_time,
+                                                            self.buyer.deadline, 
+                                                            self.buyer.negotiation_power, 
+                                                            self.buyer.reservation_price, 
+                                                            self.product.current_price, 
+                                                            1, 
+                                                            first_offer=False)
         return counter_offer_price
 
 
-    def delta(q, s_Hh, s_Hl, s_Lh, s_Ll):
-        """Calculates delta, the sign of the coeffient of p for the seller's utility function.
-        """ 
-        return (s_Hh - s_Hl - s_Lh + s_Ll) * q + s_Hl - s_Ll
 
-    def gamma(p, b_Hh, b_Hl, b_Lh, b_Ll):
-        """Calculates gamma, the sign of the coeffient of p for the seller's utility function.
+    def update_beliefs(self):
+        """Updates the beliefs of the buyer and seller
         """
-        return (b_Hh - b_Hl - b_Lh + b_Ll) * p + b_Lh - b_Ll
+        pass
 
-    def utility_buyer(p, q, b_Hl, b_Ll, gamma_value):
+
+    """ Delta and gamma are the coefficients of p in the utility functions of the buyer and seller.
+    """
+    def delta(self, buyer_prob, s_Hh, s_Hl, s_Lh, s_Ll):
+        """Calculates delta, the sign of the coeffient of p for the seller's utility function.
+        q is the buyer's mixed strategy probability of choosing the high strategy.
+        """ 
+        return (s_Hh - s_Hl - s_Lh + s_Ll) * buyer_prob + s_Hl - s_Ll
+
+    def gamma(self, supplier_prob, b_Hh, b_Hl, b_Lh, b_Ll):
+        """Calculates gamma, the sign of the coeffient of p for the seller's utility function.
+        p is the supplier's mixed strategy probability of choosing the high strategy.
+        """
+        return (b_Hh - b_Hl - b_Lh + b_Ll) * supplier_prob + b_Lh - b_Ll
+
+    def get_utility_buyer(self, external_factor_prob, supplier_prob, buyer_prob, b_Hl, b_Ll, gamma_value):
         """ Calculate buyer's utility with consideration of external factors
         """
-        # alpha = BayesianNetwork().get_alpha() # Get external factor influence
-        alpha = 1 
-        return gamma_value * alpha * q + (b_Hl - b_Ll) * p + b_Ll
+        return gamma_value * external_factor_prob * buyer_prob + (b_Hl - b_Ll) * supplier_prob + b_Ll
 
-    def utility_supplier(p, q, s_Lh, s_Ll, delta_value):
-        """ Calculate supplier's utility with consideration of external factors. """
-        # beta = BayesianNetwork().get_beta() # Get external factor influence
-        beta = 1
-        return delta_value * beta * p + (s_Lh - s_Ll) * q + s_Ll
+    def get_utility_seller(self, external_factor_prob, supplier_prob, buyer_prob, s_Lh, s_Ll, delta_value):
+        """ Calculate seller's utility with consideration of external factors. """
+        return delta_value * external_factor_prob * supplier_prob + (s_Lh - s_Ll) * buyer_prob + s_Ll
 
     ## Need to check this
-    def x_payoff(OP, IP, RP, xmin):
-        """ Calculate the utility for the given offer price. """
+    def x_payoff(self, OP, IP, RP, xmin):
+        """ Calculate the payoff for the given offer price. """
         return xmin + (1 - xmin) * abs(RP - OP) / abs(RP - IP)
 
     def adjust_strategy(history, agent):
@@ -108,17 +139,17 @@ class BayesianFuzzyGame():
                 return 0.9  # More aggressive
         return 0.5  # Default strategy        
 
-    def get_counter_offer_price(previous_offer, t, tau, lambda_ij, RP, IP, alpha, first_offer=False):
+    def get_counter_offer_price(previous_offer, t, tau, lambda_strategy, reservation_price, intial_price, alpha, first_offer=False):
         """
         Calculate the next offer price based on the previous offer and negotiation dynamics.
         """
         if first_offer:
-            factor = (-1)**alpha * (t / tau) ** lambda_ij
-            return IP + factor * abs(RP - IP)
+            factor = (-1)**alpha * (t / tau) ** lambda_strategy
+            first_offer_price = intial_price + factor * abs(reservation_price - intial_price)
+            return first_offer_price
         else:
-            time_factor = (t / (tau - (t - 1)))**lambda_ij
-            price_difference = abs(RP - IP)
+            time_factor = (t / (tau - (t - 1)))**lambda_strategy
+            price_difference = abs(reservation_price - intial_price)
             adjustment = (-1)**alpha * time_factor * price_difference
             new_offer = previous_offer + adjustment
             return new_offer
-        
