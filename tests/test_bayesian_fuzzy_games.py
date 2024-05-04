@@ -1,8 +1,10 @@
 import unittest
+import sys
+import os
+current_dir = os.path.dirname(os.path.abspath(__file__))
+parent_dir = os.path.dirname(current_dir)
+sys.path.insert(1, parent_dir)
 from parameterized import parameterized
-from backend.bayesian_fuzzy_game.product import Product
-from backend.bayesian_fuzzy_game.buyer import Buyer
-from backend.bayesian_fuzzy_game.seller import Seller
 from backend.bayesian_fuzzy_game.negotiation_game import BayesianFuzzyGame
 
 class BayesianFuzzyGamesTest(unittest.TestCase):
@@ -39,24 +41,16 @@ class BayesianFuzzyGamesTest(unittest.TestCase):
             'deadline': '2024-10-01', # We assume they have no significant pressure to sell
             'last_offer_price': None
         }
-        self.game = BayesianFuzzyGame(game_id=1, product=self.product_info, buyer=self.buyer_info, seller=self.seller_info)
-
+        self.game = BayesianFuzzyGame(game_id=1, 
+                                      game_time_days=1, 
+                                      product=self.product_info, 
+                                      buyer=self.buyer_info, 
+                                      seller=self.seller_info)
+    
     def test_update_game(self):
-        pass
-        
-
-    def test_estimate_opponent_payoff(self):
-        pass
-
-    def test_estimate_opponent_reservation_price(self):
-        pass
-
-    def test_get_strategy(self):
-        pass
-
-    def test_simulate_negotiation(self):
-        pass
-
+        """Test the update_game method
+        """
+        self.game.update_game()
 
 if __name__ == '__main__':
     unittest.main()

@@ -67,20 +67,27 @@ class BayesianFuzzyGame():
         # Update the beliefs (bayesian networks) of buyer and seller
         # BayesianNetwork().update_beliefs(self.buyer, self.seller)
         # buyer_external_factors, seller_external_factors = BayesianNetwork().get_external_factors()
-        buyer_external_factors, seller_external_factors = 1, 1
+        buyer_external_factor_prob, seller_external_factor_prob = 1, 1
 
         # Define the payoff matrix
         b_Hh, b_Hl, b_Lh, b_Ll = 7.5, 0.25, 2.5, 0.75
         s_Hh, s_Hl, s_Lh, s_Ll = 7.5, 2.5, 0.25, 0.75
 
-        # Calculate the delta and gamma values
-        delta_value = self.delta(b_Hh, b_Hl, b_Lh, b_Ll)
+        # Mixed strategy probabilities
+        p = 0.5
+        q = 0.5
+
+        # Calculate the delta and gamma values for our utilities
+        gamma_value = self.gamma(q, b_Hh, b_Hl, b_Lh, b_Ll)
+        delta_value = self.delta(p, s_Hh, s_Hl, s_Lh, s_Ll)
         
-        gamma_value = self.gamma()
-        
-        # Calculate the utilities for the buyer and seller
-        buyer_utility = self.get_utility_buyer()
-        seller_utility = self.get_utility_seller()
+        # Get the best strategy for the buyer and seller
+        buyer_utility = self.get_utility_buyer(buyer_external_factor_prob, p, q, b_Hl, b_Ll, gamma_value)
+        seller_utility = self.get_utility_seller(seller_external_factor_prob, p, q, s_Hl, s_Ll, delta_value)
+
+        print("Buyer utility: ", buyer_utility)
+        print("Seller utility: ", seller_utility)
+
 
         # Now use this strategy to get counteroffer price
         counter_offer_price = self.get_counter_offer_price(seller_offer_price, 
@@ -92,13 +99,6 @@ class BayesianFuzzyGame():
                                                             1, 
                                                             first_offer=False)
         return counter_offer_price
-
-
-
-    def update_beliefs(self):
-        """Updates the beliefs of the buyer and seller
-        """
-        pass
 
 
     """ Delta and gamma are the coefficients of p in the utility functions of the buyer and seller.
@@ -128,16 +128,6 @@ class BayesianFuzzyGame():
     def x_payoff(self, OP, IP, RP, xmin):
         """ Calculate the payoff for the given offer price. """
         return xmin + (1 - xmin) * abs(RP - OP) / abs(RP - IP)
-
-    def adjust_strategy(history, agent):
-        last_utility = history[agent]["utilities"][-1] if history[agent]["utilities"] else None
-        if last_utility is not None:
-            # Example adjustment: decrease lambda if utility is low to make offers more appealing
-            if last_utility < 0.5:
-                return 0.1  # More conservative
-            else:
-                return 0.9  # More aggressive
-        return 0.5  # Default strategy        
 
     def get_counter_offer_price(previous_offer, t, tau, lambda_strategy, reservation_price, intial_price, alpha, first_offer=False):
         """
