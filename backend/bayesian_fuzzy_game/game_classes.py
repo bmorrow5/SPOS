@@ -19,7 +19,8 @@ class Seller(Player):
         super().__init__(name, email, negotiation_power, reservation_price, last_offer_price, deadline)
 
 class Product():
-    def __init__(self, name, quantity, current_price):
+    def __init__(self, name, quantity, initial_price, current_price):
         self.name = name
         self.quantity = quantity
+        self.initial_price = initial_price
         self.current_price = current_price

@@ -1,4 +1,8 @@
-import datetime
+import sys
+import os
+current_dir = os.path.dirname(os.path.abspath(__file__))
+parent_dir = os.path.dirname(current_dir)
+sys.path.insert(1, current_dir)
 from game_classes import Product, Buyer, Seller
 from bayesian_network import BayesianNetwork
 
@@ -89,16 +93,18 @@ class BayesianFuzzyGame():
         print("Seller utility: ", seller_utility)
 
 
+
+
         # Now use this strategy to get counteroffer price
-        counter_offer_price = self.get_counter_offer_price(seller_offer_price, 
-                                                            self.game_time,
-                                                            self.buyer.deadline, 
-                                                            self.buyer.negotiation_power, 
-                                                            self.buyer.reservation_price, 
-                                                            self.product.current_price, 
-                                                            1, 
-                                                            first_offer=False)
-        return counter_offer_price
+        #counter_offer_price = self.get_counter_offer_price(seller_offer_price, 
+        #                                                    self.game_time,
+        #                                                    self.buyer.deadline, 
+        #                                                    self.buyer.negotiation_power, 
+        #                                                    self.buyer.reservation_price, 
+        #                                                    self.product.current_price, 
+        #                                                    1, 
+        #                                                    first_offer=False)
+        #return counter_offer_price
 
 
     """ Delta and gamma are the coefficients of p in the utility functions of the buyer and seller.
