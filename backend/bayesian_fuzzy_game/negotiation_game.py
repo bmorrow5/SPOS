@@ -48,8 +48,8 @@ class BayesianFuzzyGame():
         game = {}
         seller_offer_price = self.seller.last_offer_price
 
-        days_to_deadline = datetime.strptime(self.buyer.deadline, "%Y-%m-%d") - datetime.now()
-        days_to_deadline = days_to_deadline.days
+        days_to_buyer_deadline = datetime.strptime(self.buyer.deadline, "%Y-%m-%d") - datetime.now()
+        days_to_buyer_deadline = days_to_buyer_deadline.days
         # print("Days to deadline: ", days_to_deadline)
 
         first_offer = False
@@ -64,7 +64,7 @@ class BayesianFuzzyGame():
         self.product.current_price = seller_offer_price
 
         # Check if deadline is hit
-        if days_to_deadline == 0:
+        if days_to_buyer_deadline == 0:
             print("Deadline hit, accept offer price")
             return seller_offer_price
 
@@ -96,7 +96,7 @@ class BayesianFuzzyGame():
         # Now use this strategy to get counteroffer price
         counter_offer_price = self.get_counter_offer_price(previous_offer = seller_offer_price, 
                                                            t  = self.game_time, 
-                                                           tau = days_to_deadline, 
+                                                           tau = days_to_buyer_deadline, 
                                                            lambda_strategy = seller_utility, # Basing our offer off opponent predicted utility 
                                                            reservation_price = self.buyer.reservation_price, 
                                                            intial_price = self.product.initial_price, 

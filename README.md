@@ -6,7 +6,7 @@ This system utilizes an application of game theory called Bayesian Fuzzy Games t
 Pending (build in progress)
 There will be two docker containers. One for the database, and one for the API. The frontend is seperated as well. To run on docker enter the command line and enter:
 
-### How to setup the database
+### How to setup the docker database
 1. docker run --name spos_postgres -p 5432:5432 -e POSTGRES_PASSWORD=spos123 -d postgres
 2. docker exec -it spos_postgres bash
 3. su - postgres
@@ -15,7 +15,7 @@ There will be two docker containers. One for the database, and one for the API. 
 6. \c default_company
 7. Run rest of SQL
 
-### To get pgAdmin4 to run
+### (optional) To get pgAdmin4 to run
 1. docker run -p 5050:80 -e "PGADMIN_DEFAULT_EMAIL=(your email)@gmail.com" -e "PGADMIN_DEFAULT_PASSWORD=admin" -d dpage/pgadmin4
 2. Connect the containers with:
 3. name: spos_postgres
