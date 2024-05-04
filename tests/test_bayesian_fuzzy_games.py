@@ -22,23 +22,23 @@ class BayesianFuzzyGamesTest(unittest.TestCase):
         self.product_info = {
             'name': 'Laptop',
             'quantity': 50,
-            'initial_price': 1000,
-            'current_price': 1000,
+            'initial_price': 10000,
+            'current_price': 9500,
             }
         self.buyer_info = {
             'name': 'John Doe',
             'email': 'john@example.com',
             'negotiation_power': 0,
-            'reservation_price': 950,
-            'last_offer_price': 950,
+            'reservation_price': 9000,
+            'last_offer_price': 8000,
             'deadline': '2024-05-07'
         }
         self.seller_info = {
             'name': 'Jane Doe',
             'email': 'jane@example.com',
             'negotiation_power': 0,
-            'reservation_price': 920,
-            'last_offer_price': 1000,
+            'reservation_price': 8000,
+            'last_offer_price': 9500,
             'deadline': '2024-10-01' # We assume they have no significant pressure to sell
         }
         self.game = BayesianFuzzyGame(game_id=1, 

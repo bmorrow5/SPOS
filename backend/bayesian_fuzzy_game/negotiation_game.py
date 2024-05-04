@@ -87,11 +87,11 @@ class BayesianFuzzyGame():
         delta_value = self.delta(p, s_Hh, s_Hl, s_Lh, s_Ll)
         
         # Get the best strategy for the buyer and seller
-        buyer_utility = self.get_utility_buyer(buyer_external_factor_prob, p, q, b_Hl, b_Ll, gamma_value)
-        seller_utility = self.get_utility_seller(seller_external_factor_prob, p, q, s_Hl, s_Ll, delta_value)
+        max_buyer_utility = self.get_utility_buyer(buyer_external_factor_prob, p, q, b_Hl, b_Ll, gamma_value)
+        max_seller_utility = self.get_utility_seller(seller_external_factor_prob, p, q, s_Hl, s_Ll, delta_value)
 
-        print("Buyer utility: ", buyer_utility)
-        print("Seller utility: ", seller_utility)
+        print("Buyer utility: ", max_buyer_utility)
+        print("Seller utility: ", max_seller_utility)
 
 
         days_to_deadline = datetime.strptime(self.buyer.deadline, "%Y-%m-%d") - datetime.now()
@@ -102,7 +102,7 @@ class BayesianFuzzyGame():
         counter_offer_price = self.get_counter_offer_price(previous_offer = seller_offer_price, 
                                                            t  = self.game_time, 
                                                            tau = days_to_deadline, 
-                                                           lambda_strategy = seller_utility, # Basing our offer off their predicted utility 
+                                                           lambda_strategy = max_seller_utility, # Basing our offer off their predicted utility 
                                                            reservation_price = self.buyer.reservation_price, 
                                                            intial_price = self.product.initial_price, 
                                                            alpha = 1,  # 1 for supplier and 0 for buyer
