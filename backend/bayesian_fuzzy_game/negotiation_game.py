@@ -3,6 +3,7 @@ import os
 current_dir = os.path.dirname(os.path.abspath(__file__))
 parent_dir = os.path.dirname(current_dir)
 sys.path.insert(1, current_dir)
+from datetime import datetime
 from game_classes import Product, Buyer, Seller
 from bayesian_network import BayesianNetwork
 
@@ -26,14 +27,14 @@ class BayesianFuzzyGame():
                           buyer['email'], 
                           buyer['negotiation_power'], 
                           buyer['reservation_price'], 
-                          buyer['deadline'], 
-                          buyer['last_offer_price'])
+                          buyer['last_offer_price'],
+                          buyer['deadline'])
         new_seller = Seller(seller['name'], 
                             seller['email'], 
                             seller['negotiation_power'], 
                             seller['reservation_price'], 
-                            seller['deadline'], 
-                            seller['last_offer_price'])
+                            seller['last_offer_price'],
+                            seller['deadline'])
         self.game_id = game_id
         self.game_time = game_time_days
         self.product =  new_product
@@ -71,7 +72,7 @@ class BayesianFuzzyGame():
         # Update the beliefs (bayesian networks) of buyer and seller
         # BayesianNetwork().update_beliefs(self.buyer, self.seller)
         # buyer_external_factors, seller_external_factors = BayesianNetwork().get_external_factors()
-        buyer_external_factor_prob, seller_external_factor_prob = 1, 1
+        buyer_external_factor_prob, seller_external_factor_prob = 1, .9
 
         # Define the payoff matrix
         b_Hh, b_Hl, b_Lh, b_Ll = 7.5, 0.25, 2.5, 0.75
@@ -93,17 +94,21 @@ class BayesianFuzzyGame():
         print("Seller utility: ", seller_utility)
 
 
-
+        days_to_deadline = datetime.strptime(self.buyer.deadline, "%Y-%m-%d") - datetime.now()
+        days_to_deadline = days_to_deadline.days
+        # print("Days to deadline: ", days_to_deadline)
 
         # Now use this strategy to get counteroffer price
-        #counter_offer_price = self.get_counter_offer_price(seller_offer_price, 
-        #                                                    self.game_time,
-        #                                                    self.buyer.deadline, 
-        #                                                    self.buyer.negotiation_power, 
-        #                                                    self.buyer.reservation_price, 
-        #                                                    self.product.current_price, 
-        #                                                    1, 
-        #                                                    first_offer=False)
+        counter_offer_price = self.get_counter_offer_price(previous_offer = seller_offer_price, 
+                                                           t  = self.game_time, 
+                                                           tau = days_to_deadline, 
+                                                           lambda_strategy = seller_utility, # Basing our offer off their predicted utility 
+                                                           reservation_price = self.buyer.reservation_price, 
+                                                           intial_price = self.product.initial_price, 
+                                                           alpha = 1,  # 1 for supplier and 0 for buyer
+                                                           first_offer=False)
+        print(counter_offer_price)
+        
         #return counter_offer_price
 
 
@@ -135,7 +140,7 @@ class BayesianFuzzyGame():
         """ Calculate the payoff for the given offer price. """
         return xmin + (1 - xmin) * abs(RP - OP) / abs(RP - IP)
 
-    def get_counter_offer_price(previous_offer, t, tau, lambda_strategy, reservation_price, intial_price, alpha, first_offer=False):
+    def get_counter_offer_price(self, previous_offer, t, tau, lambda_strategy, reservation_price, intial_price, alpha, first_offer=False):
         """
         Calculate the next offer price based on the previous offer and negotiation dynamics.
         """
@@ -145,7 +150,11 @@ class BayesianFuzzyGame():
             return first_offer_price
         else:
             time_factor = (t / (tau - (t - 1)))**lambda_strategy
+            print("Time factor: ", time_factor)
             price_difference = abs(reservation_price - intial_price)
+            print("Price difference: ", price_difference)
             adjustment = (-1)**alpha * time_factor * price_difference
+            print("Adjustment: ", adjustment)
             new_offer = previous_offer + adjustment
+            print("New offer: ", new_offer)
             return new_offer
