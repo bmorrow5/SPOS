@@ -48,37 +48,37 @@ class BayesianFuzzyGame():
         game = {}
         seller_offer_price = self.seller.last_offer_price
 
+        days_to_deadline = datetime.strptime(self.buyer.deadline, "%Y-%m-%d") - datetime.now()
+        days_to_deadline = days_to_deadline.days
+        # print("Days to deadline: ", days_to_deadline)
+
+        first_offer = False
+
         # Check if this is a new game
         if self.buyer.last_offer_price is None:
             # Set the initial price as the counteroffer price
             self.product.initial_price = seller_offer_price
-
-            self.get_counter_offer_price(seller_offer_price, 
-                                 0, 
-                                 self.buyer.deadline, 
-                                 self.buyer.negotiation_power, 
-                                 self.buyer.reservation_price, 
-                                 self.product.initial_price, 
-                                 1, 
-                                 first_offer=True)
+            first_offer = True
             
         # Set the sellers offer to the products current price
         self.product.current_price = seller_offer_price
 
-        # Check if offer is acceptable            
-
         # Check if deadline is hit
+        if days_to_deadline == 0:
+            print("Deadline hit, accept offer price")
+            return seller_offer_price
 
         # Update the beliefs (bayesian networks) of buyer and seller
         # BayesianNetwork().update_beliefs(self.buyer, self.seller)
         # buyer_external_factors, seller_external_factors = BayesianNetwork().get_external_factors()
-        buyer_external_factor_prob, seller_external_factor_prob = 1, .9
+        buyer_external_factor_prob, seller_external_factor_prob = 1, 1
 
         # Define the payoff matrix
         b_Hh, b_Hl, b_Lh, b_Ll = 7.5, 0.25, 2.5, 0.75
         s_Hh, s_Hl, s_Lh, s_Ll = 7.5, 2.5, 0.25, 0.75
 
-        # Mixed strategy probabilities
+        # Mixed strategy probabilities, these will be adjusted by our external factors from our bayesian network.
+        # We start with a mixed strategy of 0.5 for both buyer and seller
         p = 0.5
         q = 0.5
 
@@ -86,29 +86,28 @@ class BayesianFuzzyGame():
         gamma_value = self.gamma(q, b_Hh, b_Hl, b_Lh, b_Ll)
         delta_value = self.delta(p, s_Hh, s_Hl, s_Lh, s_Ll)
         
-        # Get the best strategy for the buyer and seller
-        max_buyer_utility = self.get_utility_buyer(buyer_external_factor_prob, p, q, b_Hl, b_Ll, gamma_value)
-        max_seller_utility = self.get_utility_seller(seller_external_factor_prob, p, q, s_Hl, s_Ll, delta_value)
-
-        print("Buyer utility: ", max_buyer_utility)
-        print("Seller utility: ", max_seller_utility)
-
-
-        days_to_deadline = datetime.strptime(self.buyer.deadline, "%Y-%m-%d") - datetime.now()
-        days_to_deadline = days_to_deadline.days
-        # print("Days to deadline: ", days_to_deadline)
+        # Get the best strategy for the buyer and seller.  
+        # Utility is lambda in math doc, it is the strategy, a value between 1 and 10 depending on the specific strategy
+        buyer_utility = self.get_utility_buyer(buyer_external_factor_prob, p, q, b_Hl, b_Ll, gamma_value)
+        seller_utility = self.get_utility_seller(seller_external_factor_prob, p, q, s_Hl, s_Ll, delta_value)
+        # print("Buyer utility: ", buyer_utility)
+        # print("Seller utility: ", seller_utility)
 
         # Now use this strategy to get counteroffer price
         counter_offer_price = self.get_counter_offer_price(previous_offer = seller_offer_price, 
                                                            t  = self.game_time, 
                                                            tau = days_to_deadline, 
-                                                           lambda_strategy = max_seller_utility, # Basing our offer off their predicted utility 
+                                                           lambda_strategy = seller_utility, # Basing our offer off opponent predicted utility 
                                                            reservation_price = self.buyer.reservation_price, 
                                                            intial_price = self.product.initial_price, 
                                                            alpha = 1,  # 1 for supplier and 0 for buyer
-                                                           first_offer=False)
+                                                           first_offer=first_offer # Modifies counteroffer price if first offer
+                                                           )
         print(counter_offer_price)
         
+        # Check if current offer is acceptable U_s(OP_c^t) > U_s(OP_s^t-1)
+
+
         #return counter_offer_price
 
 
@@ -135,7 +134,7 @@ class BayesianFuzzyGame():
         """ Calculate seller's utility with consideration of external factors. """
         return delta_value * external_factor_prob * supplier_prob + (s_Lh - s_Ll) * buyer_prob + s_Ll
 
-    ## Need to check this
+    ## This is not used in our model
     def x_payoff(self, OP, IP, RP, xmin):
         """ Calculate the payoff for the given offer price. """
         return xmin + (1 - xmin) * abs(RP - OP) / abs(RP - IP)
@@ -150,11 +149,11 @@ class BayesianFuzzyGame():
             return first_offer_price
         else:
             time_factor = (t / (tau - (t - 1)))**lambda_strategy
-            print("Time factor: ", time_factor)
             price_difference = abs(reservation_price - intial_price)
-            print("Price difference: ", price_difference)
             adjustment = (-1)**alpha * time_factor * price_difference
-            print("Adjustment: ", adjustment)
             new_offer = previous_offer + adjustment
-            print("New offer: ", new_offer)
+            # print("Time factor: ", time_factor)
+            # print("Price difference: ", price_difference)            
+            # print("Adjustment: ", adjustment)
+            # print("New offer: ", new_offer)
             return new_offer

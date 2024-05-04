@@ -16,7 +16,7 @@ There will be two docker containers. One for the database, and one for the API. 
 7. Run rest of SQL
 
 ### To get pgAdmin4 to run
-1. docker run -p 5050:80 -e "PGADMIN_DEFAULT_EMAIL=brandonmorrow09@gmail.com" -e "PGADMIN_DEFAULT_PASSWORD=admin" -d dpage/pgadmin4
+1. docker run -p 5050:80 -e "PGADMIN_DEFAULT_EMAIL=(your email)@gmail.com" -e "PGADMIN_DEFAULT_PASSWORD=admin" -d dpage/pgadmin4
 2. Connect the containers with:
 3. name: spos_postgres
 host: host.docker.internal
