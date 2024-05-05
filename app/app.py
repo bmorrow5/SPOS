@@ -45,23 +45,65 @@ email_service = EmailService(email= user_email, password=user_password)
 
 main = Main(user_email, user_password, first_name, last_name, data_service, email_service)
 
-
-## Get layout Items
-new_product_form = layout.get_new_product_form()
+############## Define Layout ##############
 navbar = layout.get_navbar()
-read_emails_button = layout.get_read_emails_button()
+update_game_card = layout.get_update_game_card()
+new_product_card = layout.get_launch_new_negotiation_game_card()
+add_seller_card = layout.get_add_seller_card()
+bayesian_network_plot = layout.get_bayesian_network_plot()
+top_sellers_plot = layout.get_top_sellers_plot()
+game_table = layout.get_game_table()
+# read_emails_button = layout.get_read_emails_button() # Feature not yet implemented
 
-## Declare layout
-dash_app.layout = html.Div(
-    [navbar, new_product_form, read_emails_button]
+
+dash_app.layout = html.Div([
+    navbar,
+    dbc.Row([
+        # Left Column for Cards
+        dbc.Col(html.Div([update_game_card, new_product_card, add_seller_card]), width=3),
+        # Right Column for Plots and Table
+        dbc.Col([
+            dbc.Row([
+                dbc.Col(html.Div([bayesian_network_plot])),
+                dbc.Col(html.Div([top_sellers_plot])),
+            ]),
+            dbc.Row([
+                dbc.Col(html.Div([game_table]))
+            ])
+        ])  
+    ])
+])
+
+############## Update Game Callback ##############
+@dash_app.callback(
+    Output('input_container_1', 'children'),
+    [Input('update_game_btn', 'n_clicks')],
+    [State('game_id', 'value'),
+     State('seller_counteroffer', 'value')]
 )
+def update_game_button(n_clicks, game_id, seller_counteroffer):
+    """Requests quotes from all sellers in the database for a product
+       Args:
+            email_list (list): Suppliers to send email to
+            counter_offer_price (float): Bayesian Games counter_offer_price
+            subject (str): Email subject
+            message (str): Email contents
+            Product (Product): Product to request quotes for
+    """
+    if n_clicks is None or n_clicks == 0:
+        return "Enter game details to update"
+    if n_clicks > 0:
+        main.request_quotes(game_id, seller_counteroffer)
+        return f"Game Updated: {game_id}"
+    return ""
+
 
 
 
 ############## Request Quotes Callback ##############
 @dash_app.callback(
-    Output('input_container', 'children'),
-    [Input('submit_btn', 'n_clicks')],
+    Output('input_container_2', 'children'),
+    [Input('request_quotes_btn', 'n_clicks')],
     [State('product_name', 'value'),
      State('product_quantity', 'value'),
      State('product_max_price', 'value'),
@@ -77,20 +119,22 @@ def request_quotes_button(n_clicks, product_name, product_quantity, product_max_
             Product (Product): Product to request quotes for
     """
     if n_clicks is None or n_clicks == 0:
-        return "Enter details and press request quotes to submit"
+        return "Enter requirement details"
     if n_clicks > 0:
         main.request_quotes(product_name, product_quantity, product_max_price, date_needed_by, message)
         return f"Requests for quotes sent: {product_name}"
     return ""
 
-
-############## Read Emails Callback ##############
+############## Add Seller Callback ##############
 @dash_app.callback(
-    Output('email_container', 'children'),  # This will update the children of a Div with the ID 'email_status'
-    [Input('read_emails_btn', 'n_clicks')]
+    Output('input_container_3', 'children'),
+    [Input('add_seller_btn', 'n_clicks')],
+    [State('first_name', 'value'),
+     State('last_name', 'value'),
+     State('email', 'value')]
 )
-def read_emails_button_call(n_clicks):
-    """Reads emails from the buyer's email account
+def add_seller_button(n_clicks, first_name, last_name, email):
+    """Requests quotes from all sellers in the database for a product
        Args:
             email_list (list): Suppliers to send email to
             counter_offer_price (float): Bayesian Games counter_offer_price
@@ -99,11 +143,40 @@ def read_emails_button_call(n_clicks):
             Product (Product): Product to request quotes for
     """
     if n_clicks is None or n_clicks == 0:
-        return "Press read emails to read emails"
+        return "Enter seller details"
     if n_clicks > 0:
-        main.read_email_and_send_counteroffers()
-        return f"Emails read: "
+        main.add_seller(first_name, last_name, email)
+        return f"Seller Added: {first_name} {last_name}; {email}"
     return ""
+
+
+############## Read Emails Callback ##############
+############## Feature not yet implemented ##############
+#@dash_app.callback(
+#    Output('email_container', 'children'),  # This will update the children of a Div with the ID 'email_status'
+#    [Input('read_emails_btn', 'n_clicks')]
+#)
+#def read_emails_button_call(n_clicks):
+#    """Reads emails from the buyer's email account
+#       Args:
+#            email_list (list): Suppliers to send email to
+#            counter_offer_price (float): Bayesian Games counter_offer_price
+#            subject (str): Email subject
+#            message (str): Email contents
+#            Product (Product): Product to request quotes for
+#    """
+#    if n_clicks is None or n_clicks == 0:
+#        return "Press read emails to read emails"
+#    if n_clicks > 0:
+#        main.read_email_and_send_counteroffers()
+#        return f"Emails read: "
+#    return ""
+
+############## Update Game Callback ##############
+
+
+############## Update Graph Callback ##############
+
 
 
 
