@@ -37,12 +37,12 @@ CREATE TABLE IF NOT EXISTS spos.games (
     seller_id INT NOT NULL,
     buyer_agent_id INT NOT NULL,
     product_id INT NOT NULL,
-    buyer_power INT, -- Buyer negotiation power
-    seller_power INT, -- Seller negotiation power
-    initial_price FLOAT, -- This is the initial price in the negotiation
-    current_price FLOAT, -- This is the last price in the negotiation
-    last_seller_price FLOAT, -- Last price from seller
-    last_buyer_price FLOAT, -- Last price from buyer
+    buyer_power INT, 
+    seller_power INT,
+    initial_price FLOAT, 
+    current_price FLOAT,
+    last_seller_price FLOAT, 
+    last_buyer_price FLOAT, 
     buyer_reservation_price FLOAT,
     seller_reservation_price FLOAT,
     buyer_deadline DATE,
@@ -83,8 +83,8 @@ INSERT INTO spos.products (name, quantity, max_price, date_needed_by)
 VALUES ('Office Chair', 100, 50.0, '2023-12-31');
 
 -- Insert test data into games
-INSERT INTO spos.games (seller_id, buyer_agent_id, product_id, buyer_power, seller_power, current_price, last_seller_price, last_buyer_price, buyer_reservation_price, seller_reservation_price, current_strategy)
-VALUES (1, 1, 1, 10, 10, 50.0, 50.0, 45.0, 50.0, 55.0, 'conciliatory'); 
+INSERT INTO spos.games (seller_id, buyer_agent_id, product_id, buyer_power, seller_power, initial_price, current_price, last_seller_price, last_buyer_price, buyer_reservation_price, seller_reservation_price, buyer_deadline, current_strategy)
+VALUES (1, 1, 1, 10, 10, 100.00, 75.00, 75.00, 75.00, 80.00, 40.00,'2024-06-05', 'conciliatory'); 
 
 -- Insert test data into email_logs
 INSERT INTO spos.email_logs (sender_email, receiver_email, buyer_agent_id, seller_id, subject, body)
