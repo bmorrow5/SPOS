@@ -4,12 +4,23 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 parent_dir = os.path.dirname(current_dir)
 sys.path.insert(1, parent_dir)
 import re
+import pandas as pd
+import plotly.express as px
+from datetime import datetime
 from backend.bayesian_fuzzy_game.negotiation_game import BayesianFuzzyGame
-
+from backend.email_service.email_service import EmailService
+from backend.data_service.data_service import DataService
 
 class Main():
 
-    def __init__(self, user_email, user_password, first_name, last_name, data_service, email_service):
+    def __init__(self, user_email, user_password):
+        # Start services
+        data_service = DataService()
+        buyer = data_service.read_buyer(email= user_email)
+        first_name = buyer['first_name']
+        last_name = buyer['last_name']
+        email_service = EmailService(email= user_email, password=user_password)
+        
         self.user_email = user_email
         self.user_password = user_password
         self.first_name = first_name
@@ -18,6 +29,56 @@ class Main():
         self.email_service = email_service
 
 
+    ############## New Game Request Quotes ############## 
+    def update_game(self, game_id, seller_counteroffer):
+        old_game = self.data_service.read_game(game_id=game_id)
+
+        game_time_days = old_game['start_date'] - datetime.now()
+        game_time_days = game_time_days.days
+        print("Game time days: ", game_time_days)
+        product = {'name': old_game['product_name'], 
+                   'quantity': old_game['product_quantity'], 
+                   'initial_price': old_game['initial_price'], 
+                   'current_price': old_game['current_price']}
+
+        buyer = {'name': old_game['buyer_name'], 
+                 'email': old_game['buyer_email'], 
+                 'negotiation_power': old_game['buyer_negotiation_power'], 
+                 'reservation_price': old_game['buyer_reservation_price'], 
+                 'last_offer_price': old_game['buyer_last_offer_price'],
+                 'deadline': old_game['buyer_deadline']}
+        
+        seller = {'name': old_game['seller_name'], 
+                  'email': old_game['seller_email'], 
+                  'negotiation_power': old_game['seller_negotiation_power'], 
+                  'reservation_price': old_game['seller_reservation_price'], 
+                  'last_offer_price': old_game['seller_last_offer_price'],
+                  'deadline': old_game['seller_deadline']}
+
+
+        # Update the game
+        # game_time_days, product, buyer, seller, bayesian_network_variable_dict
+        bayesian_game = BayesianFuzzyGame(game_time_days=game_time_days, product=product, buyer=buyer, seller=seller)
+        counter_offer_price = bayesian_game.update_game()
+        return counter_offer_price
+        
+
+
+    def seller_plot(self):
+        """This will return a plot of the top sellers
+        """
+        # Get all sellers
+        sellers = self.data_service.read_all_sellers()
+
+        # Create a dataframe
+        df = pd.DataFrame(sellers).T
+
+        # Create a plot
+        fig = px.bar(df, x=df.index, y='total_sales', title="Top Sellers", labels={'index': 'Seller ID', 'total_sales': 'Total Sales'})
+
+        return fig
+
+    ############## New Game Request Quotes ############## 
     def request_quotes(self, product_name, product_quantity, product_max_price, date_needed_by, message=None):
         try:
             
@@ -49,7 +110,9 @@ class Main():
         
 
 
+
     ############## Read Emails, Send Counteroffers ############## 
+    ############## Still working on this automation ##############
     def read_email_and_send_counteroffers(self):
         """Reads emails from the email account and sends counteroffers to the sellers
         """
@@ -76,9 +139,6 @@ class Main():
 
                 # Get the product from the database
                 product = self.data_service.read_product(product_id=game['product_id'])
-
-                
-
 
                 # Create a new BayesianFuzzyGame
                 # bayesian_game = BayesianFuzzyGame(game=game, product=product)
@@ -107,6 +167,7 @@ class Main():
                     )
         return "Emails read and counteroffers sent"
     
+
     def extract_game_id_and_price(self, subject, content):
         """This will extract the game_id and offer price from the email subject and content using regex
 

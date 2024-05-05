@@ -290,7 +290,10 @@ class DataService():
                                 "last_seller_price": game.last_seller_price,
                                 "last_buyer_price": game.last_buyer_price,                                
                                 "buyer_reservation_price": game.buyer_reservation_price,
-                                "seller_reservation_price": game.seller_reservation_price
+                                "seller_reservation_price": game.seller_reservation_price,
+                                "buyer_deadline": game.buyer_deadline,
+                                "seller_deadline": game.seller_deadline,
+                                "start_date": game.start_date,
                                 }
                 return game_dict
         except SQLAlchemyError as e:

@@ -18,7 +18,7 @@ class BayesianFuzzyGame():
         p=0.5, q=0.5 for the mixed strategy
     """
 
-    def __init__(self, game_id, game_time_days, product, buyer, seller, bayesian_network_variable_dict):
+    def __init__(self, game_time_days, product, buyer, seller, bayesian_network_variable_dict):
         new_product = Product(product['name'], 
                               product['quantity'], 
                               product['initial_price'], 
@@ -35,7 +35,6 @@ class BayesianFuzzyGame():
                             seller['reservation_price'], 
                             seller['last_offer_price'],
                             seller['deadline'])
-        self.game_id = game_id
         self.game_time = game_time_days
         self.product =  new_product
         self.buyer = new_buyer
@@ -104,12 +103,13 @@ class BayesianFuzzyGame():
                                                            alpha = 1,  # 1 for supplier and 0 for buyer
                                                            first_offer=first_offer # Modifies counteroffer price if first offer
                                                            )
-        print(counter_offer_price)
+        # print(counter_offer_price)
         
         # Check if current offer is acceptable U_s(OP_c^t) > U_s(OP_s^t-1)
 
 
-        #return counter_offer_price
+        # Need to return a json with the bayesian network and the counter offer price
+        return counter_offer_price
 
 
     """ Delta and gamma are the coefficients of p in the utility functions of the buyer and seller.

@@ -56,6 +56,8 @@ class GameDatabase(Base):
     buyer_deadline = Column(Date)
     seller_deadline = Column(Date)
     negotiation_end_date = Column(Date)
+    start_date = Column(Date, nullable=False) 
+    end_date = Column(Date)
     buyer_agent = relationship("BuyerAgentDatabase")
     seller = relationship("SellerDatabase")
     product = relationship("ProductDatabase")

@@ -21,7 +21,8 @@ def get_navbar():
                 ),
                 width="auto",
             ),
-        ],
+        ], 
+        fluid=True
     ),
     color="dark",
     dark=True,

@@ -31,6 +31,7 @@ CREATE TABLE IF NOT EXISTS spos.products (
     );
 
 -- Store games
+-- I know this table is not in normal form, I will fix it when able
 CREATE TABLE IF NOT EXISTS spos.games (
     game_id SERIAL PRIMARY KEY,
     seller_id INT NOT NULL,
@@ -44,7 +45,11 @@ CREATE TABLE IF NOT EXISTS spos.games (
     last_buyer_price FLOAT, -- Last price from buyer
     buyer_reservation_price FLOAT,
     seller_reservation_price FLOAT,
+    buyer_deadline DATE,
+    seller_deadline DATE,
     current_strategy VARCHAR(255),
+    start_date DATE DEFAULT CURRENT_DATE,
+    end_date DATE,
     FOREIGN KEY (buyer_agent_id) REFERENCES spos.buyer_agents(buyer_agent_id),
     FOREIGN KEY (seller_id) REFERENCES spos.sellers(seller_id),
     FOREIGN KEY (product_id) REFERENCES spos.products(product_id)

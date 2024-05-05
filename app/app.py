@@ -3,9 +3,6 @@ import os
 current_dir = os.path.dirname(os.path.abspath(__file__))
 parent_dir = os.path.dirname(current_dir)
 sys.path.insert(1, parent_dir)
-from backend.bayesian_fuzzy_game.negotiation_game import BayesianFuzzyGame
-from backend.email_service.email_service import EmailService
-from backend.data_service.data_service import DataService
 from flask import Flask, request, jsonify
 from dash.dependencies import Input, Output, State
 from dash import Dash, dcc, html
@@ -32,18 +29,11 @@ server.config.update(SECRET_KEY=os.getenv("SECRET_KEY", "default_secret_key"))
 #     auth_func= DataService.verify_user)
 
 
-
-## Get username and password from login
+############## Start services in Main for User ##############
 user_email = "spos6045@gmail.com"
 user_password = "cjoisegsetxkqdxb"
-data_service = DataService()
-buyer = data_service.read_buyer(email= user_email)
-first_name = buyer['first_name']
-last_name = buyer['last_name']
-email_service = EmailService(email= user_email, password=user_password)
+main = Main(user_email, user_password)
 
-
-main = Main(user_email, user_password, first_name, last_name, data_service, email_service)
 
 ############## Define Layout ##############
 navbar = layout.get_navbar()
@@ -93,8 +83,8 @@ def update_game_button(n_clicks, game_id, seller_counteroffer):
     if n_clicks is None or n_clicks == 0:
         return "Enter game details to update"
     if n_clicks > 0:
-        main.request_quotes(game_id, seller_counteroffer)
-        return f"Game Updated: {game_id}"
+        counter_offer_price = main.update_game(game_id, seller_counteroffer)
+        return f"Game Updated: {game_id}\nRecommended Counteroffer Price: {counter_offer_price}"
     return ""
 
 
