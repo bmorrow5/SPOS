@@ -30,9 +30,14 @@ class Main():
 
 
     ############## New Game Request Quotes ############## 
-    def update_game(self, game_id, seller_counteroffer):
-        old_game = self.data_service.read_game(game_id=game_id)
+    def update_game_app(self, game_id, seller_counteroffer, bayesian_network_variable_dict=None):
+        # Add new counteroffer to database
+        # key_values = {'game_id': game_id, 'last_seller_price': seller_counteroffer}
+        self.data_service.update_game(game_id=game_id, last_seller_price=seller_counteroffer)
 
+        # Get the game from the database
+        old_game = self.data_service.read_game(game_id=game_id)
+        print("Old game: ", old_game)
         game_time_days = old_game['start_date'] - datetime.now()
         game_time_days = game_time_days.days
         print("Game time days: ", game_time_days)
@@ -43,22 +48,26 @@ class Main():
 
         buyer = {'name': old_game['buyer_name'], 
                  'email': old_game['buyer_email'], 
-                 'negotiation_power': old_game['buyer_negotiation_power'], 
+                 'negotiation_power': old_game['buyer_power'], 
                  'reservation_price': old_game['buyer_reservation_price'], 
-                 'last_offer_price': old_game['buyer_last_offer_price'],
+                 'last_offer_price': old_game['last_buyer_price'],
                  'deadline': old_game['buyer_deadline']}
         
         seller = {'name': old_game['seller_name'], 
                   'email': old_game['seller_email'], 
-                  'negotiation_power': old_game['seller_negotiation_power'], 
+                  'negotiation_power': old_game['seller_power'], 
                   'reservation_price': old_game['seller_reservation_price'], 
-                  'last_offer_price': old_game['seller_last_offer_price'],
+                  'last_offer_price': old_game['last_seller_price'],
                   'deadline': old_game['seller_deadline']}
 
 
         # Update the game
         # game_time_days, product, buyer, seller, bayesian_network_variable_dict
-        bayesian_game = BayesianFuzzyGame(game_time_days=game_time_days, product=product, buyer=buyer, seller=seller)
+        bayesian_game = BayesianFuzzyGame(game_time_days=game_time_days, 
+                                          product=product, 
+                                          buyer=buyer, 
+                                          seller=seller, 
+                                          bayesian_network_variable_dict=bayesian_network_variable_dict)
         counter_offer_price = bayesian_game.update_game()
         return counter_offer_price
         

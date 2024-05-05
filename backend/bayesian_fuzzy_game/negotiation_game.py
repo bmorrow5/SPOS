@@ -104,10 +104,7 @@ class BayesianFuzzyGame():
                                                            first_offer=first_offer # Modifies counteroffer price if first offer
                                                            )
         # print(counter_offer_price)
-        
         # Check if current offer is acceptable U_s(OP_c^t) > U_s(OP_s^t-1)
-
-
         # Need to return a json with the bayesian network and the counter offer price
         return counter_offer_price
 

@@ -83,7 +83,7 @@ def update_game_button(n_clicks, game_id, seller_counteroffer):
     if n_clicks is None or n_clicks == 0:
         return "Enter game details to update"
     if n_clicks > 0:
-        counter_offer_price = main.update_game(game_id, seller_counteroffer)
+        counter_offer_price = main.update_game_app(game_id, seller_counteroffer)
         return f"Game Updated: {game_id}\nRecommended Counteroffer Price: {counter_offer_price}"
     return ""
 

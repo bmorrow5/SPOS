@@ -47,7 +47,7 @@ def get_update_game_card():
         dbc.Row(
             [
                 # Product Name
-                dbc.Label("Game ID", html_for="game_id", width=4, md=4, sm=2),
+                dbc.Label("Game ID", html_for="game_id", width=4, md=5, sm=2),
                 dbc.Col(
                     dbc.Input(type="number", id="game_id", placeholder="Game ID"),
                     width="auto"
@@ -69,7 +69,7 @@ def get_update_game_card():
             [
                 dbc.Col(
                     dbc.Button("Update Game", color="primary", id='update_game_btn'),
-                    width={"size": 2, "offset": 2}
+                    width={"size": "auto", "offset": 2}
                 ),
             ],
             className="mb-3",
@@ -147,7 +147,7 @@ def get_launch_new_negotiation_game_card():
             [
                 dbc.Col(
                     dbc.Button("Request Quotes", color="primary", id='request_quotes_btn'),
-                    width={"size": 2, "offset": 2}
+                    width={"size": "auto", "offset": 2}
                 ),
             ],
             className="mb-3",
@@ -214,7 +214,7 @@ def get_add_seller_card():
         [
             dbc.Col(
                 dbc.Button("Add Seller", color="primary", id='add_seller_btn'),
-                width={"size": 2, "offset": 2}
+                width={"size": "auto", "offset": 2}
             ),
         ],
         className="mb-3",

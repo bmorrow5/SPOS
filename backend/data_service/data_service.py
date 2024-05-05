@@ -277,7 +277,7 @@ class DataService():
     def read_game(self, game_id):
         try:
             with self.Session() as session:
-                game = session.query(GameDatabase).filter_by(game__id=game_id).one_or_none()
+                game = session.query(GameDatabase).filter_by(game_id=game_id).one_or_none()
                 game_dict = {"game_id": game.game_id,
                                 "seller_id": game.seller_id,
                                 "buyer_agent_id": game.buyer_agent_id,
@@ -293,7 +293,7 @@ class DataService():
                                 "seller_reservation_price": game.seller_reservation_price,
                                 "buyer_deadline": game.buyer_deadline,
                                 "seller_deadline": game.seller_deadline,
-                                "start_date": game.start_date,
+                                "start_date": game.start_date
                                 }
                 return game_dict
         except SQLAlchemyError as e:
