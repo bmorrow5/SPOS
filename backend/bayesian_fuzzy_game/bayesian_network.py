@@ -10,60 +10,11 @@ class GameBayesianNetwork():
     and 0.1 means a large negative influence fromm outside factors on a players utility. See readme for
     graphic of the network. We will use fuzzy mathematics to determine the influence of these external factors.
     """
-    def __init__(self, 
-                 buyer_payment_status, 
-                 buyer_capability, 
-                 buyer_benefit_after_deal, 
-                 buyer_offer_price, 
-                 buyer_negotiation_deadline_pressure, 
-                 buyer_current_negotiation_time, 
-                 buyer_bank_interest_rate,
-                 buyer_fluctuation_of_market_price,
-                 buyer_inflation,
-                 buyer_number_of_suppliers,
-                 buyer_estimated_direct_costs,
-                 buyer_market_competition,
-                 seller_estimated_direct_costs,
-                 seller_production_cost,
-                 seller_competition_capability,
-                 seller_number_of_competitors,
-                 seller_overheads,
-                 seller_current_negotiation_time,
-                 seller_offer_price,
-                 sell_negotiation_deadline_pressure,
-                 seller_competition_of_market_price,
-                 seller_stability_level_of_economy,
-                 seller_bank_interest_rate,
-                 seller_inflation
-                 ):
+    def __init__(self, variables):
+        self.variables = variables # A dict of all buyer and seller variables
+        self.memberships = None
         self.buyer_network = None
         self.seller_network = None
-
-        self.buyer_payment_status = buyer_payment_status
-        self.buyer_capability = buyer_capability
-        self.buyer_benefit_after_deal = buyer_benefit_after_deal
-        self.buyer_offer_price = buyer_offer_price
-        self.buyer_negotiation_deadline_pressure = buyer_negotiation_deadline_pressure
-        self.buyer_current_negotiation_time = buyer_current_negotiation_time
-        self.buyer_bank_interest_rate = buyer_bank_interest_rate
-        self.buyer_fluctuation_of_market_price = buyer_fluctuation_of_market_price
-        self.buyer_inflation = buyer_inflation
-        self.buyer_number_of_suppliers = buyer_number_of_suppliers
-        self.buyer_estimated_direct_costs = buyer_estimated_direct_costs
-        self.buyer_market_competition = buyer_market_competition
-
-        self.seller_estimated_direct_costs = seller_estimated_direct_costs
-        self.seller_production_cost = seller_production_cost
-        self.seller_competition_capability = seller_competition_capability
-        self.seller_number_of_competitors = seller_number_of_competitors
-        self.seller_overheads = seller_overheads
-        self.seller_current_negotiation_time = seller_current_negotiation_time
-        self.seller_offer_price = seller_offer_price
-        self.sell_negotiation_deadline_pressure = sell_negotiation_deadline_pressure
-        self.seller_competition_of_market_price = seller_competition_of_market_price
-        self.seller_stability_level_of_economy = seller_stability_level_of_economy
-        self.seller_bank_interest_rate = seller_bank_interest_rate
-        self.seller_inflation = seller_inflation
 
 
     def create_buyer_network(self):
@@ -89,13 +40,22 @@ class GameBayesianNetwork():
             ('offer_price', 'negotiation_deadline_pressure'),
             ('negotiation_deadline_pressure', 'contractor_power')
         ])
-        
-    
-        
-        # self.buyer_network.add_cpds()
+            
+        # Get the membership functions for each variable
+        self.setup_fuzzy_memberships()
+
+        # Normalize the membership functions
+        for node in self.buyer_network.nodes():
+            value = self.variables.get(node, 0)  # Retrieve value or default to 0 if not found
+            memberships = self.calculate_memberships(value, node)
+
+            # Update CPD
+            cpd_values = [memberships[cat] for cat in ['very_low', 'low', 'medium', 'high', 'very_high']]
+            cpd = TabularCPD(variable=node, variable_card=5, values=[cpd_values])
+            self.buyer_network.add_cpds(cpd)       
 
         # Validate the model
-        # assert buyer_network.check_model()
+        assert self.buyer_network.check_model()
 
     def create_seller_network(self):
         """ This function builds the bayesian network for the seller, and returns an external factor value [0,1]
@@ -110,7 +70,7 @@ class GameBayesianNetwork():
             ('competition_capability', 'supplier_power'),
 
             # Negotiation deadline pressure, (supplier power parent node)
-            ('overheads', 'negotiation_deadline_pressure')
+            ('overheads', 'negotiation_deadline_pressure'),
             ('current_negotiation_time', 'negotiation_deadline_pressure'),
             ('offer_price', 'negotiation_deadline_pressure'),
             ('negotiation_deadline_pressure', 'supplier_power'),
@@ -122,49 +82,208 @@ class GameBayesianNetwork():
             ('stability_level_of_economy', 'supplier_power')
         ])
 
+        # Get the membership functions for each variable
+        self.setup_fuzzy_memberships()
 
-        def setup_fuzzy_membership(self):
-            # Set up fuzzy membership functions for each variable.
-            # Example for one variable - you will need to define the ranges and shapes based on your domain knowledge.
-            x = np.linspace(0, 10, 100)
-            self.memberships = {
-                'offer_price': {
-                    'very_low': fuzz.trimf(x, [0, 2, ]),
-                    'low': fuzz.trimf(x, [2, 4, ]),
-                    'medium': fuzz.trimf(x, [4, 6, ]),
-                    'high': fuzz.trimf(x, [6, 8, ]),
-                    'very_high': fuzz.trimf(x, [8, 10, ])
-                }
-                # Add other variables similarly
-            }
+        # Normalize the membership functions
+        for node in self.buyer_network.nodes():
+            value = self.variables.get(node, 0)  # Retrieve value or default to 0 if not found
+            memberships = self.calculate_memberships(value, node)
 
-        def normalize_memberships(self, memberships):
-            total = sum(memberships.values())
-            return {k: v / total for k, v in memberships.items()}
-
-        def calculate_memberships(self, value, variable):
-            # Convert the normalized membership values to a format suitable for pgmpy CPD
-            variables = [self.buyer_payment_status, self.buyer_capability, self.buyer_benefit_after_deal, self.buyer_offer_price, 
-                 self.buyer_negotiation_deadline_pressure, self.buyer_current_negotiation_time, self.buyer_bank_interest_rate,
-                 self.buyer_fluctuation_of_market_price, self.buyer_inflation, self.buyer_number_of_suppliers, self.buyer_estimated_direct_costs,
-                 self.buyer_market_competition, self.seller_estimated_direct_costs, self.seller_production_cost, self.seller_competition_capability,
-                 self.seller_number_of_competitors, self.seller_overheads, self.seller_current_negotiation_time, self.seller_offer_price, 
-                 self.sell_negotiation_deadline_pressure, self.seller_competition_of_market_price, self.seller_stability_level_of_economy,
-                 self.seller_bank_interest_rate, self.seller_inflation]
-            memberships = {cat: fuzz.interp_membership(np.linspace(0, 10, 100), mf, value)
-                           for cat, mf in self.memberships[variable].items()}
-            return self.normalize_memberships(memberships)
-
-        def update_cpd(self, node, probabilities):
-            cpd_values = [probabilities[cat] for cat in ['very_low', 'low', 'medium', 'high', 'very_high']]
+            # Update CPD
+            cpd_values = [memberships[cat] for cat in ['very_low', 'low', 'medium', 'high', 'very_high']]
             cpd = TabularCPD(variable=node, variable_card=5, values=[cpd_values])
-            self.network.add_cpds(cpd)
-            assert self.network.check_model()  # Validate the model
+            self.seller_network.add_cpds(cpd)       
 
-        def calculate_cpd_values(self):
-            pass
+        # Validate the model
+        assert self.seller_network.check_model()
 
-        def get_external_factors():
-            pass
+
+    def setup_fuzzy_memberships(self):
+        # Set up fuzzy membership functions for each variable.
+        x = np.linspace(0, 10, 100)
+        self.memberships = {
+        'buyer_payment_status': {
+            'very_low': fuzz.trimf(x, [0, 0, 20]),
+            'low': fuzz.trimf(x, [0, 20, 40]),
+            'medium': fuzz.trimf(x, [20, 40, 60]),
+            'high': fuzz.trimf(x, [40, 60, 80]),
+            'very_high': fuzz.trimf(x, [60, 80, 100])
+        },
+        'buyer_capability': {
+            'very_low': fuzz.trimf(x, [0, 0, 25]),
+            'low': fuzz.trimf(x, [0, 25, 50]),
+            'medium': fuzz.trimf(x, [25, 50, 75]),
+            'high': fuzz.trimf(x, [50, 75, 100]),
+            'very_high': fuzz.trimf(x, [75, 100, 100])
+        },
+        'buyer_benefit_after_deal': {
+            'very_low': fuzz.trimf(x, [0, 0, 20]),
+            'low': fuzz.trimf(x, [0, 20, 40]),
+            'medium': fuzz.trimf(x, [20, 40, 60]),
+            'high': fuzz.trimf(x, [40, 60, 80]),
+            'very_high': fuzz.trimf(x, [60, 80, 100])
+        },
+        'buyer_offer_price': {
+            'very_low': fuzz.trimf(x, [0, 0, 25]),
+            'low': fuzz.trimf(x, [0, 25, 50]),
+            'medium': fuzz.trimf(x, [25, 50, 75]),
+            'high': fuzz.trimf(x, [50, 75, 100]),
+            'very_high': fuzz.trimf(x, [75, 100, 100])
+        },
+        'buyer_negotiation_deadline_pressure': {
+            'very_low': fuzz.trimf(x, [0, 0, 15]),
+            'low': fuzz.trimf(x, [0, 15, 30]),
+            'medium': fuzz.trimf(x, [15, 30, 45]),
+            'high': fuzz.trimf(x, [30, 45, 60]),
+            'very_high': fuzz.trimf(x, [45, 60, 60])
+        },
+        'buyer_current_negotiation_time': {
+            'very_low': fuzz.trimf(x, [0, 0, 25]),
+            'low': fuzz.trimf(x, [0, 25, 50]),
+            'medium': fuzz.trimf(x, [25, 50, 75]),
+            'high': fuzz.trimf(x, [50, 75, 100]),
+            'very_high': fuzz.trimf(x, [75, 100, 100])
+        },
+        'buyer_bank_interest_rate': {
+            'very_low': fuzz.trimf(x, [0, 0, 2]),
+            'low': fuzz.trimf(x, [0, 2, 4]),
+            'medium': fuzz.trimf(x, [2, 4, 6]),
+            'high': fuzz.trimf(x, [4, 6, 8]),
+            'very_high': fuzz.trimf(x, [6, 8, 10])
+        },
+        'buyer_fluctuation_of_market_price': {
+            'very_low': fuzz.trimf(x, [0, 0, 20]),
+            'low': fuzz.trimf(x, [0, 20, 40]),
+            'medium': fuzz.trimf(x, [20, 40, 60]),
+            'high': fuzz.trimf(x, [40, 60, 80]),
+            'very_high': fuzz.trimf(x, [60, 80, 100])
+        },
+        'buyer_inflation': {
+            'very_low': fuzz.trimf(x, [0, 0, 2]),
+            'low': fuzz.trimf(x, [0, 2, 4]),
+            'medium': fuzz.trimf(x, [2, 4, 6]),
+            'high': fuzz.trimf(x, [4, 6, 8]),
+            'very_high': fuzz.trimf(x, [6, 8, 10])
+        },
+        'buyer_number_of_suppliers': {
+            'very_low': fuzz.trimf(x, [0, 0, 50]),
+            'low': fuzz.trimf(x, [0, 50, 100]),
+            'medium': fuzz.trimf(x, [50, 100, 150]),
+            'high': fuzz.trimf(x, [100, 150, 200]),
+            'very_high': fuzz.trimf(x, [150, 200, 200])
+        },
+        'buyer_estimated_direct_costs': {
+            'very_low': fuzz.trimf(x, [0, 0, 25]),
+            'low': fuzz.trimf(x, [0, 25, 50]),
+            'medium': fuzz.trimf(x, [25, 50, 75]),
+            'high': fuzz.trimf(x, [50, 75, 100]),
+            'very_high': fuzz.trimf(x, [75, 100, 100])
+        },
+        'buyer_market_competition': {
+            'very_low': fuzz.trimf(x, [0, 0, 20]),
+            'low': fuzz.trimf(x, [0, 20, 40]),
+            'medium': fuzz.trimf(x, [20, 40, 60]),
+            'high': fuzz.trimf(x, [40, 60, 80]),
+            'very_high': fuzz.trimf(x, [60, 80, 100])
+        },
+        'seller_estimated_direct_costs': {
+            'very_low': fuzz.trimf(x, [0, 0, 25]),
+            'low': fuzz.trimf(x, [0, 25, 50]),
+            'medium': fuzz.trimf(x, [25, 50, 75]),
+            'high': fuzz.trimf(x, [50, 75, 100]),
+            'very_high': fuzz.trimf(x, [75, 100, 100])
+        },
+        'seller_production_cost': {
+            'very_low': fuzz.trimf(x, [0, 0, 25]),
+            'low': fuzz.trimf(x, [0, 25, 50]),
+            'medium': fuzz.trimf(x, [25, 50, 75]),
+            'high': fuzz.trimf(x, [50, 75, 100]),
+            'very_high': fuzz.trimf(x, [75, 100, 100])
+        },
+        'seller_competition_capability': {
+            'very_low': fuzz.trimf(x, [0, 0, 25]),
+            'low': fuzz.trimf(x, [0, 25, 50]),
+            'medium': fuzz.trimf(x, [25, 50, 75]),
+            'high': fuzz.trimf(x, [50, 75, 100]),
+            'very_high': fuzz.trimf(x, [75, 100, 100])
+        },
+        'seller_number_of_competitors': {
+            'very_low': fuzz.trimf(x, [0, 0, 25]),
+            'low': fuzz.trimf(x, [0, 25, 50]),
+            'medium': fuzz.trimf(x, [25, 50, 75]),
+            'high': fuzz.trimf(x, [50, 75, 100]),
+            'very_high': fuzz.trimf(x, [75, 100, 100])
+        },
+        'seller_overheads': {
+            'very_low': fuzz.trimf(x, [0, 0, 25]),
+            'low': fuzz.trimf(x, [0, 25, 50]),
+            'medium': fuzz.trimf(x, [25, 50, 75]),
+            'high': fuzz.trimf(x, [50, 75, 100]),
+            'very_high': fuzz.trimf(x, [75, 100, 100])
+        },
+        'seller_current_negotiation_time': {
+            'very_low': fuzz.trimf(x, [0, 0, 25]),
+            'low': fuzz.trimf(x, [0, 25, 50]),
+            'medium': fuzz.trimf(x, [25, 50, 75]),
+            'high': fuzz.trimf(x, [50, 75, 100]),
+            'very_high': fuzz.trimf(x, [75, 100, 100])
+        },
+        'seller_offer_price': {
+            'very_low': fuzz.trimf(x, [0, 0, 25]),
+            'low': fuzz.trimf(x, [0, 25, 50]),
+            'medium': fuzz.trimf(x, [25, 50, 75]),
+            'high': fuzz.trimf(x, [50, 75, 100]),
+            'very_high': fuzz.trimf(x, [75, 100, 100])
+        },
+        'sell_negotiation_deadline_pressure': {
+            'very_low': fuzz.trimf(x, [0, 0, 15]),
+            'low': fuzz.trimf(x, [0, 15, 30]),
+            'medium': fuzz.trimf(x, [15, 30, 45]),
+            'high': fuzz.trimf(x, [30, 45, 60]),
+            'very_high': fuzz.trimf(x, [45, 60, 60])
+        },
+        'seller_competition_of_market_price': {
+            'very_low': fuzz.trimf(x, [0, 0, 25]),
+            'low': fuzz.trimf(x, [0, 25, 50]),
+            'medium': fuzz.trimf(x, [25, 50, 75]),
+            'high': fuzz.trimf(x, [50, 75, 100]),
+            'very_high': fuzz.trimf(x, [75, 100, 100])
+        },
+        'seller_stability_level_of_economy': {
+            'very_low': fuzz.trimf(x, [0, 0, 25]),
+            'low': fuzz.trimf(x, [0, 25, 50]),
+            'medium': fuzz.trimf(x, [25, 50, 75]),
+            'high': fuzz.trimf(x, [50, 75, 100]),
+            'very_high': fuzz.trimf(x, [75, 100, 100])
+        },
+        'seller_bank_interest_rate': {
+            'very_low': fuzz.trimf(x, [0, 0, 2]),
+            'low': fuzz.trimf(x, [0, 2, 4]),
+            'medium': fuzz.trimf(x, [2, 4, 6]),
+            'high': fuzz.trimf(x, [4, 6, 8]),
+            'very_high': fuzz.trimf(x, [6, 8, 10])
+        },
+        'seller_inflation': {
+            'very_low': fuzz.trimf(x, [0, 0, 2]),
+            'low': fuzz.trimf(x, [0, 2, 4]),
+            'medium': fuzz.trimf(x, [2, 4, 6]),
+            'high': fuzz.trimf(x, [4, 6, 8]),
+            'very_high': fuzz.trimf(x, [6, 8, 10])
+        }
+    }
+
+    def normalize_memberships(self, memberships):
+        total = sum(memberships.values())
+        return {k: v / total for k, v in memberships.items()}
+
+    def calculate_memberships(self, value, variable):
+        # Convert the normalized membership values to a format suitable for pgmpy CPD        
+        memberships = {cat: fuzz.interp_membership(np.linspace(0, 10, 100), mf, value)
+                        for cat, mf in self.memberships[variable].items()}
+        return self.normalize_memberships(memberships)
+
+    def get_external_factors():
+        pass
 
 

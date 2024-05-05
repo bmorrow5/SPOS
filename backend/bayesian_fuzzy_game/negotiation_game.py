@@ -5,7 +5,7 @@ parent_dir = os.path.dirname(current_dir)
 sys.path.insert(1, current_dir)
 from datetime import datetime
 from game_classes import Product, Buyer, Seller
-from bayesian_network import BayesianNetwork
+from bayesian_network import GameBayesianNetwork
 
 class BayesianFuzzyGame():
     """ Performs the negotiation game theory, calculates utility, and returns the counteroffer price.
@@ -18,7 +18,7 @@ class BayesianFuzzyGame():
         p=0.5, q=0.5 for the mixed strategy
     """
 
-    def __init__(self, game_id, game_time_days, product, buyer, seller):
+    def __init__(self, game_id, game_time_days, product, buyer, seller, bayesian_network_variable_dict):
         new_product = Product(product['name'], 
                               product['quantity'], 
                               product['initial_price'], 
@@ -40,6 +40,7 @@ class BayesianFuzzyGame():
         self.product =  new_product
         self.buyer = new_buyer
         self.seller = new_seller
+        self.bayesian_network_variable_dict = bayesian_network_variable_dict
         
 
     def update_game(self):

@@ -11,12 +11,6 @@ class BayesianFuzzyGamesTest(unittest.TestCase):
     """ This class will test our bayesian fuzzy games model, and will provide a check on if our bayesian fuzzy game is working
     As of the draft this is what I am currently working on. 
     """
-
-    # Product(self, name, quantity, initial_price, current_price, date_needed)
-    # Buyer(self, name, email, negotiation_power, reservation_price, id, password)
-    # Seller(self, name, email, negotiation_power, reservation_price, product)
-
-
     def setUp(self):
         # Set up a basic game scenario
         self.product_info = {
@@ -31,15 +25,15 @@ class BayesianFuzzyGamesTest(unittest.TestCase):
             'negotiation_power': 0,
             'reservation_price': 9000,
             'last_offer_price': 8000,
-            'deadline': '2024-05-07'
+            'deadline': '2024-05-10'
         }
         self.seller_info = {
             'name': 'Jane Doe',
             'email': 'jane@example.com',
             'negotiation_power': 0,
-            'reservation_price': 8000,
-            'last_offer_price': 8750,
-            'deadline': '2024-10-01' # We assume they have no significant pressure to sell
+            'reservation_price': None, # Unknown reservation price
+            'last_offer_price': 8800,
+            'deadline': None # We assume incomplete information
         }
         self.game = BayesianFuzzyGame(game_id=1, 
                                       game_time_days=1, 
