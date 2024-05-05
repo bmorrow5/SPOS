@@ -35,6 +35,8 @@ class BayesianFuzzyGame():
                             seller['reservation_price'], 
                             seller['last_offer_price'],
                             seller['deadline'])
+        if game_time_days == 0:
+            game_time_days = 1
         self.game_time = game_time_days
         self.product =  new_product
         self.buyer = new_buyer
@@ -48,7 +50,7 @@ class BayesianFuzzyGame():
         game = {}
         seller_offer_price = self.seller.last_offer_price
 
-        days_to_buyer_deadline = datetime.strptime(self.buyer.deadline, "%Y-%m-%d") - datetime.now()
+        days_to_buyer_deadline = self.buyer.deadline - datetime.now().date()
         days_to_buyer_deadline = days_to_buyer_deadline.days
         # print("Days to deadline: ", days_to_deadline)
 
@@ -71,7 +73,7 @@ class BayesianFuzzyGame():
         # Update the beliefs (bayesian networks) of buyer and seller
         # BayesianNetwork().update_beliefs(self.buyer, self.seller)
         # buyer_external_factors, seller_external_factors = BayesianNetwork().get_external_factors()
-        buyer_external_factor_prob, seller_external_factor_prob = 1, 1
+        buyer_external_factor_prob, seller_external_factor_prob = 1, 0.1
 
         # Define the payoff matrix
         b_Hh, b_Hl, b_Lh, b_Ll = 7.5, 0.25, 2.5, 0.75
@@ -150,8 +152,8 @@ class BayesianFuzzyGame():
             price_difference = abs(reservation_price - intial_price)
             adjustment = (-1)**alpha * time_factor * price_difference
             new_offer = previous_offer + adjustment
-            # print("Time factor: ", time_factor)
-            # print("Price difference: ", price_difference)            
-            # print("Adjustment: ", adjustment)
-            # print("New offer: ", new_offer)
+            print("Time factor: ", time_factor)
+            print("Price difference: ", price_difference)            
+            print("Adjustment: ", adjustment)
+            print("New offer: ", new_offer)
             return new_offer

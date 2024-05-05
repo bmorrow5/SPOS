@@ -66,10 +66,12 @@ class DataService():
         except SQLAlchemyError as e:
             logging.error(f"Error storing seller: {e}")
 
-    def read_seller(self, first_name=None, last_name=None, email=None):
+    def read_seller(self, seller_id=None, first_name=None, last_name=None, email=None):
         try:
             with self.Session() as session:
-                if first_name and last_name:
+                if seller_id:
+                    return session.query(SellerDatabase).filter_by(seller_id=seller_id).one_or_none()
+                elif first_name and last_name:
                     return session.query(SellerDatabase).filter_by(first_name=first_name, last_name=last_name).one_or_none()
                 elif email:
                     return session.query(SellerDatabase).filter_by(email=email).one_or_none()

@@ -37,24 +37,34 @@ class Main():
 
         # Get the game from the database
         old_game = self.data_service.read_game(game_id=game_id)
-        print("Old game: ", old_game)
-        game_time_days = old_game['start_date'] - datetime.now()
+        game_time_days = old_game['start_date'] - datetime.now().date()
         game_time_days = game_time_days.days
-        print("Game time days: ", game_time_days)
-        product = {'name': old_game['product_name'], 
+        
+        # Get product information
+        read_product = self.data_service.read_product(product_id=old_game['product_id'])
+        old_game['name'] = read_product['name']
+        old_game['product_quantity'] = read_product['quantity']
+
+        # Get Seller information
+        read_seller = self.data_service.read_seller(seller_id=old_game['seller_id'])
+        seller_name = read_seller.first_name + " " + read_seller.last_name
+        seller_email = read_seller.email
+
+        # Declare the product, buyer, and seller
+        product = {'name': old_game['name'], 
                    'quantity': old_game['product_quantity'], 
                    'initial_price': old_game['initial_price'], 
                    'current_price': old_game['current_price']}
 
-        buyer = {'name': old_game['buyer_name'], 
-                 'email': old_game['buyer_email'], 
+        buyer = {'name': self.first_name + " " + self.last_name, 
+                 'email': self.user_email, 
                  'negotiation_power': old_game['buyer_power'], 
                  'reservation_price': old_game['buyer_reservation_price'], 
                  'last_offer_price': old_game['last_buyer_price'],
                  'deadline': old_game['buyer_deadline']}
         
-        seller = {'name': old_game['seller_name'], 
-                  'email': old_game['seller_email'], 
+        seller = {'name': seller_name, 
+                  'email': seller_email, 
                   'negotiation_power': old_game['seller_power'], 
                   'reservation_price': old_game['seller_reservation_price'], 
                   'last_offer_price': old_game['last_seller_price'],
