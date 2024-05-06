@@ -41,21 +41,21 @@ class GameBayesianNetwork():
             ('negotiation_deadline_pressure', 'contractor_power')
         ])
             
-        # Get the membership functions for each variable
-        self.setup_fuzzy_memberships()
+        ## Get the membership functions for each variable
+        #self.setup_fuzzy_memberships()
 
         # Normalize the membership functions
-        for node in self.buyer_network.nodes():
-            value = self.variables.get(node, 0)  # Retrieve value or default to 0 if not found
-            memberships = self.calculate_memberships(value, node)
+        #for node in self.buyer_network.nodes():
+        #    value = self.variables.get(node, 0)  # Retrieve value or default to 0 if not found
+        #    memberships = self.calculate_memberships(value, node)
 
             # Update CPD
-            cpd_values = [memberships[cat] for cat in ['very_low', 'low', 'medium', 'high', 'very_high']]
-            cpd = TabularCPD(variable=node, variable_card=5, values=[cpd_values])
-            self.buyer_network.add_cpds(cpd)       
+        #    cpd_values = [memberships[cat] for cat in ['very_low', 'low', 'medium', 'high', 'very_high']]
+        #    cpd = TabularCPD(variable=node, variable_card=5, values=[cpd_values])
+        #    self.buyer_network.add_cpds(cpd)       
 
         # Validate the model
-        assert self.buyer_network.check_model()
+        #assert self.buyer_network.check_model()
 
     def create_seller_network(self):
         """ This function builds the bayesian network for the seller, and returns an external factor value [0,1]
@@ -285,5 +285,4 @@ class GameBayesianNetwork():
 
     def get_external_factors():
         pass
-
 

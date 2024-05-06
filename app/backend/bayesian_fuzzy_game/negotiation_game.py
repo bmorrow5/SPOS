@@ -143,7 +143,18 @@ class BayesianFuzzyGame():
             return first_offer_price
         else:
             time_factor = (t / (tau - (t - 1))) ** lambda_strategy
-            price_difference = abs(reservation_price - previous_offer)
+            price_difference = abs(reservation_price - intial_price)
             adjustment = (-1)**alpha * time_factor * price_difference
             new_offer = previous_offer + adjustment
+            print("Reservation price: ", reservation_price)
+            print("Initial price: ", intial_price)
+            print("Alpha: ", alpha)
+            print("Lambda strategy: ", lambda_strategy)
+            print("Time: ", t)
+            print("Tau: ", tau)
+            print("Previous offer: ", previous_offer)
+            print("New offer: ", new_offer)
+            print("Time factor: ", time_factor)
+            print("Price difference: ", price_difference)
+            print("Adjustment: ", adjustment)
             return new_offer

@@ -1,7 +1,3 @@
-import sys
-import os
-current_dir = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(1, current_dir)
 import re
 import pandas as pd
 import plotly.express as px
