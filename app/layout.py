@@ -273,8 +273,13 @@ def get_game_table(data):
     """
     game_table = dbc.Container([
     dbc.Label('Click a cell in the table:'),
-    dash_table.DataTable(data.to_dict("records"),[{"name": i, "id": i} for i in data.columns], id='tbl', style_table),
-    dbc.Alert(id='tbl_out'),
+    dash_table.DataTable(
+        data.to_dict('records'),
+        [{"name": i, "id": i} for i in data.columns],
+        id='tbl',
+        style_cell={'textAlign': 'left', 'width': 'auto', 'overflowY': 'auto'},  
+        style_table={'overflowX': 'auto'}  # Horizontal scrolling
+    ),    dbc.Alert(id='tbl_out'),
     ])
     return game_table
 

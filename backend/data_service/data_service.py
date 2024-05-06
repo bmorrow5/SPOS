@@ -313,6 +313,8 @@ class DataService():
                                                 "buyer_max_price": game.buyer_reservation_price,
                                                 "initial_price": game.initial_price,
                                                 "current_price": game.current_price,
+                                                "last_seller_price": game.last_seller_price,
+                                                "last_buyer_price": game.last_buyer_price,     
                                                 "negotiation_start_date": game.start_date,
                                                 "buyer_deadline": game.buyer_deadline,
                                                 "seller_first_name": game.seller.first_name,
@@ -320,9 +322,7 @@ class DataService():
                                                 "seller_email": game.seller.email,
                                                 "buyer_power": game.buyer_power,
                                                 "seller_power": game.seller_power,
-                                                "current_strategy": game.current_strategy,
-                                                "last_seller_price": game.last_seller_price,
-                                                "last_buyer_price": game.last_buyer_price                                
+                                                "current_strategy": game.current_strategy                           
                                                 }
                 return games_dict
         except SQLAlchemyError as e:

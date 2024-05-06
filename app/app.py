@@ -45,8 +45,7 @@ top_sellers_plot = layout.get_top_sellers_plot()
 
 data = main.get_game_table_data()
 df = pd.DataFrame.from_dict(data, orient='index')
-print(df)
-game_table = layout.get_game_table(pd.DataFrame.from_dict(data, orient='index'))
+game_table = layout.get_game_table(df)
 # read_emails_button = layout.get_read_emails_button() # Feature not yet implemented
 
 dash_app.layout = html.Div([
@@ -63,7 +62,7 @@ dash_app.layout = html.Div([
             dbc.Row([
                 dbc.Col(html.Div([game_table]))
             ])
-        ])  
+        ], width=9)  
     ])
 ])
 
