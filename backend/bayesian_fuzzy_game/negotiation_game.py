@@ -82,8 +82,8 @@ class BayesianFuzzyGame():
         # Utility is lambda in math doc, it is the strategy, a value between 1 and 10 depending on the specific strategy
         buyer_utility = self.get_utility_buyer(buyer_external_factor_prob, p, q, b_Hl, b_Ll, gamma_value)
         seller_utility = self.get_utility_seller(seller_external_factor_prob, p, q, s_Hl, s_Ll, delta_value)
-        print("Buyer utility: ", buyer_utility)
-        print("Seller utility: ", seller_utility)
+        # print("Buyer utility: ", buyer_utility)
+        # print("Seller utility: ", seller_utility)
 
         # Now use this strategy to get counteroffer price
         counter_offer_price = self.get_counter_offer_price(previous_offer = seller_offer_price, 
@@ -98,7 +98,11 @@ class BayesianFuzzyGame():
         # print(counter_offer_price)
         # Check if current offer is acceptable U_s(OP_c^t) > U_s(OP_s^t-1)
         # Need to return a json with the bayesian network and the counter offer price
-        return counter_offer_price
+        game['bayesian_network'] = self.bayesian_network_variable_dict
+        game['counter_offer_price'] = counter_offer_price
+        game['buyer_utility'] = buyer_utility
+        game['seller_utility'] = seller_utility
+        return game
 
 
     """ Delta and gamma are the coefficients of p in the utility functions of the buyer and seller.
@@ -143,16 +147,4 @@ class BayesianFuzzyGame():
             price_difference = abs(reservation_price - previous_offer)
             adjustment = (-1)**alpha * time_factor * price_difference
             new_offer = previous_offer + adjustment
-            print("\n")
-            print("Lambda: ", lambda_strategy)
-            print("reservation_price: ", reservation_price)
-            print("intial_price: ", intial_price)
-            print("Previous offer: ", previous_offer)
-            print("t: ", t)
-            print("Tau: ", tau)  
-            print("Lambda: ", lambda_strategy)          
-            print("Time factor: ", time_factor)
-            print("Price difference: ", price_difference)            
-            print("Adjustment: ", adjustment)
-            print("New offer: ", new_offer)
             return new_offer

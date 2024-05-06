@@ -85,29 +85,19 @@ class Main():
                                           buyer=buyer, 
                                           seller=seller, 
                                           bayesian_network_variable_dict=bayesian_network_variable_dict)
-        counter_offer_price = bayesian_game.update_game()
+        game_dict = bayesian_game.update_game()
 
         # Store our counteroffer value in the database
         self.data_service.update_game(game_id=game_id, last_buyer_price=old_game['current_price'])
+
+
+        # Get the counteroffer price
+        counter_offer_price = game_dict['counter_offer_price']
         return counter_offer_price
         
 
 
-    def seller_plot(self):
-        """This will return a plot of the top sellers
-        """
-        # Get all sellers
-        sellers = self.data_service.read_all_sellers()
-
-        # Create a dataframe
-        df = pd.DataFrame(sellers).T
-
-        # Create a plot
-        fig = px.bar(df, x=df.index, y='total_sales', title="Top Sellers", labels={'index': 'Seller ID', 'total_sales': 'Total Sales'})
-
-        return fig
-
-    ############## New Game Request Quotes ############## 
+    ############## New Game - Email Sellers Requesting Quotes ############## 
     def request_quotes(self, product_name, product_quantity, product_max_price, date_needed_by, message=None):
         try:
             
@@ -125,7 +115,8 @@ class Main():
                 game_id = self.data_service.create_game(seller_id = seller_id, 
                                       buyer_agent_id = buyer_dict['buyer_agent_id'], 
                                       product_id= product['product_id'], 
-                                      buyer_reservation_price= product['max_price'])
+                                      buyer_reservation_price= (product['quantity'] * product['max_price']) # Total price
+                                      )
                 
                 greeting = f"Hello {seller_info['first_name']} {seller_info['last_name']},"
                 farewell = f"Thank you,\n\n{self.first_name} {self.last_name}\nYour Company Intl."
@@ -137,8 +128,29 @@ class Main():
         except Exception as e:
              return f"Failed to send email: {e}"
         
+    def add_seller_to_database(self, first_name, last_name, email):
+        try:
+            # Create a new seller
+            self.data_service.create_seller(first_name=first_name, last_name=last_name, email=email)
+            return f"Added Seller: {first_name} {last_name}"
+        except Exception as e:
+            return f"Failed to add seller: {e}"
 
+    ############## Plot top sellers ############## 
+    def seller_plot(self):
+        """This will return a plot of the top sellers
+        """
+        # Get all sellers
+        sellers = self.data_service.read_all_sellers()
 
+        # Create a dataframe
+        df = pd.DataFrame(sellers).T
+
+        # Create a plot
+        fig = px.bar(df, x=df.index, y='total_sales', title="Top Sellers", labels={'index': 'Seller ID', 'total_sales': 'Total Sales'})
+
+        return fig
+    
 
     ############## Read Emails, Send Counteroffers ############## 
     ############## Still working on this automation ##############
@@ -227,11 +239,9 @@ class Main():
 
         return {game_id, offer_price}
 
-
-
-
-
-    def send_acceptance(self, to_email: str, message: str) -> str:
+    ############## Will send acceptance email ############## 
+    ############## Will be implemented later ############## 
+    def send_acceptance(self, to_email, message):
         """This will send an email accepting the offer
 
         Args:

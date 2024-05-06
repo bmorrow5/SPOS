@@ -57,9 +57,9 @@ def get_update_game_card():
         ),
         dbc.Row(
             [
-                dbc.Label("Seller Counteroffer Price (USD)", html_for="seller_counteroffer", width=4, md=5, sm=2),
+                dbc.Label("Total Seller Counteroffer Price (USD)", html_for="seller_counteroffer", width=4, md=5, sm=2),
                 dbc.Col(
-                    dbc.Input(type="number", id="seller_counteroffer", placeholder="Seller Counteroffer Price (USD)"),
+                    dbc.Input(type="number", id="seller_counteroffer", placeholder="(Quantity*PPU)"),
                     width="auto"
                 ),
             ],
@@ -69,10 +69,11 @@ def get_update_game_card():
             [
                 dbc.Col(
                     dbc.Button("Update Game", color="primary", id='update_game_btn'),
-                    width={"size": "auto", "offset": 2}
+                    width={"size": "auto", "offset": "auto"}
                 ),
             ],
             className="mb-3",
+            justify= "end"
         ),
     ],
     className="g-2 align-items-end" # g-2 is the gap between the columns
@@ -194,7 +195,7 @@ def get_add_seller_card():
             # Max Price per Unit
             dbc.Label("Last Name", html_for="last_name", width=4, md=4, sm=2),
             dbc.Col(
-                dbc.Input(type="number", id="last_name", placeholder="Last Name"),
+                dbc.Input(type="text", id="last_name", placeholder="Last Name"),
                 width="auto"
             ),
         ],

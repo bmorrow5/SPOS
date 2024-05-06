@@ -135,8 +135,8 @@ def add_seller_button(n_clicks, first_name, last_name, email):
     if n_clicks is None or n_clicks == 0:
         return "Enter seller details"
     if n_clicks > 0:
-        main.add_seller(first_name, last_name, email)
-        return f"Seller Added: {first_name} {last_name}; {email}"
+        string = main.add_seller_to_database(first_name, last_name, email)
+        return string
     return ""
 
 
