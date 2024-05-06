@@ -236,7 +236,7 @@ def get_add_seller_card():
     return card
 
 
-def get_bayesian_network_plot():
+def get_buyer_bayesian_network():
     """This is the plot for the Bayesian Network
     """
     bayesian_network_plot = dbc.Card(
@@ -252,7 +252,7 @@ def get_bayesian_network_plot():
     return bayesian_network_plot
 
 
-def get_top_sellers_plot():
+def get_seller_bayesian_network():
     """This is the plot for the top sellers
     """
     top_sellers_plot = dbc.Card(
@@ -271,17 +271,11 @@ def get_top_sellers_plot():
 def get_game_table(data):
     """This is the table for the game
     """
-    game_table = dbc.Container([
-    dbc.Label('Click a cell in the table:'),
-    dash_table.DataTable(
-        data.to_dict('records'),
-        [{"name": i, "id": i} for i in data.columns],
-        id='tbl',
-        style_cell={'textAlign': 'left', 'width': 'auto', 'overflowY': 'auto'},  
-        style_table={'overflowX': 'auto'}  # Horizontal scrolling
-    ),    dbc.Alert(id='tbl_out'),
-    ])
-    return game_table
+    game_table = dbc.Table.from_dataframe(
+    data, striped=True, bordered=True, hover=True, index=True, responsive=True
+    )
+    padded_table = html.Div(game_table, style={'padding': '20px'})
+    return padded_table
 
 
 
