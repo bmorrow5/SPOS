@@ -4,7 +4,7 @@ This system utilizes an application of game theory called Bayesian Fuzzy Games t
 
 This system integrates with email, and can send emails. It currently cannot read emails as this will be added at a later date. <br>
 
-# Dash App
+# Dash App (Frontend)
 The frontend data visualization dashboard
 The web application: <br>
 <img src="Dashboard_Final.png" alt="dashboard"/> <br>
@@ -29,6 +29,7 @@ Ensure docker is installed on your computer. There will be two docker containers
 7. Run rest of SQL
 
 ### (optional) To get pgAdmin4 to run
+If you want to use pgAdmin4 to manage and view the database enter the following commands:
 1. docker run -p 5050:80 -e "PGADMIN_DEFAULT_EMAIL=(your email)@gmail.com" -e "PGADMIN_DEFAULT_PASSWORD=admin" -d dpage/pgadmin4
 2. Connect the containers with:
 3. name: spos_postgres
@@ -36,7 +37,6 @@ host: host.docker.internal
 database: postgres
 user: postgres
 password: spos123
-
 
 
 # Backend
@@ -58,16 +58,16 @@ This network is used to calculate the influence of external factors on negotiati
 
 
 ## Data Service
-Controls access to the database and uses SQLAlchemy ORM to interact with the database. Has all functions for creating, reading, updating, or deleting (CRUD) in the data_service.py file. The models.py contains the object relational mapping from the database to pythong objects. 
+Controls access to the database and uses SQLAlchemy ORM to interact with the database. The models.py contains the object relational mapping from the database to python objects. The data service python file has all functions for creating, reading, updating, or deleting (CRUD) in the data_service.py file. This ensures the frontend does not interact directly with the database, and that there is a data service layer of the business logic.  
 
 ##  Email Service
-Controls the sending and receiving of emails. Would be switched with an email service in productions, but for now uses python and a gmail account, but could be substituted for anything
+Controls the sending and receiving of emails. Would be switched with an email service in productions, but for now uses python and a gmail account, but could be substituted for any email service. 
 
 # Database
 ## Daily Data Collection
 The daily database updating DAG has not yet been implemented, and will be implemented to allow for daily updating of the influence of external factors on a negotiation. 
 
-## References
+# References
 [1] Gwak, J. and Sim, K. M. (2011). “Bayesian learning based negotiation
 agents for supporting negotiation with incomplete information.” The
 International MultiConference of Engineerings and Computer
