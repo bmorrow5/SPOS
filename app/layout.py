@@ -1,6 +1,6 @@
 import dash_bootstrap_components as dbc
 from dash.dependencies import Input, Output, State
-from dash import Dash, dcc, html
+from dash import Dash, dcc, html, dash_table
 
 
 """This file contains all the design components. This callbacks to the backend are done in app.py
@@ -268,21 +268,15 @@ def get_top_sellers_plot():
     return top_sellers_plot
 
 
-def get_game_table():
+def get_game_table(data):
     """This is the table for the game
     """
-    game_table = dbc.Card(
-        [
-            dbc.CardHeader("Game Table"),
-            dbc.CardBody(
-                [
-                ]
-            ),
-        ],
-        style={'marginBottom': '20px', 'marginRight': '20px'} # Add margins for better spacing if needed
-    )
+    game_table = dbc.Container([
+    dbc.Label('Click a cell in the table:'),
+    dash_table.DataTable(data.to_dict("records"),[{"name": i, "id": i} for i in data.columns], id='tbl', style_table),
+    dbc.Alert(id='tbl_out'),
+    ])
     return game_table
-
 
 
 

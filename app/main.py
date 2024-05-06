@@ -134,6 +134,7 @@ class Main():
         except Exception as e:
             return f"Failed to add seller: {e}"
 
+
     ############## Plot top sellers ############## 
     def seller_plot(self):
         """This will return a plot of the top sellers
@@ -149,6 +150,13 @@ class Main():
 
         return fig
     
+
+    ############## Show game table ############## 
+    def get_game_table_data(self):
+        """This will return a plot of the top sellers
+        """
+        data = self.data_service.read_all_games()
+        return data
 
     ############## Read Emails, Send Counteroffers ############## 
     ############## Still working on this automation ##############

@@ -301,6 +301,33 @@ class DataService():
         except SQLAlchemyError as e:
             logging.error(f"Error reading game: {e}")
 
+    def read_all_games(self):
+        try:
+            with self.Session() as session:
+                games = session.query(GameDatabase).join(BuyerAgentDatabase).join(SellerDatabase).join(ProductDatabase).all()
+                games_dict = {}
+                for game in games:
+                    games_dict[game.game_id] = {"game_id": game.game_id,
+                                                "product_name": game.product.name,
+                                                "product_quantity": game.product.quantity,
+                                                "buyer_max_price": game.buyer_reservation_price,
+                                                "initial_price": game.initial_price,
+                                                "current_price": game.current_price,
+                                                "negotiation_start_date": game.start_date,
+                                                "buyer_deadline": game.buyer_deadline,
+                                                "seller_first_name": game.seller.first_name,
+                                                "seller_last_name": game.seller.last_name,
+                                                "seller_email": game.seller.email,
+                                                "buyer_power": game.buyer_power,
+                                                "seller_power": game.seller_power,
+                                                "current_strategy": game.current_strategy,
+                                                "last_seller_price": game.last_seller_price,
+                                                "last_buyer_price": game.last_buyer_price                                
+                                                }
+                return games_dict
+        except SQLAlchemyError as e:
+            logging.error(f"Error Reading seller: {e}")
+
 
     def update_game(self, game_id, **kwargs):
         try:

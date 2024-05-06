@@ -42,9 +42,12 @@ new_product_card = layout.get_launch_new_negotiation_game_card()
 add_seller_card = layout.get_add_seller_card()
 bayesian_network_plot = layout.get_bayesian_network_plot()
 top_sellers_plot = layout.get_top_sellers_plot()
-game_table = layout.get_game_table()
-# read_emails_button = layout.get_read_emails_button() # Feature not yet implemented
 
+data = main.get_game_table_data()
+df = pd.DataFrame.from_dict(data, orient='index')
+print(df)
+game_table = layout.get_game_table(pd.DataFrame.from_dict(data, orient='index'))
+# read_emails_button = layout.get_read_emails_button() # Feature not yet implemented
 
 dash_app.layout = html.Div([
     navbar,
@@ -138,6 +141,12 @@ def add_seller_button(n_clicks, first_name, last_name, email):
         string = main.add_seller_to_database(first_name, last_name, email)
         return string
     return ""
+
+
+############## Dash Table ##############
+@dash_app.callback(Output('tbl_out', 'children'), Input('tbl', 'active_cell'))
+def update_graphs(active_cell):
+    return str(active_cell) if active_cell else "Click the table"
 
 
 ############## Read Emails Callback ##############
