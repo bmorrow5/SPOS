@@ -50,6 +50,7 @@ class BayesianFuzzyGame():
         seller_offer_price = self.seller.last_offer_price
 
         first_offer = False
+        game['initial_price'] = None # If this is not the initial offer
 
         # Check if this is a new game
         if self.buyer.last_offer_price is None:
@@ -57,7 +58,7 @@ class BayesianFuzzyGame():
             self.product.initial_price = seller_offer_price
             game['initial_price'] = seller_offer_price
             first_offer = True
-            
+
         # Set the sellers offer to the products current price
         self.product.current_price = seller_offer_price
 
@@ -139,8 +140,8 @@ class BayesianFuzzyGame():
         """ Calculate seller's utility with consideration of external factors. """
         return delta_value * external_factor_prob * supplier_prob + (s_Lh - s_Ll) * buyer_prob + s_Ll
 
-    ## This is not used in our model
-    def x_payoff(self, OP, IP, RP, xmin):
+    ## This will tell us if we should accept the offer. We wil implement later. 
+    def approval_utilty(self, OP, IP, RP, xmin):
         """ Calculate the payoff for the given offer price. """
         return xmin + (1 - xmin) * abs(RP - OP) / abs(RP - IP)
 
@@ -148,13 +149,18 @@ class BayesianFuzzyGame():
         """
         Calculate the next offer price based on the previous offer and negotiation dynamics.
         """
+        if t == 0:
+            t = 1
+        if tau == 0:
+            tau = 1
+
         if first_offer:
             factor = (-1)**alpha * (t / tau) ** lambda_strategy
             first_offer_price = intial_price + factor * abs(reservation_price - intial_price)
             return first_offer_price
         else:
             time_factor = (t / (tau - (t - 1))) ** lambda_strategy
-            price_difference = abs(reservation_price - intial_price)
+            price_difference = abs(reservation_price - previous_offer)
             adjustment = (-1)**alpha * time_factor * price_difference
             new_offer = previous_offer + adjustment
             print("Reservation price: ", reservation_price)
