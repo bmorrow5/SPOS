@@ -83,8 +83,8 @@ INSERT INTO spos.products (name, quantity, max_price, date_needed_by)
 VALUES ('Office Chair', 100, 50.0, '2023-12-31');
 
 -- Insert test data into games
-INSERT INTO spos.games (seller_id, buyer_agent_id, product_id, buyer_power, seller_power, initial_price, current_price, last_seller_price, last_buyer_price, buyer_reservation_price, seller_reservation_price, buyer_deadline, current_strategy)
-VALUES (1, 1, 1, 10, 10, 100.00, 75.00, 75.00, 75.00, 80.00, 40.00,'2024-05-20', 'conciliatory'); 
+INSERT INTO spos.games (seller_id, buyer_agent_id, product_id, buyer_power, seller_power, initial_price, current_price, last_seller_price, buyer_reservation_price, seller_reservation_price, start_date, buyer_deadline, current_strategy)
+VALUES (1, 1, 1, 0, 0, 1000.00, 1000.00, 1000.00, 800.00, 400.00, '2024-04-15', '2024-05-20', 'conciliatory'); 
 
 -- Insert test data into email_logs
 INSERT INTO spos.email_logs (sender_email, receiver_email, buyer_agent_id, seller_id, subject, body)

@@ -35,8 +35,6 @@ class BayesianFuzzyGame():
                             seller['reservation_price'], 
                             seller['last_offer_price'],
                             seller['deadline'])
-        if game_time_days == 0:
-            game_time_days = 1
         self.game_time = game_time_days
         self.product =  new_product
         self.buyer = new_buyer
@@ -50,7 +48,8 @@ class BayesianFuzzyGame():
         game = {}
         seller_offer_price = self.seller.last_offer_price
 
-        days_to_buyer_deadline = self.buyer.deadline - datetime.now().date()
+        days_to_buyer_deadline =  self.buyer.deadline - datetime.now().date()
+        print("Days to deadline: ", days_to_buyer_deadline)
         days_to_buyer_deadline = days_to_buyer_deadline.days
         # print("Days to deadline: ", days_to_deadline)
 
@@ -73,7 +72,7 @@ class BayesianFuzzyGame():
         # Update the beliefs (bayesian networks) of buyer and seller
         # BayesianNetwork().update_beliefs(self.buyer, self.seller)
         # buyer_external_factors, seller_external_factors = BayesianNetwork().get_external_factors()
-        buyer_external_factor_prob, seller_external_factor_prob = 1, 0.1
+        buyer_external_factor_prob, seller_external_factor_prob = 1, 1
 
         # Define the payoff matrix
         b_Hh, b_Hl, b_Lh, b_Ll = 7.5, 0.25, 2.5, 0.75
@@ -92,8 +91,8 @@ class BayesianFuzzyGame():
         # Utility is lambda in math doc, it is the strategy, a value between 1 and 10 depending on the specific strategy
         buyer_utility = self.get_utility_buyer(buyer_external_factor_prob, p, q, b_Hl, b_Ll, gamma_value)
         seller_utility = self.get_utility_seller(seller_external_factor_prob, p, q, s_Hl, s_Ll, delta_value)
-        # print("Buyer utility: ", buyer_utility)
-        # print("Seller utility: ", seller_utility)
+        print("Buyer utility: ", buyer_utility)
+        print("Seller utility: ", seller_utility)
 
         # Now use this strategy to get counteroffer price
         counter_offer_price = self.get_counter_offer_price(previous_offer = seller_offer_price, 
@@ -145,13 +144,22 @@ class BayesianFuzzyGame():
         """
         if first_offer:
             factor = (-1)**alpha * (t / tau) ** lambda_strategy
+            print(factor)
             first_offer_price = intial_price + factor * abs(reservation_price - intial_price)
             return first_offer_price
         else:
-            time_factor = (t / (tau - (t - 1)))**lambda_strategy
+            time_factor = (t / (tau - (t - 1))) ** lambda_strategy
             price_difference = abs(reservation_price - intial_price)
             adjustment = (-1)**alpha * time_factor * price_difference
             new_offer = previous_offer + adjustment
+            print("\n")
+            print("Lambda: ", lambda_strategy)
+            print("reservation_price: ", reservation_price)
+            print("intial_price: ", intial_price)
+            print("Previous offer: ", previous_offer)
+            print("t: ", t)
+            print("Tau: ", tau)  
+            print("Lambda: ", lambda_strategy)          
             print("Time factor: ", time_factor)
             print("Price difference: ", price_difference)            
             print("Adjustment: ", adjustment)

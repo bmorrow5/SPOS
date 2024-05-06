@@ -37,7 +37,8 @@ class Main():
 
         # Get the game from the database
         old_game = self.data_service.read_game(game_id=game_id)
-        game_time_days = old_game['start_date'] - datetime.now().date()
+
+        game_time_days = datetime.now().date() - old_game['start_date']
         game_time_days = game_time_days.days
         
         # Get product information
@@ -79,6 +80,9 @@ class Main():
                                           seller=seller, 
                                           bayesian_network_variable_dict=bayesian_network_variable_dict)
         counter_offer_price = bayesian_game.update_game()
+
+        # Store our counteroffer value in the database
+        self.data_service.update_game(game_id=game_id, last_buyer_price=old_game['current_price'])
         return counter_offer_price
         
 
