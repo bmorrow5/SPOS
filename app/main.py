@@ -41,6 +41,11 @@ class Main():
         game_time_days = datetime.now().date() - old_game['start_date']
         game_time_days = game_time_days.days
         
+        negotiation_length = old_game['buyer_deadline'] - old_game['start_date']
+        negotiation_length = negotiation_length.days
+        print(negotiation_length, game_time_days)
+
+
         # Get product information
         read_product = self.data_service.read_product(product_id=old_game['product_id'])
         old_game['name'] = read_product['name']
@@ -74,7 +79,8 @@ class Main():
 
         # Update the game
         # game_time_days, product, buyer, seller, bayesian_network_variable_dict
-        bayesian_game = BayesianFuzzyGame(game_time_days=game_time_days, 
+        bayesian_game = BayesianFuzzyGame(negotiation_length=negotiation_length,
+                                          game_time_days=game_time_days, 
                                           product=product, 
                                           buyer=buyer, 
                                           seller=seller, 

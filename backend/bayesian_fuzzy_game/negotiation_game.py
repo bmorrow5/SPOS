@@ -18,7 +18,7 @@ class BayesianFuzzyGame():
         p=0.5, q=0.5 for the mixed strategy
     """
 
-    def __init__(self, game_time_days, product, buyer, seller, bayesian_network_variable_dict):
+    def __init__(self, negotiation_length, game_time_days, product, buyer, seller, bayesian_network_variable_dict):
         new_product = Product(product['name'], 
                               product['quantity'], 
                               product['initial_price'], 
@@ -35,6 +35,7 @@ class BayesianFuzzyGame():
                             seller['reservation_price'], 
                             seller['last_offer_price'],
                             seller['deadline'])
+        self.negotiation_length = negotiation_length
         self.game_time = game_time_days
         self.product =  new_product
         self.buyer = new_buyer
@@ -48,11 +49,6 @@ class BayesianFuzzyGame():
         game = {}
         seller_offer_price = self.seller.last_offer_price
 
-        days_to_buyer_deadline =  self.buyer.deadline - datetime.now().date()
-        print("Days to deadline: ", days_to_buyer_deadline)
-        days_to_buyer_deadline = days_to_buyer_deadline.days
-        # print("Days to deadline: ", days_to_deadline)
-
         first_offer = False
 
         # Check if this is a new game
@@ -63,11 +59,6 @@ class BayesianFuzzyGame():
             
         # Set the sellers offer to the products current price
         self.product.current_price = seller_offer_price
-
-        # Check if deadline is hit
-        if days_to_buyer_deadline == 0:
-            print("Deadline hit, accept offer price")
-            return seller_offer_price
 
         # Update the beliefs (bayesian networks) of buyer and seller
         # BayesianNetwork().update_beliefs(self.buyer, self.seller)
@@ -97,7 +88,7 @@ class BayesianFuzzyGame():
         # Now use this strategy to get counteroffer price
         counter_offer_price = self.get_counter_offer_price(previous_offer = seller_offer_price, 
                                                            t  = self.game_time, 
-                                                           tau = days_to_buyer_deadline, 
+                                                           tau = self.negotiation_length, 
                                                            lambda_strategy = seller_utility, # Basing our offer off opponent predicted utility 
                                                            reservation_price = self.buyer.reservation_price, 
                                                            intial_price = self.product.initial_price, 
@@ -149,7 +140,7 @@ class BayesianFuzzyGame():
             return first_offer_price
         else:
             time_factor = (t / (tau - (t - 1))) ** lambda_strategy
-            price_difference = abs(reservation_price - intial_price)
+            price_difference = abs(reservation_price - previous_offer)
             adjustment = (-1)**alpha * time_factor * price_difference
             new_offer = previous_offer + adjustment
             print("\n")
