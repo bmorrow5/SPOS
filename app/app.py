@@ -36,8 +36,12 @@ navbar = layout.get_navbar()
 update_game_card = layout.get_update_game_card()
 new_product_card = layout.get_launch_new_negotiation_game_card()
 add_seller_card = layout.get_add_seller_card()
-bayesian_network_plot = layout.get_buyer_bayesian_network()
-top_sellers_plot = layout.get_seller_bayesian_network()
+
+elements = main.get_buyer_network()
+buyer_network = layout.get_buyer_bayesian_network(elements)
+
+elem = main.get_seller_network()
+seller_network = layout.get_seller_bayesian_network(elem)
 
 data = main.get_game_table_data()
 df = pd.DataFrame.from_dict(data, orient='index').set_index('game_id')
@@ -52,8 +56,8 @@ dash_app.layout = html.Div([
         # Right Column for Plots and Table
         dbc.Col([
             dbc.Row([
-                dbc.Col(html.Div([bayesian_network_plot])),
-                dbc.Col(html.Div([top_sellers_plot])),
+                dbc.Col(html.Div([buyer_network])),
+                dbc.Col(html.Div([seller_network])),
             ]),
             dbc.Row([
                 dbc.Col(html.Div([game_table]))
@@ -135,6 +139,7 @@ def add_seller_button(n_clicks, first_name, last_name, email):
         string = main.add_seller_to_database(first_name, last_name, email)
         return string
     return ""
+
 
 
 ############## Read Emails Callback ##############

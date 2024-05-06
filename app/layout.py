@@ -1,6 +1,7 @@
 import dash_bootstrap_components as dbc
 from dash.dependencies import Input, Output, State
 from dash import Dash, dcc, html, dash_table
+import dash_cytoscape as cyto
 
 
 """This file contains all the design components. This callbacks to the backend are done in app.py
@@ -236,36 +237,50 @@ def get_add_seller_card():
     return card
 
 
-def get_buyer_bayesian_network():
+def get_buyer_bayesian_network(elements):
     """This is the plot for the Bayesian Network
     """
     bayesian_network_plot = dbc.Card(
         [
-            dbc.CardHeader("Bayesian Network Plot"),
-            dbc.CardBody(
-                [
-                ]
-            ),
+            dbc.CardHeader("Buyer Bayesian Network (Interactive)"),
+            dbc.CardBody([
+                html.Div([
+        cyto.Cytoscape(
+            id='cytoscape-layout-1',
+            elements=elements,
+            style={'width': '100%', 'height': '350px'},
+            layout={
+                'name': 'breadthfirst',
+                'roots': '#buyer_power'})
+                        ])
+                        ]),
         ],
-        style={'marginTop': '20px', 'marginBottom': '20px'} # Add margins for better spacing if needed
+        style={'marginTop': '20px', 'marginBottom': '20px', 'marginRight': '20px'} # Add margins for better spacing if needed
     )
     return bayesian_network_plot
 
 
-def get_seller_bayesian_network():
+def get_seller_bayesian_network(elements):
     """This is the plot for the top sellers
     """
-    top_sellers_plot = dbc.Card(
+    bayesian_network_plot = dbc.Card(
         [
-            dbc.CardHeader("Top Sellers"),
-            dbc.CardBody(
-                [
-                ]
-            ),
+            dbc.CardHeader("Seller Bayesian Network (Interactive)"),
+            dbc.CardBody([
+                html.Div([
+        cyto.Cytoscape(
+            id='cytoscape-layout-1',
+            elements=elements,
+            style={'width': '100%', 'height': '350px'},
+            layout={
+                'name': 'breadthfirst',
+                'roots': '#seller_power'})
+                        ])
+                        ]),
         ],
         style={'marginTop': '20px', 'marginBottom': '20px', 'marginRight': '20px'} # Add margins for better spacing if needed
     )
-    return top_sellers_plot
+    return bayesian_network_plot
 
 
 def get_game_table(data):
@@ -276,7 +291,6 @@ def get_game_table(data):
     )
     padded_table = html.Div(game_table, style={'padding': '20px'})
     return padded_table
-
 
 
 #def get_read_emails_button():

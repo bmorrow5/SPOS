@@ -10,8 +10,11 @@ class GameBayesianNetwork():
     and 0.1 means a large negative influence fromm outside factors on a players utility. See readme for
     graphic of the network. We will use fuzzy mathematics to determine the influence of these external factors.
     """
-    def __init__(self, variables):
-        self.variables = variables # A dict of all buyer and seller variables
+    def __init__(self, variables=None):
+        if variables is None:
+            pass
+        else: 
+            self.variables = variables # A dict of all buyer and seller variables
         self.memberships = None
         self.buyer_network = None
         self.seller_network = None
@@ -25,7 +28,7 @@ class GameBayesianNetwork():
             ('payment_status', 'buyer_capability'),
             ('benefit_after_deal', 'buyer_capability'),
             ('offer_price', 'benefit_after_deal'),
-            ('buyer_capability', 'contractor_power'),
+            ('buyer_capability', 'buyer_power'),
 
             # Market competition, (buyer power parent node)
             ('estimated_direct_costs', 'market_competition'),
@@ -33,12 +36,12 @@ class GameBayesianNetwork():
             ('inflation', 'fluctuation_of_market_price'),
             ('bank_interest_rate', 'fluctuation_of_market_price'),
             ('fluctuation_of_market_price', 'market_competition'),
-            ('market_competition', 'contractor_power'),
+            ('market_competition', 'buyer_power'),
 
             # Negotiaiton Deadline Pressure, (buyer power parent node)
             ('current_negotiation_time', 'negotiation_deadline_pressure'),
             ('offer_price', 'negotiation_deadline_pressure'),
-            ('negotiation_deadline_pressure', 'contractor_power')
+            ('negotiation_deadline_pressure', 'buyer_power')
         ])
             
         ## Get the membership functions for each variable
@@ -67,36 +70,36 @@ class GameBayesianNetwork():
             ('production_cost', 'competition_capability'),
             ('number_of_competitors', 'competition_capability'),
             ('overheads', 'competition_capability'),
-            ('competition_capability', 'supplier_power'),
+            ('competition_capability', 'seller_power'),
 
             # Negotiation deadline pressure, (supplier power parent node)
             ('overheads', 'negotiation_deadline_pressure'),
             ('current_negotiation_time', 'negotiation_deadline_pressure'),
             ('offer_price', 'negotiation_deadline_pressure'),
-            ('negotiation_deadline_pressure', 'supplier_power'),
+            ('negotiation_deadline_pressure', 'seller_power'),
 
             # Stability level of economy, (supplier power parent node)
             ('competition_of_market_price', 'stability_level_of_economy'),
             ('bank_interest_rate', 'stability_level_of_economy'),
             ('inflation', 'stability_level_of_economy'),
-            ('stability_level_of_economy', 'supplier_power')
+            ('stability_level_of_economy', 'seller_power')
         ])
 
-        # Get the membership functions for each variable
-        self.setup_fuzzy_memberships()
+        ## Get the membership functions for each variable
+        #self.setup_fuzzy_memberships()
 
         # Normalize the membership functions
-        for node in self.buyer_network.nodes():
-            value = self.variables.get(node, 0)  # Retrieve value or default to 0 if not found
-            memberships = self.calculate_memberships(value, node)
-
-            # Update CPD
-            cpd_values = [memberships[cat] for cat in ['very_low', 'low', 'medium', 'high', 'very_high']]
-            cpd = TabularCPD(variable=node, variable_card=5, values=[cpd_values])
-            self.seller_network.add_cpds(cpd)       
+        #for node in self.buyer_network.nodes():
+        #    value = self.variables.get(node, 0)  # Retrieve value or default to 0 if not found
+        #    memberships = self.calculate_memberships(value, node)
+#
+        #    # Update CPD
+        #    cpd_values = [memberships[cat] for cat in ['very_low', 'low', 'medium', 'high', 'very_high']]
+        #    cpd = TabularCPD(variable=node, variable_card=5, values=[cpd_values])
+        #    self.seller_network.add_cpds(cpd)       
 
         # Validate the model
-        assert self.seller_network.check_model()
+        #assert self.seller_network.check_model()
 
 
     def setup_fuzzy_memberships(self):

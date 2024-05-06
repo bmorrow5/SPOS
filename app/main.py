@@ -1,8 +1,12 @@
 import re
 import pandas as pd
+import networkx as nx
 import plotly.express as px
+import plotly.graph_objects as go
+import matplotlib.pyplot as plt
 from datetime import datetime
 from backend.bayesian_fuzzy_game.negotiation_game import BayesianFuzzyGame
+from backend.bayesian_fuzzy_game.bayesian_network import GameBayesianNetwork
 from backend.email_service.email_service import EmailService
 from backend.data_service.data_service import DataService
 
@@ -141,6 +145,32 @@ class Main():
         """
         data = self.data_service.read_all_games()
         return data
+    
+    ############## Plot Buyer Network ############## 
+    def get_buyer_network(self):
+        game_network = GameBayesianNetwork()
+        game_network.create_buyer_network()
+        buyer_network = game_network.buyer_network
+        G = nx.DiGraph(buyer_network.edges())
+        # Convert NetworkX graph to Cytoscape compatible elements
+        nodes = [{'data': {'id': str(node), 'label': str(node)}} for node in G.nodes()]
+        edges = [{'data': {'source': str(source), 'target': str(target)}} for source, target in G.edges()]
+        elements = nodes + edges
+        return elements
+
+
+    ############## Plot Seller Network ############## 
+    def get_seller_network(self):
+        game_network = GameBayesianNetwork()
+        game_network.create_seller_network()
+        buyer_network = game_network.seller_network
+        G = nx.DiGraph(buyer_network.edges())
+        # Convert NetworkX graph to Cytoscape compatible elements
+        nodes = [{'data': {'id': str(node), 'label': str(node)}} for node in G.nodes()]
+        edges = [{'data': {'source': str(source), 'target': str(target)}} for source, target in G.edges()]
+        elements = nodes + edges
+        return elements
+
 
     ############## Read Emails, Send Counteroffers ############## 
     ############## Still working on this automation ##############
