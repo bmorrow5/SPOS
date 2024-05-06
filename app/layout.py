@@ -269,7 +269,7 @@ def get_seller_bayesian_network(elements):
             dbc.CardBody([
                 html.Div([
         cyto.Cytoscape(
-            id='cytoscape-layout-1',
+            id='cytoscape-layout-2',
             elements=elements,
             style={'width': '100%', 'height': '350px'},
             layout={

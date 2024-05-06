@@ -40,7 +40,7 @@ class BayesianFuzzyGame():
         self.product =  new_product
         self.buyer = new_buyer
         self.seller = new_seller
-        self.bayesian_network_variable_dict = bayesian_network_variable_dict
+        self.bayesian_network_variable_dict = bayesian_network_variable_dict # Will update later to be able to change external factors
         
 
     def update_game(self):
@@ -55,6 +55,7 @@ class BayesianFuzzyGame():
         if self.buyer.last_offer_price is None:
             # Set the initial price as the counteroffer price
             self.product.initial_price = seller_offer_price
+            game['initial_price'] = seller_offer_price
             first_offer = True
             
         # Set the sellers offer to the products current price
@@ -102,6 +103,16 @@ class BayesianFuzzyGame():
         game['counter_offer_price'] = counter_offer_price
         game['buyer_utility'] = buyer_utility
         game['seller_utility'] = seller_utility
+        game['current_price'] = self.product.current_price
+        game['last_seller_price'] = self.seller.last_offer_price
+        """Strategy: 
+        Conciliatory: (0 < lambda < 1) x makes larger concession in earlier negotiation rounds and smaller concessions in later rounds.
+        Conservative: (1 < lambda < inf) x makes smaller concession in earlier negotiation rounds and larger concessions in later rounds.
+        """
+        if seller_utility < buyer_utility:
+            game['current_strategy'] = 'conciliatory'
+        else:
+            game['current_strategy'] = 'conservative' 
         return game
 
 

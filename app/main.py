@@ -84,10 +84,21 @@ class Main():
                                           buyer=buyer, 
                                           seller=seller, 
                                           bayesian_network_variable_dict=bayesian_network_variable_dict)
+        
+        # Perform the game theory calculations, and return updated game values
         game_dict = bayesian_game.update_game()
 
         # Store our counteroffer value in the database
-        self.data_service.update_game(game_id=game_id, last_buyer_price=old_game['current_price'])
+        self.data_service.update_game(game_id=game_id, 
+                                      buyer_power=game_dict['buyer_utility'], 
+                                      seller_power=game_dict['seller_utility'], 
+                                      current_price=game_dict['current_price'],
+                                      current_strategy=game_dict['current_strategy'],
+                                      last_buyer_price=old_game['current_price'], 
+                                      last_seller_price=game_dict['last_seller_price']  
+                                      )
+        if game_dict['initial_price'] is not None:
+            self.data_service.update_game(game_id=game_id, initial_price=game_dict['initial_price'])
 
 
         # Get the counteroffer price

@@ -164,14 +164,5 @@ def add_seller_button(n_clicks, first_name, last_name, email):
 #        return f"Emails read: "
 #    return ""
 
-############## Update Game Callback ##############
-
-
-############## Update Graph Callback ##############
-
-
-
-
-
 if __name__ == '__main__':
     dash_app.run_server(debug=True, port=8001)
