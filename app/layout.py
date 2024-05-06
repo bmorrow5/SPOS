@@ -38,11 +38,10 @@ def get_update_game_card():
         dbc.Row(
             [
                 dbc.Col(
-                    html.Div(id='input_container_1'),
-                    width={"size": "auto", "offset": 1}
-                ),
+                    html.Div(id='input_container_1'),                ),
             ],
             className="mb-3",
+            justify= "start"
         ),
         dbc.Row(
             [
@@ -95,11 +94,10 @@ def get_launch_new_negotiation_game_card():
         dbc.Row(
             [
                 dbc.Col(
-                    html.Div(id='input_container_2'),
-                    width={"size": 6, "offset": 1}
-                ),
+                    html.Div(id='input_container_2')                ),
             ],
             className="mb-3",
+            justify= "start"
         ),
         dbc.Row(
             [
@@ -152,6 +150,8 @@ def get_launch_new_negotiation_game_card():
                 ),
             ],
             className="mb-3",
+            justify= "end"
+
         ),
     ],
     className="g-2 align-items-end" # g-2 is the gap between the columns
@@ -174,10 +174,10 @@ def get_add_seller_card():
             [
                 dbc.Col(
                     html.Div(id='input_container_3'),
-                    width={"size": 6, "offset": 1}
                 ),
             ],
             className="mb-3",
+            justify= "start"
         ),
         dbc.Row(
         [
@@ -215,10 +215,12 @@ def get_add_seller_card():
         [
             dbc.Col(
                 dbc.Button("Add Seller", color="primary", id='add_seller_btn'),
-                width={"size": "auto", "offset": 2}
+                width={"size": "auto", "offset": 2},
             ),
         ],
-        className="mb-3",
+        className="ml-auto",
+        justify= "end"
+
     ),
     ],
     className="g-2 align-items-end" # g-2 is the gap between the columns

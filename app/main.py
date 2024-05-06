@@ -120,11 +120,9 @@ class Main():
                 
                 greeting = f"Hello {seller_info['first_name']} {seller_info['last_name']},"
                 farewell = f"Thank you,\n\n{self.first_name} {self.last_name}\nYour Company Intl."
-                message = f"{greeting}\n\n{message}\n\n{farewell}"
-
-
+                final_message = f"{greeting}\n\n{message}\n\n{farewell}"
                 subject = f"Request for Quote - {product['quantity']} {product['name']} - Request ID: ({game_id})"
-                self.email_service.send_emails(to_emails= [seller_info['email']], subject=subject, message=message)
+                self.email_service.send_emails(to_emails= [seller_info['email']], subject=subject, message=final_message)
         except Exception as e:
              return f"Failed to send email: {e}"
         
