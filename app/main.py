@@ -39,7 +39,7 @@ class Main():
 
         game_time_days = datetime.now().date() - old_game['start_date']
         game_time_days = game_time_days.days
-        
+
         negotiation_length = old_game['buyer_deadline'] - old_game['start_date']
         negotiation_length = negotiation_length.days
         # print(negotiation_length, game_time_days)
@@ -117,6 +117,7 @@ class Main():
                                       product_id= product['product_id'], 
                                       buyer_reservation_price= (product['quantity'] * product['max_price']), # Total price
                                       start_date = datetime.now().date(),
+                                      buyer_deadline = date_needed_by,
                                       buyer_power=0,
                                       seller_power=0
                                       )

@@ -255,7 +255,7 @@ class DataService():
             logging.error(f"Error deleting product: {e}")
 
     ############## Game CRUD ##############
-    def create_game(self, seller_id, buyer_agent_id, product_id, buyer_power=None, seller_power=None, buyer_reservation_price=None, start_date=None, seller_reservation_price=None, current_strategy=None):
+    def create_game(self, seller_id, buyer_agent_id, product_id, buyer_power=None, seller_power=None, buyer_reservation_price=None, start_date=None, seller_reservation_price=None, current_strategy=None, buyer_deadline=None):
         try:
             with self.Session() as session:
                 new_game = GameDatabase(
@@ -267,7 +267,8 @@ class DataService():
                     buyer_reservation_price=buyer_reservation_price,
                     seller_reservation_price=seller_reservation_price,
                     current_strategy=current_strategy,
-                    start_date=start_date
+                    start_date=start_date,
+                    buyer_deadline=buyer_deadline,
                 )
                 session.add(new_game)
                 session.commit()
