@@ -1,10 +1,11 @@
 # Strategic Procurement Optimization System (SPOS)
 
-This system utilizes an application of game theory called Bayesian Fuzzy Games to optimize supplier negotiations when purchasing. This system works via email. It will calculate the optimal counter offer price, and then email the counter offer to the supplier. 
+This system utilizes an application of game theory called Bayesian Fuzzy Games to optimize supplier negotiations when purchasing. This system integrates with email, and can send emails. It currently cannot read emails as this will be added at a later date. 
+
 
 ## How to Run
 Pending (build in progress)
-There will be two docker containers. One for the database, and one for the API. The frontend is seperated as well. To run on docker enter the command line and enter:
+Ensure docker is installed on your computer. There will be two docker containers. One for the database, and one for the dash webpage. To run on docker enter the command line and enter:
 
 ### How to setup the docker database
 1. docker run --name spos_postgres -p 5432:5432 -e POSTGRES_PASSWORD=spos123 -d postgres
@@ -23,10 +24,6 @@ host: host.docker.internal
 database: postgres
 user: postgres
 password: spos123
-
-### Logging in
-Username: spos6045@gmail.com <br>
-password: 1234abcd!# (cjoisegsetxkqdxb)
 
 
 

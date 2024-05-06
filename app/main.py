@@ -109,6 +109,7 @@ class Main():
             if message is None:
                 message = f"We are requesting a quote for {product['quantity']} {product['name']}.\n\nPlease reply to this email with your best price, and in the body of the email, not on an attachment."
             
+            email_results = []
             # Iterate through all sellers in the database, create a game and send an email request for quote
             for seller_id, seller_info in sellers_dict.items():
                 game_id = self.data_service.create_game(seller_id = seller_id, 
@@ -124,12 +125,16 @@ class Main():
                 farewell = f"Thank you,\n\n{self.first_name} {self.last_name}\nYour Company Intl."
                 final_message = f"{greeting}\n\n{message}\n\n{farewell}"
                 subject = f"Request for Quote - {product['quantity']} {product['name']} - Request ID: ({game_id})"
-                self.email_service.send_emails(to_emails= [seller_info['email']], subject=subject, message=final_message)
-                return f"Request for quotes sent for {product['quantity']} {product['name']}"
+                try:
+                    self.email_service.send_emails(to_emails= [seller_info['email']], subject=subject, message=final_message)
+                    # email_results.append(f"Seller ({seller_id}) - Request for quotes sent \t")
+                except Exception as e:
+                    email_results.append(f"Seller({seller_id}) - Failed to send email: {e}")
+            return email_results
         except Exception as e:
-             return f"Failed to send email: {e}"
+             return f"Failed to create game: {e}"
 
-    ############## Show game table ##############     
+    ############## Add Seller Form ##############     
     def add_seller_to_database(self, first_name, last_name, email):
         try:
             # Create a new seller
@@ -139,7 +144,7 @@ class Main():
             return f"Failed to add seller: {e}"
     
 
-    ############## Show game table ############## 
+    ############## Get All Games for Game Table ############## 
     def get_game_table_data(self):
         """This will return a plot of the top sellers
         """
