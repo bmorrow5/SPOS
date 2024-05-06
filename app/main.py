@@ -1,8 +1,7 @@
 import sys
 import os
 current_dir = os.path.dirname(os.path.abspath(__file__))
-parent_dir = os.path.dirname(current_dir)
-sys.path.insert(1, parent_dir)
+sys.path.insert(1, current_dir)
 import re
 import pandas as pd
 import plotly.express as px
@@ -43,7 +42,7 @@ class Main():
         
         negotiation_length = old_game['buyer_deadline'] - old_game['start_date']
         negotiation_length = negotiation_length.days
-        print(negotiation_length, game_time_days)
+        # print(negotiation_length, game_time_days)
 
 
         # Get product information
@@ -115,7 +114,10 @@ class Main():
                 game_id = self.data_service.create_game(seller_id = seller_id, 
                                       buyer_agent_id = buyer_dict['buyer_agent_id'], 
                                       product_id= product['product_id'], 
-                                      buyer_reservation_price= (product['quantity'] * product['max_price']) # Total price
+                                      buyer_reservation_price= (product['quantity'] * product['max_price']), # Total price
+                                      start_date = datetime.now().date(),
+                                      buyer_power=0,
+                                      seller_power=0
                                       )
                 
                 greeting = f"Hello {seller_info['first_name']} {seller_info['last_name']},"
@@ -123,9 +125,11 @@ class Main():
                 final_message = f"{greeting}\n\n{message}\n\n{farewell}"
                 subject = f"Request for Quote - {product['quantity']} {product['name']} - Request ID: ({game_id})"
                 self.email_service.send_emails(to_emails= [seller_info['email']], subject=subject, message=final_message)
+                return f"Request for quotes sent for {product['quantity']} {product['name']}"
         except Exception as e:
              return f"Failed to send email: {e}"
-        
+
+    ############## Show game table ##############     
     def add_seller_to_database(self, first_name, last_name, email):
         try:
             # Create a new seller
@@ -133,22 +137,6 @@ class Main():
             return f"Added Seller: {first_name} {last_name}"
         except Exception as e:
             return f"Failed to add seller: {e}"
-
-
-    ############## Plot top sellers ############## 
-    def seller_plot(self):
-        """This will return a plot of the top sellers
-        """
-        # Get all sellers
-        sellers = self.data_service.read_all_sellers()
-
-        # Create a dataframe
-        df = pd.DataFrame(sellers).T
-
-        # Create a plot
-        fig = px.bar(df, x=df.index, y='total_sales', title="Top Sellers", labels={'index': 'Seller ID', 'total_sales': 'Total Sales'})
-
-        return fig
     
 
     ############## Show game table ############## 

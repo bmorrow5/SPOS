@@ -139,7 +139,6 @@ class BayesianFuzzyGame():
         """
         if first_offer:
             factor = (-1)**alpha * (t / tau) ** lambda_strategy
-            print(factor)
             first_offer_price = intial_price + factor * abs(reservation_price - intial_price)
             return first_offer_price
         else:

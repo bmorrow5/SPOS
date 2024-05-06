@@ -1,8 +1,4 @@
-import sys
 import os
-current_dir = os.path.dirname(os.path.abspath(__file__))
-parent_dir = os.path.dirname(current_dir)
-sys.path.insert(1, parent_dir)
 from flask import Flask, request, jsonify
 from dash.dependencies import Input, Output, State
 from dash import Dash, dcc, html
@@ -44,8 +40,8 @@ bayesian_network_plot = layout.get_buyer_bayesian_network()
 top_sellers_plot = layout.get_seller_bayesian_network()
 
 data = main.get_game_table_data()
-df = pd.DataFrame.from_dict(data, orient='index')
-game_table = layout.get_game_table(df.set_index('game_id'))
+df = pd.DataFrame.from_dict(data, orient='index').set_index('game_id')
+game_table = layout.get_game_table(df.sort_index(ascending=True))
 # read_emails_button = layout.get_read_emails_button() # Feature not yet implemented
 
 dash_app.layout = html.Div([
@@ -90,8 +86,6 @@ def update_game_button(n_clicks, game_id, seller_counteroffer):
     return ""
 
 
-
-
 ############## Request Quotes Callback ##############
 @dash_app.callback(
     Output('input_container_2', 'children'),
@@ -113,8 +107,9 @@ def request_quotes_button(n_clicks, product_name, product_quantity, product_max_
     if n_clicks is None or n_clicks == 0:
         return "Enter requirement details"
     if n_clicks > 0:
-        main.request_quotes(product_name, product_quantity, product_max_price, date_needed_by, message)
-        return f"Requests for quotes sent: {product_name}"
+        print("Sending request for quotes")
+        words = main.request_quotes(product_name, product_quantity, product_max_price, date_needed_by, message)
+        return words
     return ""
 
 ############## Add Seller Callback ##############
