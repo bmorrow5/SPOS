@@ -39,6 +39,7 @@ user: postgres
 password: spos123
 
 
+
 # Backend
 ##  Game Logic 
 Contains the bayesian fuzzy game logic, and contains the following classes:
@@ -49,6 +50,13 @@ Source: See [2] Below
 
 
 All games start with mixed strategy probabilities $p=0.5$ and $q=0.5$. In this class $\lambda$ is the utility and  represents the strategy, and is used in the calculate. Please see the pdf file titles SPOS mathematics for an in depth explanation of the game theory mathematics used in this web application. 
+
+
+When testing please note that the non-external factor game matrix returns a strategy that is very conservative at the start of negotiations. Please create a negotiation game that has a closer due date for a more significant shift in the counteroffer price. This is to show how the strategy values impact the game:
+
+<img src="Strategy_Trend_Analysis.png" alt="network" width="600"/> <br>
+Source: See [2] Below <br>
+
 ### Bayesian Network: <br>
 Contains the Bayesian Network logic following this DAG: <br>
 <img src="Networks.png" alt="network" width="600"/> <br>

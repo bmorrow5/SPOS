@@ -89,8 +89,8 @@ class BayesianFuzzyGame():
 
         # Now use this strategy to get counteroffer price
         counter_offer_price = self.get_counter_offer_price(previous_offer = seller_offer_price, 
-                                                           t  = self.game_time, 
-                                                           tau = self.negotiation_length, 
+                                                           negotiation_time = self.game_time, 
+                                                           total_negotiation_length = self.negotiation_length, 
                                                            lambda_strategy = seller_utility, # Basing our offer off opponent predicted utility 
                                                            reservation_price = self.buyer.reservation_price, 
                                                            intial_price = self.product.initial_price, 
@@ -145,33 +145,40 @@ class BayesianFuzzyGame():
         """ Calculate the payoff for the given offer price. """
         return xmin + (1 - xmin) * abs(RP - OP) / abs(RP - IP)
 
-    def get_counter_offer_price(self, previous_offer, t, tau, lambda_strategy, reservation_price, intial_price, alpha, first_offer=False):
+    def get_counter_offer_price(self, previous_offer, negotiation_time, total_negotiation_length, lambda_strategy, reservation_price, intial_price, alpha, first_offer=False):
         """
         Calculate the next offer price based on the previous offer and negotiation dynamics.
         """
-        if t == 0:
+        if negotiation_time == 0:
             t = 1
-        if tau == 0:
+        else:
+            t = negotiation_time
+        
+        if total_negotiation_length == 0:
             tau = 1
+        else:
+            tau = total_negotiation_length
 
         if first_offer:
             factor = (-1)**alpha * (t / tau) ** lambda_strategy
             first_offer_price = intial_price + factor * abs(reservation_price - intial_price)
             return first_offer_price
         else:
-            time_factor = (t / (tau - (t - 1))) ** lambda_strategy
-            price_difference = abs(reservation_price - previous_offer)
-            adjustment = (-1)**alpha * time_factor * price_difference
+            time_factor = (t / (tau * (t - 1))) ** lambda_strategy
+            price_difference = abs(reservation_price - intial_price)
+            adjustment = (-1)**alpha * price_difference * time_factor
             new_offer = previous_offer + adjustment
-            print("Reservation price: ", reservation_price)
-            print("Initial price: ", intial_price)
-            print("Alpha: ", alpha)
-            print("Lambda strategy: ", lambda_strategy)
-            print("Time: ", t)
-            print("Tau: ", tau)
-            print("Previous offer: ", previous_offer)
-            print("New offer: ", new_offer)
-            print("Time factor: ", time_factor)
-            print("Price difference: ", price_difference)
-            print("Adjustment: ", adjustment)
+
+            
+            # print("Reservation price: ", reservation_price)
+            # print("Initial price: ", intial_price)
+            # print("Alpha: ", alpha)
+            # print("Lambda strategy: ", lambda_strategy)
+            # print("Time: ", t)
+            # print("Tau: ", tau)
+            # print("Previous offer: ", previous_offer)
+            # print("Time factor: ", time_factor)
+            # print("Price difference: ", price_difference)
+            # print("Adjustment: ", adjustment)
+            # print("New offer: ", new_offer)
             return new_offer
