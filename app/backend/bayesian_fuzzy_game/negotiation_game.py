@@ -159,17 +159,8 @@ class BayesianFuzzyGame():
         else:
             tau = total_negotiation_length
 
-        if first_offer:
-            factor = (-1)**alpha * (t / tau) ** lambda_strategy
-            first_offer_price = intial_price + factor * abs(reservation_price - intial_price)
-            return first_offer_price
-        else:
-            time_factor = (t / (tau * (t - 1))) ** lambda_strategy
-            price_difference = abs(reservation_price - intial_price)
-            adjustment = (-1)**alpha * price_difference * time_factor
-            new_offer = previous_offer + adjustment
-
-            
+        factor = (-1)**alpha * (t / tau) ** lambda_strategy
+        new_offer = intial_price + factor * abs(reservation_price - intial_price)             
             # print("Reservation price: ", reservation_price)
             # print("Initial price: ", intial_price)
             # print("Alpha: ", alpha)
@@ -181,4 +172,4 @@ class BayesianFuzzyGame():
             # print("Price difference: ", price_difference)
             # print("Adjustment: ", adjustment)
             # print("New offer: ", new_offer)
-            return new_offer
+        return new_offer
