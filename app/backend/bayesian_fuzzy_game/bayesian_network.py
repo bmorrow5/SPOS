@@ -9,6 +9,7 @@ class GameBayesianNetwork():
     This will return a probability from [0,1] where 1 means no influence from outside factors,
     and 0.1 means a large negative influence fromm outside factors on a players utility. See readme for
     graphic of the network. We will use fuzzy mathematics to determine the influence of these external factors.
+    Build still in progress
     """
     def __init__(self, variables=None):
         if variables is None:

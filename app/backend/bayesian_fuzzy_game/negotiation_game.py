@@ -12,7 +12,7 @@ class BayesianFuzzyGame():
         Optimize Negotiation Price in Construction Procurement using Bayesian Fuzzy Game Model (2015)
 
         See the PDF SPOS Mathematics for more information on the model. New negotiations start with
-        p=0.5, q=0.5 for the mixed strategy
+        p=0.5, q=0.5 for the mixed strategy. These are multiplied by the external factor probability.
     """
 
     def __init__(self, negotiation_length, game_time_days, product, buyer, seller, bayesian_network_variable_dict):
