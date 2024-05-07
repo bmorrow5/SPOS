@@ -60,8 +60,9 @@ dash_app.layout = html.Div([
                 dbc.Col(html.Div([seller_network])),
             ]),
             dbc.Row([
-                dbc.Col(html.Div([game_table]))
-            ])
+                dbc.Col(dbc.Button("Refresh Table", color="primary", id='refresh_button'), width={"size": "auto", "offset": 0}),
+                dbc.Col(html.Div([game_table], id='game_table'))
+            ] , justify="start")
         ], width=9)  
     ])
 ])
@@ -86,7 +87,7 @@ def update_game_button(n_clicks, game_id, seller_counteroffer):
         return "Enter game details to update"
     if n_clicks > 0:
         counter_offer_price = main.update_game_app(game_id, seller_counteroffer)
-        return f"Game Updated: {game_id}\nRecommended Counteroffer Price: ${counter_offer_price:.2f}"
+        return f"Game Updated: {game_id}\nRecommended Counteroffer Price: {counter_offer_price:.2f}"
     return ""
 
 
@@ -140,7 +141,25 @@ def add_seller_button(n_clicks, first_name, last_name, email):
         return string
     return ""
 
-
+############## Update Table Callback ##############
+@dash_app.callback(
+    Output('game_table', 'children'),
+    [Input('refresh_button', 'n_clicks')]
+)
+def refresh_table(n_clicks):
+    """Refreshes the game table
+    """
+    if n_clicks is None or n_clicks == 0:
+        data = main.get_game_table_data()
+        df = pd.DataFrame.from_dict(data, orient='index').set_index('game_id')
+        game_table = layout.get_game_table(df.sort_index(ascending=True))
+        return game_table
+    if n_clicks > 0:
+        data = main.get_game_table_data()
+        df = pd.DataFrame.from_dict(data, orient='index').set_index('game_id')
+        game_table = layout.get_game_table(df.sort_index(ascending=True))
+        return game_table
+    return dash_app.no_update
 
 ############## Read Emails Callback ##############
 ############## Feature not yet implemented ##############
@@ -163,6 +182,8 @@ def add_seller_button(n_clicks, first_name, last_name, email):
 #        main.read_email_and_send_counteroffers()
 #        return f"Emails read: "
 #    return ""
+
+
 
 if __name__ == '__main__':
     dash_app.run_server(debug=True, port=8001)

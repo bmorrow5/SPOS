@@ -289,6 +289,7 @@ def get_game_table(data):
     game_table = dbc.Table.from_dataframe(
     data, striped=True, bordered=True, hover=True, index=True, responsive=True
     )
+    
     padded_table = html.Div(game_table, style={'padding': '20px'})
     return padded_table
 
