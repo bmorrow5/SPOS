@@ -1,6 +1,6 @@
 import sys
 import os
-import bcrypt
+# import bcrypt
 import logging
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -22,34 +22,34 @@ class DataService():
         self.Session = sessionmaker(bind=self.engine)
 
 
-    ############## Password Handling ##############
-    def encrypt_password(password):
-        # Convert the password to a byte string
-        byte_password = password.encode()
-        # Generate a salt and hash the password
-        hashed = bcrypt.hashpw(byte_password, bcrypt.gensalt())
-        return hashed.decode()  # decode the hash to store in the database as a string
+    # ############## Password Handling ##############
+    # def encrypt_password(password):
+    #     # Convert the password to a byte string
+    #     byte_password = password.encode()
+    #     # Generate a salt and hash the password
+    #     hashed = bcrypt.hashpw(byte_password, bcrypt.gensalt())
+    #     return hashed.decode()  # decode the hash to store in the database as a string
 
     
-    @staticmethod
-    def verify_user(email, password):
-        """Verifies the user by checking the email and password
-        """
-        session = None
-        try:
-            ds = DataService()
-            session = ds.Session()
-            user = session.query(BuyerAgentDatabase).filter_by(email=email).one_or_none()
-            if user:
-                byte_password = password.encode()
-                if bcrypt.checkpw(byte_password, user.password.encode()):
-                    return True
-            return False
-        except SQLAlchemyError as e:
-            logging.error(f"Error verifying user: {e}")
-            return False
-        finally:
-            session.close()
+    # @staticmethod
+    # def verify_user(email, password):
+    #     """Verifies the user by checking the email and password
+    #     """
+    #     session = None
+    #     try:
+    #         ds = DataService()
+    #         session = ds.Session()
+    #         user = session.query(BuyerAgentDatabase).filter_by(email=email).one_or_none()
+    #         if user:
+    #             byte_password = password.encode()
+    #             if bcrypt.checkpw(byte_password, user.password.encode()):
+    #                 return True
+    #         return False
+    #     except SQLAlchemyError as e:
+    #         logging.error(f"Error verifying user: {e}")
+    #         return False
+    #     finally:
+    #         session.close()
 
 
 

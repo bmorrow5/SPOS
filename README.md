@@ -32,8 +32,9 @@ Ensure docker is installed on your computer. There will be two docker containers
 ### How to setup the docker application
 Navigate to the app folder in the command line. Run:
 1. docker build -t spos_app .
+2. docker run -p 8001:8001 spos_app
 
-This will now build the image. Then navigate to the image location and start it after you have started the database. Now go to a web browser and go to http://localhost:8001/
+Now go to a web browser and go to http://localhost:8001/
 
 
 ### (optional) To get pgAdmin4 to run
