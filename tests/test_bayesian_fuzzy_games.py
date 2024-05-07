@@ -80,15 +80,13 @@ class BayesianFuzzyGamesTest(unittest.TestCase):
     ])
     def test_counter_offer_variations(self, lambda_strategy, negotiation_time, total_negotiation_length, initial_price, previous_offer, reservation_price):
         result = self.game.get_counter_offer_price(
-            previous_offer=previous_offer,
             negotiation_time=negotiation_time,
             total_negotiation_length=total_negotiation_length,
             lambda_strategy=lambda_strategy,
             reservation_price=reservation_price,
             initial_price= initial_price,
-            alpha=1,
-            first_offer=True
-        )
+            alpha=1
+            )
         print(f'Test case - Lambda: {lambda_strategy}, t: {negotiation_time}, tau: {total_negotiation_length}, Counter Offer Price: {result}')
 
 if __name__ == '__main__':

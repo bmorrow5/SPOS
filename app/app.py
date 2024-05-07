@@ -75,19 +75,15 @@ dash_app.layout = html.Div([
      State('seller_counteroffer', 'value')]
 )
 def update_game_button(n_clicks, game_id, seller_counteroffer):
-    """Requests quotes from all sellers in the database for a product
-       Args:
-            email_list (list): Suppliers to send email to
-            counter_offer_price (float): Bayesian Games counter_offer_price
-            subject (str): Email subject
-            message (str): Email contents
-            Product (Product): Product to request quotes for
+    """Updates the game when pressed
     """
     if n_clicks is None or n_clicks == 0:
         return "Enter game details to update"
     if n_clicks > 0:
         counter_offer_price = main.update_game_app(game_id, seller_counteroffer)
-        return f"Game Updated: {game_id}\nRecommended Counteroffer Price: {counter_offer_price:.2f}"
+        if seller_counteroffer == round(counter_offer_price, 2):
+            return f"Counteroffer Price: ${counter_offer_price:.2f} is the same as seller offer. Our strategy is conservative. Wait until closer to the deadline and check back here for counteroffer price."
+        return f"Game ({game_id}) updated: Recommended counteroffer is ${counter_offer_price:.2f}. If close to the seller's offer and our strategy is conservative (see table), consider delaying your counteroffer closer to your deadline."
     return ""
 
 
