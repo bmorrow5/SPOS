@@ -6,8 +6,8 @@ sys.path.insert(1, parent_dir)
 import unittest
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from backend.data_service.models import Base, SellerDatabase, BuyerAgentDatabase
-from backend.data_service import DataService 
+from app.backend.data_service.models import Base, SellerDatabase, BuyerAgentDatabase
+from app.backend.data_service import DataService 
 
 class TestDataService(unittest.TestCase):
     """This needs updated

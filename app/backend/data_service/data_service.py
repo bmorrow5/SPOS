@@ -1,13 +1,10 @@
 import sys
 import os
-# Add the current directory to the path so that the models can be imported
-current_dir = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(1, current_dir)
 import bcrypt
 import logging
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from models import Base, SellerDatabase, BuyerAgentDatabase, ProductDatabase, GameDatabase, EmailLogDatabase
+from .models import Base, SellerDatabase, BuyerAgentDatabase, ProductDatabase, GameDatabase, EmailLogDatabase
 from sqlalchemy.exc import SQLAlchemyError
 
 # Add the current directory to the path so that the models can be imported

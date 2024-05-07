@@ -17,7 +17,7 @@ On the left hand side of the screen there are three forms that allow you to upda
 - The launch new negotiation game form allows the user to enter a requirement, and when they hit request quotes the system will email all sellers in the database requesting quotes for the new need. 
 
 # How to Run
-Ensure docker is installed on your computer. There will be two docker containers. One for the database, and one for the dash webpage. To run on docker enter the command line and enter:
+Ensure docker is installed on your computer. There will be two docker containers. One for the database, and one for the dash webpage. The application runs on http://localhost:8001/. The database is on port 5432. To run on docker enter the command line and enter:
 
 ### How to setup the docker database
 1. docker run --name spos_postgres -p 5432:5432 -e POSTGRES_PASSWORD=spos123 -d postgres

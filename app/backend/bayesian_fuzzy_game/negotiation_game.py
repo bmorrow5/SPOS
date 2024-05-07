@@ -1,11 +1,8 @@
 import sys
 import os
-current_dir = os.path.dirname(os.path.abspath(__file__))
-parent_dir = os.path.dirname(current_dir)
-sys.path.insert(1, current_dir)
 from datetime import datetime
-from game_classes import Product, Buyer, Seller
-from bayesian_network import GameBayesianNetwork
+from .game_classes import Product, Buyer, Seller
+from .bayesian_network import GameBayesianNetwork
 
 class BayesianFuzzyGame():
     """ Performs the negotiation game theory, calculates utility, and returns the counteroffer price.

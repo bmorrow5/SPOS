@@ -4,7 +4,7 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 parent_dir = os.path.dirname(current_dir)
 sys.path.insert(1, parent_dir)
 import unittest
-from backend.email_service.email_service import EmailService
+from app.backend.email_service.email_service import EmailService
 
 
 class TestEmailService(unittest.TestCase):
