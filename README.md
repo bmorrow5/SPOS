@@ -17,7 +17,7 @@ On the left hand side of the screen there are three forms that allow you to upda
 - The launch new negotiation game form allows the user to enter a requirement, and when they hit request quotes the system will email all sellers in the database requesting quotes for the new need. 
 
 # How to Run
-Ensure docker is installed on your computer. There will be two docker containers. One for the database, and one for the dash webpage. The application runs on http://localhost:8001/. The database is on port 5432. To run on docker enter the command line and enter:
+Ensure docker is installed on your computer. There will be two docker containers. One for the database, and one for the dash webpage. The application runs on 8001. The database is on port 5432. To run locally go to the data_service.py folder and change the url_engin in init to localhost. Then you can run if you download requirements. To run on docker enter the command line and enter:
 
 ### How to setup the docker database
 1. docker run --name spos_postgres -p 5432:5432 -e POSTGRES_PASSWORD=spos123 -d postgres
@@ -26,7 +26,15 @@ Ensure docker is installed on your computer. There will be two docker containers
 4. psql
 5. CREATE DATABASE default_company;
 6. \c default_company
-7. Run rest of SQL
+7. Run rest of SQL from database/create_spos_database.sql file
+
+
+### How to setup the docker application
+Navigate to the app folder in the command line. Run:
+1. docker build -t spos_app .
+
+This will now build the image. Then navigate to the image location and start it after you have started the database. 
+
 
 ### (optional) To get pgAdmin4 to run
 If you want to use pgAdmin4 to manage and view the database enter the following commands:

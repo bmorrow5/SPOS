@@ -16,7 +16,7 @@ class DataService():
     """This class serves as the data service for the application, and will perform CRUD operations on all database tables
     """
 
-    def __init__(self, engine_url='postgresql://postgres:spos123@localhost:5432/default_company'):
+    def __init__(self, engine_url='postgres://postgres:spos123@172.17.0.2:5432/default_company'): # localhost and not 172.17.0.2 to run on computer
         self.engine = create_engine(engine_url)
         Base.metadata.create_all(self.engine)
         self.Session = sessionmaker(bind=self.engine)
