@@ -18,7 +18,7 @@ dash_app = Dash(__name__, server=server, external_stylesheets=[dbc.themes.BOOTST
 dash_app.title = "SPOS - Buyer Dashboard"
 
 # Set the session secret key for secure cookies, **** default only for development****
-server.config.update(SECRET_KEY=os.getenv("SECRET_KEY", "default_secret_key")) 
+# server.config.update(SECRET_KEY=os.getenv("SECRET_KEY", "default_secret_key")) 
 
 # auth = dash_auth.BasicAuth(
 #     dash_app,
