@@ -57,8 +57,12 @@ When testing please note that the non-external factor game matrix returns a stra
 <img src="Strategy_Trend_Analysis.png" alt="network" width="400"/> <br>
 Source: See [2] Below <br>
 
+Once we determine the sellers strategy $\lambda_s$ with our mixed strategy bayesian game, we use this strategy to send our counteroffer price: <br>
+$OP_t = IP + -1^{\alpha} (\frac{t}{\tau})^{\lambda_s} |RP_b - IP|$ <br>
+Where $\lambda_s$ is the seller strategy, $\alpha$ is 1 for buyer and 0 for seller, $t$ is current negotiation time in days, and $\tau$ is total days of the negotiation until the buyers deadline
+
 ### Bayesian Network: <br>
-Contains the Bayesian Network logic following this DAG: <br>
+Still being built due to network complexity. Contains the Bayesian Network logic following this DAG: <br>
 <img src="Networks.png" alt="network" width="600"/> <br>
 Source: See [2] Below <br>
 

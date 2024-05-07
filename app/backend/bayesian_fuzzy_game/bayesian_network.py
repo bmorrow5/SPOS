@@ -287,5 +287,7 @@ class GameBayesianNetwork():
         return self.normalize_memberships(memberships)
 
     def get_external_factors():
+        """This will return the final external factors probabilities for the buyer and seller
+        """
         pass
 
