@@ -9,7 +9,7 @@ The frontend data visualization dashboard
 The web application: <br>
 <img src="Dashboard_Final.png" alt="dashboard"/> <br>
 
-Here on the home screen you can see the external factors that influence negotiations through the Bayesian Networks on our two plots on the top. These will show the values of each external factors as they are added to our system. Below that is a table that tracks the status of each game, and gives information on the games. <br>
+Here on the home screen you can see the external factors that influence negotiations through the Bayesian Networks on our two plots on the top. Note that the weights will be added in a future version once the bayesian network nodes are complete. These network graphs will show the values of each external factors as they are added to our system. Below that is a table that tracks the status of each game, and gives information on the games. <br>
 
 On the left hand side of the screen there are three forms that allow you to update game, launch a new negotiation game, and add sellers to the database. 
 - Add seller allows the user to add a seller to the database. 
@@ -23,7 +23,7 @@ Ensure docker is installed on your computer. There will be two docker containers
 1. docker run --name spos_postgres -p 5432:5432 -e POSTGRES_PASSWORD=spos123 -d postgres
 2. docker exec -it spos_postgres bash
 3. su - postgres
-4. psql
+4. psql -U postgres
 5. CREATE DATABASE default_company;
 6. \c default_company
 7. Run rest of SQL from database/create_spos_database.sql file

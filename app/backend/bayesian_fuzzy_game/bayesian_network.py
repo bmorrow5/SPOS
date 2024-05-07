@@ -53,11 +53,11 @@ class GameBayesianNetwork():
         #    value = self.variables.get(node, 0)  # Retrieve value or default to 0 if not found
         #    memberships = self.calculate_memberships(value, node)
 
-            # Update CPD
+            # Update CPDs
         #    cpd_values = [memberships[cat] for cat in ['very_low', 'low', 'medium', 'high', 'very_high']]
         #    cpd = TabularCPD(variable=node, variable_card=5, values=[cpd_values])
         #    self.buyer_network.add_cpds(cpd)       
-
+        
         # Validate the model
         #assert self.buyer_network.check_model()
 
