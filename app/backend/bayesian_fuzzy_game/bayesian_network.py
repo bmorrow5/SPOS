@@ -14,7 +14,7 @@ class GameBayesianNetwork():
         if variables is None:
             pass
         else: 
-             self.variables = variables # A dict of all buyer and seller variables
+            self.variables = variables # A dict of all buyer and seller variables
         self.memberships = None
         self.buyer_network = None
         self.seller_network = None
