@@ -54,7 +54,7 @@ All games start with mixed strategy probabilities $p=0.5$ and $q=0.5$. In this c
 
 When testing please note that the non-external factor game matrix returns a strategy that is very conservative at the start of negotiations. Please create a negotiation game that has a closer due date for a more significant shift in the counteroffer price. This is to show how the strategy values impact the game:
 
-<img src="Strategy_Trend_Analysis.png" alt="network" width="600"/> <br>
+<img src="Strategy_Trend_Analysis.png" alt="network" width="400"/> <br>
 Source: See [2] Below <br>
 
 ### Bayesian Network: <br>

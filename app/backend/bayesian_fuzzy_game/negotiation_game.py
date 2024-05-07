@@ -49,7 +49,6 @@ class BayesianFuzzyGame():
         game = {}
         seller_offer_price = self.seller.last_offer_price
 
-        first_offer = False
         game['initial_price'] = None # If this is not the initial offer
 
         # Check if this is a new game
@@ -57,7 +56,6 @@ class BayesianFuzzyGame():
             # Set the initial price as the counteroffer price
             self.product.initial_price = seller_offer_price
             game['initial_price'] = seller_offer_price
-            first_offer = True
 
         # Set the sellers offer to the products current price
         self.product.current_price = seller_offer_price
@@ -87,15 +85,19 @@ class BayesianFuzzyGame():
         # print("Buyer utility: ", buyer_utility)
         # print("Seller utility: ", seller_utility)
 
+        if seller_utility < buyer_utility:
+            game['current_strategy'] = 'conciliatory'
+        else:
+            game['current_strategy'] = 'conservative' 
+
+
         # Now use this strategy to get counteroffer price
-        counter_offer_price = self.get_counter_offer_price(previous_offer = seller_offer_price, 
-                                                           negotiation_time = self.game_time, 
+        counter_offer_price = self.get_counter_offer_price(negotiation_time = self.game_time, 
                                                            total_negotiation_length = self.negotiation_length, 
                                                            lambda_strategy = seller_utility, # Basing our offer off opponent predicted utility 
                                                            reservation_price = self.buyer.reservation_price, 
-                                                           intial_price = self.product.initial_price, 
-                                                           alpha = 1,  # 1 for supplier and 0 for buyer
-                                                           first_offer=first_offer # Modifies counteroffer price if first offer
+                                                           initial_price = self.product.initial_price, 
+                                                           alpha = 1  # 1 for supplier and 0 for buyer
                                                            )
         # print(counter_offer_price)
         # Check if current offer is acceptable U_s(OP_c^t) > U_s(OP_s^t-1)
@@ -110,10 +112,6 @@ class BayesianFuzzyGame():
         Conciliatory: (0 < lambda < 1) x makes larger concession in earlier negotiation rounds and smaller concessions in later rounds.
         Conservative: (1 < lambda < inf) x makes smaller concession in earlier negotiation rounds and larger concessions in later rounds.
         """
-        if seller_utility < buyer_utility:
-            game['current_strategy'] = 'conciliatory'
-        else:
-            game['current_strategy'] = 'conservative' 
         return game
 
 
@@ -145,9 +143,9 @@ class BayesianFuzzyGame():
         """ Calculate the payoff for the given offer price. """
         return xmin + (1 - xmin) * abs(RP - OP) / abs(RP - IP)
 
-    def get_counter_offer_price(self, previous_offer, negotiation_time, total_negotiation_length, lambda_strategy, reservation_price, intial_price, alpha, first_offer=False):
+    def get_counter_offer_price(self, negotiation_time, total_negotiation_length, lambda_strategy, reservation_price, initial_price, alpha):
         """
-        Calculate the next offer price based on the previous offer and negotiation dynamics.
+        Calculate the next offer price based on the current strategy. Offer dynamically adjusts with lambda
         """
         if negotiation_time == 0:
             t = 1
@@ -160,16 +158,16 @@ class BayesianFuzzyGame():
             tau = total_negotiation_length
 
         factor = (-1)**alpha * (t / tau) ** lambda_strategy
-        new_offer = intial_price + factor * abs(reservation_price - intial_price)             
-            # print("Reservation price: ", reservation_price)
-            # print("Initial price: ", intial_price)
-            # print("Alpha: ", alpha)
-            # print("Lambda strategy: ", lambda_strategy)
-            # print("Time: ", t)
-            # print("Tau: ", tau)
-            # print("Previous offer: ", previous_offer)
-            # print("Time factor: ", time_factor)
-            # print("Price difference: ", price_difference)
-            # print("Adjustment: ", adjustment)
-            # print("New offer: ", new_offer)
+        new_offer = initial_price + factor * abs(reservation_price - initial_price)
+        
+        # print("Reservation price: ", reservation_price)
+        # print("Initial price: ", intial_price)
+        # print("Alpha: ", alpha)
+        # print("Lambda strategy: ", lambda_strategy)
+        # print("Time: ", t)
+        # print("Tau: ", tau)
+        # print("Previous offer: ", previous_offer)
+        # print("Time factor: ", time_factor)
+        # print("Adjustment: ", adjustment)
+        # print("New offer: ", new_offer)
         return new_offer
