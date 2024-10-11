@@ -7,7 +7,7 @@ This system integrates with email, and can send emails. It currently cannot read
 # Dash App (Frontend)
 The frontend data visualization dashboard
 The web application: <br>
-<img src="Dashboard_Final.png" alt="dashboard"/> <br>
+<img src="/images/Dashboard_Final.png" alt="dashboard"/> <br>
 
 Here on the home screen you can see the external factors that influence negotiations through the Bayesian Networks on our two plots on the top. Note that the weights will be added in a future version once the bayesian network nodes are complete. These network graphs will show the values of each external factors as they are added to our system. Below that is a table that tracks the status of each game, and gives information on the games. <br>
 
@@ -54,7 +54,7 @@ password: spos123
 Contains the bayesian fuzzy game logic, and contains the following classes:
 ### Negotiation Game <br>
 This is a two player mixed strategy negotiation game. This is a game under incomplete information since we do not know the opponents reservation price or deadline. To make up for this lack of information we can predict their strategy using our game theory model. In this class we calculate the sellers utility from the following payoff matrix: <br>
-<img src="Payoff_Matrix.png" alt="dashboard" width="400"/> <br>
+<img src="/images/Payoff_Matrix.png" alt="dashboard" width="400"/> <br>
 Source: See [2] Below
 
 
@@ -63,7 +63,7 @@ All games start with mixed strategy probabilities $p=0.5$ and $q=0.5$. In this c
 
 When testing please note that the non-external factor game matrix returns a strategy that is very conservative at the start of negotiations. Please create a negotiation game that has a closer due date for a more significant shift in the counteroffer price. This is to show how the strategy values impact the game:
 
-<img src="Strategy_Trend_Analysis.png" alt="network" width="400"/> <br>
+<img src="/images/Strategy_Trend_Analysis.png" alt="network" width="400"/> <br>
 Source: See [2] Below <br>
 
 Once we determine the sellers strategy $\lambda_s$ with our mixed strategy bayesian game, we use this strategy to send our counteroffer price: <br>
@@ -72,7 +72,7 @@ Where $\lambda_s$ is the seller strategy, $\alpha$ is 1 for buyer and 0 for sell
 
 ### Bayesian Network: <br>
 Still being built due to network complexity. Contains the Bayesian Network logic following this DAG: <br>
-<img src="Networks.png" alt="network" width="600"/> <br>
+<img src="/images/Networks.png" alt="network" width="600"/> <br>
 Source: See [2] Below <br>
 
 This network is used to calculate the influence of external factors on negotiation. This class returns a probability with 1 being external factors have no influence on the negotiators negotiation power, and 0.1 meaning external factors have a large influence on the negotiators negotiation power. 
