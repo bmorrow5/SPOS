@@ -72,7 +72,7 @@ Where $\lambda_s$ is the seller strategy, $\alpha$ is 1 for buyer and 0 for sell
 
 ### Bayesian Network: <br>
 Still being built due to network complexity. Contains the Bayesian Network logic following this DAG: <br>
-<img src="/images/Networks.png" alt="network" width="600"/> <br>
+<img src="./images/Networks.png" alt="network" width="600"/> <br>
 Source: See [2] Below <br>
 
 This network is used to calculate the influence of external factors on negotiation. This class returns a probability with 1 being external factors have no influence on the negotiators negotiation power, and 0.1 meaning external factors have a large influence on the negotiators negotiation power. 
