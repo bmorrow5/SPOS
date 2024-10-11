@@ -26,8 +26,8 @@ dash_app.title = "SPOS - Buyer Dashboard"
 
 
 ############## Start services in Main for User ##############
-user_email = "spos6045@gmail.com"
-user_password = "cjoisegsetxkqdxb"
+user_email = ""
+user_password = ""
 main = Main(user_email, user_password)
 
 
